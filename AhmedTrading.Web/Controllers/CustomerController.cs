@@ -29,7 +29,7 @@ namespace AhmedTrading.Web.Controllers
         }
 
         //For Data-table
-        public IActionResult CustomerList(bool customerType = true)
+        public IActionResult CustomerList()
         {
             var list = _db.Customers.ListCustom();
             return Json(list);
@@ -46,6 +46,7 @@ namespace AhmedTrading.Web.Controllers
         public async Task<IActionResult> Add(CustomerAddUpdateViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
+
             var phone = model.PhoneNumbers.FirstOrDefault().Phone;
             var checkPhone = await _db.Customers.IsPhoneNumberExistAsync(phone).ConfigureAwait(false);
 
@@ -75,14 +76,11 @@ namespace AhmedTrading.Web.Controllers
             var phone = model.PhoneNumbers.FirstOrDefault()?.Phone;
             var checkPhone = await _db.Customers.IsPhoneNumberExistAsync(phone, model.CustomerId).ConfigureAwait(false);
 
-            if (checkPhone == false)
-            {
-                _db.Customers.CustomUpdate(model);
-                await _db.SaveChangesAsync().ConfigureAwait(false);
-                return RedirectToAction("List");
-            }
+            if (checkPhone) return View(model);
 
-            return View(model);
+            _db.Customers.CustomUpdate(model);
+            await _db.SaveChangesAsync().ConfigureAwait(false);
+            return RedirectToAction("List");
         }
 
         //GET:// Details

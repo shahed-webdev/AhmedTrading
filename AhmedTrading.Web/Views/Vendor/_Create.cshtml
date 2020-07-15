@@ -1,0 +1,56 @@
+﻿@using AhmedTrading.Repository
+@model VendorViewModel
+@{
+    Layout = null;
+}
+
+<div class="modal-dialog cascading-modal" role="document">
+    <div class="modal-content">
+        <div class="modal-header peach-gradient white-text">
+            <h4 class="m-0"><i class="fas fa-plus-circle"></i> Add Vendor</h4>
+            <button type="button" class="close waves-effect waves-light" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <form data-ajax-update="#InsertModal" data-ajax="true" data-ajax-url="/Vendor/Create" data-ajax-method="post" data-ajax-success="onCreateSuccess">
+                <div class="form-row">
+                    <div class="col-7">
+                        <div class="md-form">
+                            <input asp-for="VendorCompanyName" class="form-control" required/>
+                            <label asp-for="VendorCompanyName">Company Name</label>
+                            <span asp-validation-for="VendorCompanyName"></span>
+                        </div>
+                    </div>
+                    <div class="col-5">
+                        <div class="md-form">
+                            <input asp-for="VendorName" class="form-control" />
+                            <label asp-for="VendorName">Name</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col-4">
+                        <div class="md-form">
+                            <input asp-for="VendorPhone" class="form-control" type="number" required />
+                            <label asp-for="VendorPhone">Phone</label>
+                            <span asp-validation-for="VendorPhone"></span>
+                        </div>
+                    </div>
+                    <div class="col-8">
+                        <div class="md-form">
+                            <input asp-for="VendorAddress" class="form-control" />
+                            <label asp-for="VendorAddress">Address</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-1-half">
+                    <button type="submit" class="btn peach-gradient mb-1 waves-effect waves-light">Create <i class="fas fa-check ml-1"></i></button>
+                </div>
+            </form>         
+        </div>
+    </div>   
+</div>

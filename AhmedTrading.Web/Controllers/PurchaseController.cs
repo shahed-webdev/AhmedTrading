@@ -28,14 +28,12 @@ namespace AhmedTrading.Web.Controllers
 
             var response = await _db.Purchases.AddCustomAsync(model, _db).ConfigureAwait(false);
 
-            if (response.IsSuccess)
-            {
-                _db.Vendors.UpdatePaidDue(model.VendorId);
-                await _db.SaveChangesAsync();
-                return Ok(response);
-            }
-            else
-                return UnprocessableEntity(response);
+            if (!response.IsSuccess) return UnprocessableEntity(response);
+
+            _db.Vendors.UpdatePaidDue(model.VendorId);
+            await _db.SaveChangesAsync();
+
+            return Ok(response);
         }
 
 
@@ -55,18 +53,20 @@ namespace AhmedTrading.Web.Controllers
             return View();
         }
 
-        //request from datatable(ajax)
+        //request from data-table(ajax)
         public IActionResult PurchaseRecordsData(DataRequest request)
         {
             var data = _db.Purchases.Records(request);
             return Json(data);
         }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
                 _db.Dispose();
             }
+
             base.Dispose(disposing);
         }
     }

@@ -18,6 +18,7 @@ namespace AhmedTrading.Web.Controllers
             _db.SaveChanges();
             return View();
         }
+
         public IActionResult AdvanceAdd(int vendorId)
         {
             var model = _db.VendorAdvances.VendorWiseRecords(vendorId);

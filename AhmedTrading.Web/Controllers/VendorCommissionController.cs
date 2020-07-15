@@ -26,7 +26,7 @@ namespace AhmedTrading.Web.Controllers
                 ModelState.AddModelError("Commission", e.Message);
             }
 
-            return View();
+            return View(model);
         }
 
         public async Task<IActionResult> List(int vendorId)
@@ -34,11 +34,11 @@ namespace AhmedTrading.Web.Controllers
             var model = await _db.VendorCommissions.ListAsync(vendorId).ConfigureAwait(false);
             return View(model);
         }
-        public IActionResult Remove(int Id)
+        public IActionResult Remove(int id)
         {
             try
             {
-                _db.VendorCommissions.RemoveCustom(Id);
+                _db.VendorCommissions.RemoveCustom(id);
             }
             catch (Exception e)
             {

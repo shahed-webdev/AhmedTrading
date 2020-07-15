@@ -20,7 +20,7 @@ namespace AhmedTrading.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Selling([FromBody] SellingViewModel model)
+        public async Task<IActionResult> Selling(SellingViewModel model)
         {
             model.RegistrationId = _db.Registrations.GetRegID_ByUserName(User.Identity.Name);
 
@@ -28,14 +28,12 @@ namespace AhmedTrading.Web.Controllers
 
             var response = await _db.Selling.AddCustomAsync(model, _db).ConfigureAwait(false);
 
-            if (response.IsSuccess)
-            {
-                _db.Customers.UpdatePaidDue(model.CustomerId);
-                await _db.SaveChangesAsync();
-                return Ok(response);
-            }
-            else
-                return UnprocessableEntity(response);
+            if (!response.IsSuccess) return UnprocessableEntity(response);
+
+            _db.Customers.UpdatePaidDue(model.CustomerId);
+            await _db.SaveChangesAsync();
+
+            return Ok(response);
         }
 
         //Selling receipt
