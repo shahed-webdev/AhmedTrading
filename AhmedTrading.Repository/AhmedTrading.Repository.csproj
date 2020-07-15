@@ -6,6 +6,21 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AhmedTrading.Data\AhmedTrading.Data.csproj" />
+    <ProjectReference Include="..\JqueryDataTables.LoopsIT\JqueryDataTables.LoopsIT.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Repositories\Advance\" />
+    <Folder Include="Repositories\BankAccount\" />
+    <Folder Include="Repositories\BankDeposit\" />
+    <Folder Include="Repositories\BankLoan\" />
+    <Folder Include="Repositories\BankLoanReturn\" />
+    <Folder Include="Repositories\BankWithdrew\" />
+    <Folder Include="Repositories\CustomerPhone\" />
+    <Folder Include="Repositories\TraderSharing\" />
+    <Folder Include="Repositories\SellingPaymentList\" />
+    <Folder Include="Repositories\SellingList\" />
+    <Folder Include="Repositories\PurchasePaymentList\" />
   </ItemGroup>
 
 </Project>

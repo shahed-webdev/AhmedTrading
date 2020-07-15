@@ -10,7 +10,7 @@ namespace AhmedTrading.Data
         public double Commission { get; set; }
         public DateTime MonthDate { get; set; }
         public DateTime InsertDate { get; set; }
-
         public virtual Vendor Vendor { get; set; }
+        public virtual Product Product { get; set; }
     }
 }

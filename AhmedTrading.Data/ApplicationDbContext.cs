@@ -5,7 +5,7 @@ namespace AhmedTrading.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {
-        public ApplicationDbContext(DbContextOptions options) : base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
         }
@@ -73,6 +73,10 @@ namespace AhmedTrading.Data
             modelBuilder.ApplyConfiguration(new VendorConfiguration());
             modelBuilder.ApplyConfiguration(new VendorAdvanceConfiguration());
             modelBuilder.ApplyConfiguration(new VendorCommissionConfiguration());
+
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.SeedInsitutionData();
+            modelBuilder.SeedAdminData();
         }
 
     }

@@ -18,6 +18,10 @@ namespace AhmedTrading.Data
                 .HasForeignKey(d => d.VendorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_VendorCommission_Vendor");
+            builder.HasOne(d => d.Product)
+                .WithMany(d => d.VendorCommission)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VendorCommission_Product");
         }
     }
 }

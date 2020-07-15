@@ -7,7 +7,21 @@ namespace AhmedTrading.Data
     {
         public void Configure(EntityTypeBuilder<Vendor> builder)
         {
-            throw new System.NotImplementedException();
+            builder.Property(e => e.Balance).HasComputedColumnSql("(((([Paid]+[Advance])+[Commission])+[TotalDiscount])-([TotalAmount]+[ReturnAmount]))");
+
+            builder.Property(e => e.InsertDate)
+                .HasColumnType("datetime")
+                .HasDefaultValueSql("(getdate())");
+
+            builder.Property(e => e.VendorAddress).HasMaxLength(500);
+
+            builder.Property(e => e.VendorCompanyName)
+                .IsRequired()
+                .HasMaxLength(128);
+
+            builder.Property(e => e.VendorName).HasMaxLength(128);
+
+            builder.Property(e => e.VendorPhone).HasMaxLength(50);
         }
     }
 }

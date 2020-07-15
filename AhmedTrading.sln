@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AhmedTrading.Repository", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AhmedTrading.Web", "AhmedTrading.Web\AhmedTrading.Web.csproj", "{B62A1975-EAF6-4CAB-BE42-C032113B92EA}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JqueryDataTables.LoopsIT", "JqueryDataTables.LoopsIT\JqueryDataTables.LoopsIT.csproj", "{741CDE45-03B1-4EB3-9DCC-285A69DD71FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{B62A1975-EAF6-4CAB-BE42-C032113B92EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B62A1975-EAF6-4CAB-BE42-C032113B92EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B62A1975-EAF6-4CAB-BE42-C032113B92EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{741CDE45-03B1-4EB3-9DCC-285A69DD71FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{741CDE45-03B1-4EB3-9DCC-285A69DD71FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{741CDE45-03B1-4EB3-9DCC-285A69DD71FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{741CDE45-03B1-4EB3-9DCC-285A69DD71FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

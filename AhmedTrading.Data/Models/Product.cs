@@ -10,6 +10,7 @@ namespace AhmedTrading.Data
             PurchaseList = new HashSet<PurchaseList>();
             SellingList = new HashSet<SellingList>();
             TraderSharing = new HashSet<TraderSharing>();
+            VendorCommission = new List<VendorCommission>();
         }
 
         public int ProductId { get; set; }
@@ -24,5 +25,6 @@ namespace AhmedTrading.Data
         public virtual ICollection<PurchaseList> PurchaseList { get; set; }
         public virtual ICollection<SellingList> SellingList { get; set; }
         public virtual ICollection<TraderSharing> TraderSharing { get; set; }
+        public virtual ICollection<VendorCommission> VendorCommission { get; set; }
     }
 }
