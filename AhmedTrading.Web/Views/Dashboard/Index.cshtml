@@ -226,81 +226,81 @@
         let profit = [];
         let expense = [];
 
-        @foreach (var item in Model.MonthlySummary)
+        @*@foreach (var item in Model.MonthlySummary)
         {
             @:months.push("@item.Month.Month");
             @:sales.push(@item.MonthlyNewPurchase);
             @:purchase.push(@item.MonthlySale);
             @:profit.push(@item.MonthlyProfit);
             @:expense.push(@item.MonthlyExpense);
-        }
+        }*@
 
 
         // Line chart
-        var ctxL = document.getElementById("lineChart").getContext('2d');
-        var myLineChart = new Chart(ctxL, {
-            type: 'line',
-            data: {
-                labels: months,
-                datasets: [
-                    {
-                        label: "PURCHASE",
-                        fillColor: "#fff",
-                        borderColor: 'rgba(76, 175, 80, 0.7)',
-                        data: purchase,
-                        borderWidth: 3
-                    },
-                    {
-                        label: "SALES",
-                        fillColor: "#fff",
-                        borderColor: 'rgba(205, 220, 57, 0.8)',
-                        data: sales,
-                        borderWidth: 3
-                    },
-                    {
-                        label: "PROFIT",
-                        fillColor: "#fff",
-                        borderColor: 'rgba(63, 81, 181, 0.8)',
-                        data: profit,
-                        borderWidth: 3
-                    },
-                    {
-                        label: "EXPENSE",
-                        fillColor: "#fff",
-                        borderColor: 'rgba(244, 67, 54, 0.8)',
-                        data: expense,
-                        borderWidth: 3
-                    }
-                ]
-            },
-            options: {
-                legend: {
-                    labels: {
-                        fontColor: "#fff"
-                    }
-                },
-                scales: {
-                    xAxes: [{
-                        gridLines: {
-                            display: true,
-                            color: "rgba(255,255,255,.25)"
-                        },
-                        ticks: {
-                            fontColor: "#fff"
-                        },
-                    }],
-                    yAxes: [{
-                        display: true,
-                        gridLines: {
-                            display: true,
-                            color: "rgba(255,255,255,.25)"
-                        },
-                        ticks: {
-                            fontColor: "#fff"
-                        }
-                    }]
-                }
-            }
-        });
+        //var ctxL = document.getElementById("lineChart").getContext('2d');
+        //var myLineChart = new Chart(ctxL, {
+        //    type: 'line',
+        //    data: {
+        //        labels: months,
+        //        datasets: [
+        //            {
+        //                label: "PURCHASE",
+        //                fillColor: "#fff",
+        //                borderColor: 'rgba(76, 175, 80, 0.7)',
+        //                data: purchase,
+        //                borderWidth: 3
+        //            },
+        //            {
+        //                label: "SALES",
+        //                fillColor: "#fff",
+        //                borderColor: 'rgba(205, 220, 57, 0.8)',
+        //                data: sales,
+        //                borderWidth: 3
+        //            },
+        //            {
+        //                label: "PROFIT",
+        //                fillColor: "#fff",
+        //                borderColor: 'rgba(63, 81, 181, 0.8)',
+        //                data: profit,
+        //                borderWidth: 3
+        //            },
+        //            {
+        //                label: "EXPENSE",
+        //                fillColor: "#fff",
+        //                borderColor: 'rgba(244, 67, 54, 0.8)',
+        //                data: expense,
+        //                borderWidth: 3
+        //            }
+        //        ]
+        //    },
+        //    options: {
+        //        legend: {
+        //            labels: {
+        //                fontColor: "#fff"
+        //            }
+        //        },
+        //        scales: {
+        //            xAxes: [{
+        //                gridLines: {
+        //                    display: true,
+        //                    color: "rgba(255,255,255,.25)"
+        //                },
+        //                ticks: {
+        //                    fontColor: "#fff"
+        //                },
+        //            }],
+        //            yAxes: [{
+        //                display: true,
+        //                gridLines: {
+        //                    display: true,
+        //                    color: "rgba(255,255,255,.25)"
+        //                },
+        //                ticks: {
+        //                    fontColor: "#fff"
+        //                }
+        //            }]
+        //        }
+        //    }
+        //});
     </script>
 }

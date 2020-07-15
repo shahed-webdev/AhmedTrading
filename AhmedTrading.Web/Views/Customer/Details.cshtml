@@ -74,24 +74,13 @@
             <div class="col-lg-5 mb-3">
                 <ul class="list-group list-group-flush z-depth-1 rounded">
                     <li class="list-group-item amber accent-2 d-flex justify-content-start align-items-center py-3">
-                        @{
-                            var imgSrc = "";
-                            imgSrc = Model.Photo != null ? $"data:image/gif;base64,{Convert.ToBase64String(Model.Photo)}" : "/images/defaultImage.jpg";
-                        }
-                        <img src="@imgSrc" class="rounded-circle z-depth-0" width="50" alt="avatar image">
-
                         <div class="d-flex flex-column pl-3">
                             <h6 class="font-weight-normal mb-0">@Model.CustomerName</h6>
-                            <p class="small mb-0">@Model.Designation</p>
                         </div>
                     </li>
 
-                    <li class="list-group-item"><strong>@(Model.IsIndividual ? "Working Station" : "Corporate Name"):</strong><span>@Model.OrganizationName</span></li>
                     <li class="list-group-item"><strong>Address:</strong><span>@Model.CustomerAddress</span></li>
-                    @if (Model.IsIndividual)
-                    {
-                        <li class="list-group-item"><strong>Description:</strong><span>@Model.Description</span></li>
-                    }
+
                     <li class="list-group-item">
                         <strong>Phone:</strong>
                         @foreach (var item in Model.PhoneNumbers)
@@ -99,7 +88,6 @@
                             <span class="mr-1">@item.Phone</span>
                         }
                     </li>
-                    <li class="list-group-item"><strong>DueLimit:</strong><span>@Model.DueLimit</span></li>
                 </ul>
             </div>
 
