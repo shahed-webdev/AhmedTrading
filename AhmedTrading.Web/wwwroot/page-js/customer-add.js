@@ -1,29 +1,4 @@
 ﻿
-//show hide field
-function radioSelected(evt) {
-    const individual = document.querySelectorAll('.individual-field')
-    const corporate = document.querySelectorAll('.corporate-field')
-
-    if (evt.value === 'true') {
-        individual.forEach(item => {
-            item.style.display = 'block';
-        })
-
-        corporate.forEach(item => {
-            item.style.display = 'none';
-        })
-    } else {
-        individual.forEach(item => {
-            item.style.display = 'none';
-        })
-
-        corporate.forEach(item => {
-            item.style.display = 'block';
-        })
-    }
-};
-
-
 //selectors
 const phoneContainer = document.getElementById("phone-wrapper");
 const customerForm = document.getElementById("customer-form");
@@ -83,6 +58,18 @@ const addInputElement = function () {
     phoneContainer.insertAdjacentHTML('beforeend', element);
 }
 
+//phone index re assign
+const reAssignIndex = function () {
+    const phones = document.querySelectorAll('.valid-check');
+
+    phones.forEach((phone, i) => {
+        phone.name = `PhoneNumbers[${i}].Phone`;
+        phone.id = `phone-${i}`;
+        phone.nextElementSibling.setAttribute("for", `phone-${i}`);
+        elementIndex = i + 1;
+    });
+}
+
 const removeInputElement = function (evt) {
     evt.target.parentElement.parentElement.remove();
     const id = evt.target.parentElement.previousElementSibling.children[0].id;
@@ -91,6 +78,8 @@ const removeInputElement = function (evt) {
     if (errorIndex !== -1) isError.splice(errorIndex, 1);
 
     btnEnabledDisable();
+
+    reAssignIndex();
 }
 
 const togglePhoneElement = function (evt) {
@@ -104,15 +93,49 @@ const togglePhoneElement = function (evt) {
         removeInputElement(evt);
 }
 
-const onFormSubmit = function (evt) {
+//check duplicate phone on textboxes
+const checkDuplicatePhone = function() {
+    const phones = document.querySelectorAll('.valid-check');
+    const inputtedPhones = [];
+    const element = `<span class="field-validation-error">This Mobile Number Already Inputted!</span>`;
+
+    phones.forEach(phone => {
+        const errorElement = phone.nextElementSibling;
+
+        if (errorElement.nodeName === "SPAN")
+            errorElement.remove();
+
+        if (inputtedPhones.indexOf(phone.value) !== -1) {
+            phone.insertAdjacentHTML('afterend', element);
+
+            //add error element id in error array
+            const errorIndex = isError.indexOf(phone.id);
+            if (errorIndex === -1) isError.push(phone.id);
+
+            return;
+        }
+
+        inputtedPhones.push(phone.value);
+    });
+
+    btnEnabledDisable();
+}
+
+const onFormSubmit = function(evt) {
+    checkDuplicatePhone();
+
+    if (isError.length) {
+        evt.preventDefault();
+    };
+
     evt.target.btnSubmit.disabled = true;
     evt.target.btnSubmit.innerText = "Please wait...";
 
-    setTimeout(()=> {
+    setTimeout(() => {
         evt.target.btnSubmit.disabled = false;
         evt.target.btnSubmit.innerText = "Add Customer";
     }, 3000);
-}
+};
 
 //events
 phoneContainer.addEventListener("click", togglePhoneElement);

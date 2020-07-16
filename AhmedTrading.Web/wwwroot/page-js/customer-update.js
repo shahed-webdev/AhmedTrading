@@ -1,37 +1,4 @@
 ﻿
-//show hide field
-const selected = document.querySelector('input[name="IsIndividual"]:checked').value;
-
-bindLabel(selected);
-
-function radioSelected(evt) {
-    bindLabel(evt.value);
-};
-
-function bindLabel(value) {
-    const individual = document.querySelectorAll('.individual-field')
-    const corporate = document.querySelectorAll('.corporate-field')
-
-    if (value === 'true') {
-        individual.forEach(item => {
-            item.style.display = 'block';
-        })
-
-        corporate.forEach(item => {
-            item.style.display = 'none';
-        })
-    } else {
-        individual.forEach(item => {
-            item.style.display = 'none';
-        })
-
-        corporate.forEach(item => {
-            item.style.display = 'block';
-        })
-    }
-}
-
-
 //selectors
 const phoneContainer = document.getElementById("phone-wrapper");
 const btnSubmit = document.getElementById("btnSubmit");
@@ -50,7 +17,7 @@ const checkPhoneIsExists = function (evt) {
     if (!phoneInput) return;
 
     const mobile = evt.target.value;
-    const Id = document.getElementById("customerId").value;
+    const id = document.getElementById("customerId").value;
     const errorElement = evt.target.nextElementSibling;
 
     if (errorElement.nodeName === "SPAN")
@@ -62,7 +29,7 @@ const checkPhoneIsExists = function (evt) {
 
     if (mobile.length > 10) {
         const url = '/Customer/CheckMobileIsAvailable';
-        const parameter = { params: { mobile, Id } };
+        const parameter = { params: { mobile, id } };
         const request = axios.get(url, parameter);
         const element = `<span class="field-validation-error">This Mobile Number Already Exists!</span>`;
         const self = evt.target;
@@ -118,7 +85,7 @@ const checkDuplicatePhone = function (evt) {
 
 
 let elementIndex = hiddenLastIndex;
-const addInputelement = function () {
+const addInputElement = function () {
     const element = `<div class="phone-container">
                 <div class="md-form m-0 flex-grow-1">
                     <input id="phone-${elementIndex}" name="PhoneNumbers[${elementIndex}].Phone" required type="number" class="form-control valid-check" />
@@ -134,7 +101,19 @@ const addInputelement = function () {
     phoneContainer.insertAdjacentHTML('beforeend', element);
 }
 
-const removeInputelement = function (evt) {
+//phone index re assign
+const reAssignIndex = function() {
+    const phones = document.querySelectorAll('.valid-check');
+
+    phones.forEach((phone,i) => {
+        phone.name = `PhoneNumbers[${i}].Phone`;
+        phone.id = `phone-${i}`;
+        phone.nextElementSibling.setAttribute("for", `phone-${i}`);
+        elementIndex = i+1;
+    });
+}
+
+const removeInputElement = function (evt) {
     evt.target.parentElement.parentElement.remove();
     const id = evt.target.parentElement.previousElementSibling.children[0].id;
     const errorIndex = isError.indexOf(id);
@@ -142,6 +121,8 @@ const removeInputelement = function (evt) {
     if (errorIndex !== -1) isError.splice(errorIndex, 1);
 
     btnEnabledDisable();
+
+    reAssignIndex();
 }
 
 const togglePhoneElement = function (evt) {
@@ -149,10 +130,10 @@ const togglePhoneElement = function (evt) {
     const removeClicked = evt.target.classList.contains("remove");
 
     if (addClicked)
-        addInputelement(evt);
+        addInputElement(evt);
 
     if (removeClicked)
-        removeInputelement(evt);
+        removeInputElement(evt);
 }
 
 const onFormSubmit = function () {

@@ -2,7 +2,10 @@
 
 .blue-bg { background-color: #1250F1 }
 .navbar-brand { font-weight: bold; font-size: 1.5rem; color: #fff }
-.blue-bg-btn { background-color: #1250F1 }  
+
+.blue-bg-btn { background-color: #0230A6 }
+.blue-bg-btn:hover { background-color: #1250F1; color: #fff }  
+
 .page-header { text-transform: uppercase; margin: 0; font-weight: 500; color: #4f4f4f !important; }
 
 .error-color td { color: red; }

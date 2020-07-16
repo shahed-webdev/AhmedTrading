@@ -16,9 +16,9 @@ namespace AhmedTrading.Web.Controllers
         }
 
         //GET:// Mobile Is Available(ajax)
-        public async Task<bool> CheckMobileIsAvailable(string mobile, int Id = 0)
+        public async Task<bool> CheckMobileIsAvailable(string mobile, int id = 0)
         {
-            return await _db.Customers.IsPhoneNumberExistAsync(mobile, Id).ConfigureAwait(false);
+            return await _db.Customers.IsPhoneNumberExistAsync(mobile, id).ConfigureAwait(false);
         }
 
         //GET:// List of customer
@@ -47,7 +47,7 @@ namespace AhmedTrading.Web.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            var phone = model.PhoneNumbers.FirstOrDefault().Phone;
+            var phone = model.PhoneNumbers.FirstOrDefault()?.Phone;
             var checkPhone = await _db.Customers.IsPhoneNumberExistAsync(phone).ConfigureAwait(false);
 
             if (checkPhone) return View(model);
@@ -62,6 +62,7 @@ namespace AhmedTrading.Web.Controllers
         public IActionResult Update(int? id)
         {
             if (!id.HasValue) return RedirectToAction("List");
+
             var model = _db.Customers.FindCustom(id.GetValueOrDefault());
             if (model == null) return NotFound();
 
@@ -73,6 +74,7 @@ namespace AhmedTrading.Web.Controllers
         public async Task<IActionResult> Update(CustomerAddUpdateViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
+
             var phone = model.PhoneNumbers.FirstOrDefault()?.Phone;
             var checkPhone = await _db.Customers.IsPhoneNumberExistAsync(phone, model.CustomerId).ConfigureAwait(false);
 
@@ -80,6 +82,7 @@ namespace AhmedTrading.Web.Controllers
 
             _db.Customers.CustomUpdate(model);
             await _db.SaveChangesAsync().ConfigureAwait(false);
+
             return RedirectToAction("List");
         }
 
@@ -93,6 +96,7 @@ namespace AhmedTrading.Web.Controllers
 
             return View(model);
         }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
