@@ -15,12 +15,19 @@ namespace AhmedTrading.Web.Controllers
             _db = db;
         }
 
-        [HttpGet]
+        //Add Product
         public IActionResult AddProduct()
         {
             ViewBag.ProductBrand = new SelectList(_db.ProductBrands.ddl(), "value", "label");
             return View();
         }
+
+        public async Task<IActionResult> GetProductByBrand(int brandId = 0)
+        {
+            var productList = await _db.Products.FindByBrandAsync(brandId);
+            return Json(productList);
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddProduct(ProductViewModel model)
         {
@@ -41,7 +48,8 @@ namespace AhmedTrading.Web.Controllers
             return View(model);
         }
 
-        [HttpGet]
+
+        //Update Product
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return BadRequest(HttpStatusCode.BadRequest);
@@ -55,7 +63,6 @@ namespace AhmedTrading.Web.Controllers
             return PartialView("_Edit", model);
         }
 
-        //POST
         [HttpPost]
         public async Task<IActionResult> Edit(ProductUpdateModel model)
         {
@@ -75,22 +82,24 @@ namespace AhmedTrading.Web.Controllers
             return PartialView("_Edit", model);
         }
 
-        public int DeleteProduct(int id)
+        //Find Product
+        public IActionResult FindProduct()
         {
-            if (!_db.Products.RemoveCustom(id)) return -1;
-            return _db.SaveChanges();
-        }
-
-        public async Task<IActionResult> GetProductByBrand(int brandId = 0)
-        {
-            var productList = await _db.Products.FindByBrandAsync(brandId);
-            return Json(productList);
+            return View();
         }
 
         public async Task<IActionResult> FindProductsByName(string name)
         {
             var data = await _db.Products.FindByNameAsync(name).ConfigureAwait(false);
             return Json(data);
+        }
+
+
+        //Delete Product
+        public int DeleteProduct(int id)
+        {
+            if (!_db.Products.RemoveCustom(id)) return -1;
+            return _db.SaveChanges();
         }
 
         protected override void Dispose(bool disposing)

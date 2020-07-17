@@ -1,0 +1,30 @@
+﻿@model AhmedTrading.Data.ProductBrand
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-md-10 col-lg-9 mx-auto">
+            <h4 class="mb-3 page-header">Update Product Brand</h4>
+            <div class="card card-body p-4 px-5">
+                <form asp-action="Edit">
+                    <input type="hidden" asp-for="ProductBrandId" class="form-control" />
+                    <div class="md-form">
+                        <label asp-for="BrandName" class="control-label"></label>
+                        <input asp-for="BrandName" class="form-control" />
+                        <span asp-validation-for="BrandName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Save" class="btn btn-primary" />
+                    </div>
+                </form>
+
+                <a asp-action="Index">Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>
+

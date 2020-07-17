@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AhmedTrading.Web.Controllers
 {
+    [Authorize(Roles = "admin, product-brand")]
     public class ProductBrandController : Controller
     {
         private readonly IUnitOfWork _db;
@@ -14,48 +16,38 @@ namespace AhmedTrading.Web.Controllers
             _db = db;
         }
 
-        public IActionResult IndexData()
+        public IActionResult Index()
         {
-            var data = _db.ProductBrands.ddl();
-            return Json(data);
+           // var data = _db.ProductBrands.ddl();
+            return View();
         }
 
-        // GET: Create
-        public IActionResult Create()
-        {
-            return PartialView("_Create");
-        }
-
-        //POST
+        //POST: Create Brand (ajax)
         [HttpPost]
-        public async Task<IActionResult> Create(ProductBrandViewModel model)
+        public async Task<IActionResult> CreateBrand(ProductBrandViewModel model)
         {
             var exist = await _db.ProductBrands.IsExistAsync(model.BrandName).ConfigureAwait(false);
 
-            if (exist) ModelState.AddModelError("BrandName", "Brand Name already exist!");
-
-            if (!ModelState.IsValid) return PartialView("_Create", model);
+            if (exist) return UnprocessableEntity("Brand Name already exist!");
 
             _db.ProductBrands.AddCustom(model);
-
             var task = await _db.SaveChangesAsync();
 
-            if (task != 0) return Json(model);
+            if (task != 0) return Ok();
 
-            ModelState.AddModelError("", "Unable to insert record!");
-            return PartialView("_Create", model);
+            return UnprocessableEntity("Unable to insert record!");
         }
 
         // GET: Edit/5
         public IActionResult Edit(int? id)
         {
-            if (id == null) return BadRequest(HttpStatusCode.BadRequest);
+            if (id == null) return RedirectToAction("Index");
 
             var model = _db.ProductBrands.Find(id.GetValueOrDefault());
 
-            if (model == null) return NotFound();
+            if (model == null) return RedirectToAction("Index");
 
-            return PartialView("_Edit", model);
+            return View(model);
         }
 
         //POST
@@ -65,24 +57,27 @@ namespace AhmedTrading.Web.Controllers
             var exist = await _db.ProductBrands.IsExistAsync(model.BrandName, model.ProductBrandId).ConfigureAwait(false);
             if (exist) ModelState.AddModelError("BrandName", "Brand Name already exist!");
 
-            if (!ModelState.IsValid) return PartialView("_Edit", model);
+            if (!ModelState.IsValid) return View(model);
 
             _db.ProductBrands.CustomUpdate(model);
 
             var task = await _db.SaveChangesAsync();
-            if (task != 0) return Json(model);
+            if (task != 0) return RedirectToAction("Index");
 
             ModelState.AddModelError("", "Unable to update");
-            Response.StatusCode = (int)HttpStatusCode.BadRequest;
-
-            return PartialView("_Edit", model);
+            return View(model);
         }
 
         // POST: Delete/5
-        public int Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (!_db.ProductBrands.RemoveCustom(id)) return -1;
-            return _db.SaveChanges();
+            if (!_db.ProductBrands.RemoveCustom(id)) return UnprocessableEntity("Brand Name already in Used!");
+
+            var task = await _db.SaveChangesAsync();
+
+            if (task != 0) return Ok();
+
+            return UnprocessableEntity("Unable to perform action!");
         }
 
         protected override void Dispose(bool disposing)

@@ -24,7 +24,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="md-form mt-0 mb-0 flex-1">
                         <input id="inputProductCode" autocomplete="off" type="text" class="form-control" required />
-                        <label for="inputProductCode">Product code</label>
+                        <label for="inputProductCode">Product Name</label>
                         <span id="codeError" class="field-validation-error"></span>
                     </div>
 
@@ -42,19 +42,15 @@
             <ul class="striped list-unstyled mb-0">
                 <li id="receipt"></li>
                 <li><strong>Code:</strong><span id="productCode"></span></li>
-                <li><strong>Brand and Model:</strong><span id="productName"></span></li>
+                <li><strong>Brand:</strong><span id="productName"></span></li>
                 <li><strong>Purchase Price:</strong><span id="purchasePrice"></span></li>
                 <li><strong>Selling Price:</strong><span id="sellingPrice"></span></li>
-                <li><strong>Warranty:</strong><span id="warranty"></span></li>
-                <li><strong>Description:</strong><span id="description"></span></li>
-                <li><strong>Note:</strong><span id="note"></span></li>
             </ul>
         </div>
     </div>
 </div>
 
 @section Scripts{
-    <script src="~/js/onscan.min.js"></script>
     <script>
         //*****SELECTORS*****/
         // product code form
@@ -64,32 +60,23 @@
         const btnFind = formCode.btnFind
         const infoContainer = document.querySelector('.info-container')
 
-        // scan barcode
-        onScan.attachTo(document, {
-            suffixKeyCodes: [13],
-            reactToPaste: true,
-            onScan: (sCode, iQty) => {
-                inputProductCode.value = sCode
-                inputProductCode.nextElementSibling.classList.add('active')
-                btnFind.click()
-            }
-        })
 
         // on Product code submit
         formCode.addEventListener('submit', evt => {
             evt.preventDefault()
-            const url = '/Product/FindProductDetailsByCode'
-            const param = { params: { code: inputProductCode.value } };
+            const url = '/Product/FindProductsByName'
+            const param = { params: { name: inputProductCode.value } };
 
             axios.get(url, param).then(res => {
                 appendData(res.data)
+                console.log(res)
             }).catch(err => console.log(err))
         })
 
         //append data
         function appendData(product) {
             codeError.textContent = '';
-            if (!product) {
+            if (!product.length) {
                 codeError.textContent = `"${inputProductCode.value}" Not found!`;
                 infoContainer.classList.remove('show')
                 return;
@@ -101,9 +88,6 @@
             document.getElementById('productName').textContent = product.ProductName;
             document.getElementById('purchasePrice').textContent = product.PurchasePrice;
             document.getElementById('sellingPrice').textContent = product.SellingPrice;
-            document.getElementById('warranty').textContent = product.Warranty;
-            document.getElementById('description').textContent = product.Description;
-            document.getElementById('note').textContent = product.Note;
 
             const bill = document.getElementById('receipt')
             product.SellingId ? bill.innerHTML = `<strong class="green-text">Bill No: </strong><a target="_blank" href="/Selling/SellingReceipt/${product.SellingId}" id="receiptNo">#${product.SellingSn}</a>` : bill.innerHTML = '';

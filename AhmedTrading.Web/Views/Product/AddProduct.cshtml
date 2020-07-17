@@ -19,8 +19,8 @@
             <div class="form-row">
                 <div class="col-lg-3">
                     <div class="md-form">
-                        <select name="ProductCatalogId" id="ParentId" asp-items="ViewBag.ParentId" class="mdb-select" required>
-                            <option value="" selected>Select Category</option>
+                        <select name="ProductBrand" id="ProductBrand" asp-items="ViewBag.ProductBrand" class="mdb-select" required>
+                            <option value="" selected>Select Brand</option>
                         </select>
                     </div>
                 </div>
@@ -28,37 +28,39 @@
                 <div class="col-lg-3">
                     <div class="md-form">
                         <input asp-for="ProductName" class="form-control" required />
-                        <label for="ProductName">ProductName</label>
-                        <span asp-validation-for="ProductName"></span>
+                        <label for="ProductName">Product Name</label>
                     </div>
                 </div>
 
                 <div class="col-lg-3">
                     <div class="md-form">
-                        <input id="inputWarranty" name="Warranty" class="form-control" type="text" />
-                        <label for="inputWarranty">Warranty</label>
+                        <input asp-for="SellingUnitPrice" class="form-control" type="number" required/>
+                        <label for="SellingUnitPrice">Selling Unit Price</label>
                     </div>
                 </div>
 
                 <div class="col-lg-3">
                     <div class="md-form">
-                        <input id="inputDescription" name="Description" class="form-control" type="text" />
-                        <label for="inputDescription">Description</label>
+                        <input asp-for="UnitType" class="form-control" required/>
+                        <label for="UnitType">Unit Type</label>
                     </div>
                 </div>
             </div>
             <div class="text-right">
-                <input type="submit" value="Add Product" class="btn btn-grey" />
+                <input type="submit" value="Add Product" class="btn blue-bg-btn" />
             </div>
         </form>
     </section>
 
     <section class="card card-body mt-3">
         <h4 id="categoryName"></h4>
-        <table class="data-table table table-bordered table-sm">
+
+        <table class="table">
             <thead>
                 <tr>
-                    <th><strong>Brand & Model</strong></th>
+                    <th><strong>Product Name</strong></th>
+                    <th><strong>Selling Unit Price</strong></th>
+                    <th><strong>Unit Type</strong></th>
                     <th><strong>Stock</strong></th>
                     <th><strong>Remove</strong></th>
                 </tr>
@@ -74,72 +76,65 @@
         $('.mdb-select').materialSelect();
 
         // selectors
-        const parentId = document.getElementById('ParentId')
-        const tbody = document.getElementById('tbody')
+        const ProductBrand = document.getElementById('ProductBrand');
+        const tbody = document.getElementById('tbody');
 
         // functions
-        const getProductsInfo = function (categoryId = 0) {
-            const url = '/Product/GetProductByCategory'
-            const param = { params: { categoryId: categoryId } };
+        const getProductsInfo = function(brandId = 0) {
+            const url = '/Product/GetProductByBrand'
+            const param = { params: { brandId } };
 
-            axios.get(url, param)
-                .then(res => {
-                    let html = '';
-                    res.data.forEach(item => {
-                        const warranty = item.Warranty ? item.Warranty : ''
-                        const description = item.Description ? item.Description: ''
-
-                        html += `<tr>
+            axios.get(url, param).then(res => {
+                let html = '';
+                res.data.forEach(item => {
+                    html += `<tr>
                         <td class="text-left">${item.ProductName}</td>
-                        <td>${item.Stock}</td>
-                        <td>${warranty}</td>
-                        <td class="text-left">${description}</td>
-                        <td style="width:50px; text-align:center"><i class="fa fa-times remove red-text" id="${item.ProductId}"></i></td>
+                        <td>${item.SellingUnitPrice}</td>
+                        <td>${item.UnitType}</td>
+                        <td class="text-left">${item.Stock}</td>
+                        <td style="width:50px; text-align:center"><i class="fa fa-trash-alt remove red-text" id="${item.ProductId}"></i></td>
                         </tr>`
-                    })
-
-                    tbody.innerHTML = ''
-                    tbody.innerHTML = html
                 })
-                .catch(err => console.log(err))
+
+                tbody.innerHTML = ''
+                tbody.innerHTML = html
+            }).catch(err => console.log(err))
         }
 
         //on change dropdown
-        const onCategoryChanged = function () {
-            const categoryId = +this.value;
-            if (!categoryId) return;
+        const onCategoryChanged = function() {
+            const brandId = +this.value;
+            if (!brandId) return;
 
             const categoryName = document.getElementById('categoryName')
             categoryName.textContent = this.options[this.selectedIndex].text;
 
-            getProductsInfo(categoryId)
+            getProductsInfo(brandId);
         }
 
         //remove
-        const onRemoveClicked = function (e) {
-            const clicked = e.target.classList.contains('remove')
-            if (clicked) {
-                const id = e.target.id
-                const url = '/Product/DeleteProduct'
-                const param = { params: { id } };
+        const onRemoveClicked = function(e) {
+            const clicked = e.target.classList.contains('remove');
+            if (!clicked) return;
 
-                axios.get(url, param)
-                    .then(res => {
-                        if (res.data !== -1) {
-                            e.target.parentElement.parentElement.remove()
-                        } else {
-                            alert('this product already used!')
-                        }
-                    })
-                    .catch(err => console.log(err))
-            }
+            const id = e.target.id
+            const url = '/Product/DeleteProduct'
+            const param = { params: { id } };
+
+            axios.get(url, param).then(res => {
+                if (res.data !== -1) {
+                    e.target.parentElement.parentElement.remove();
+                } else {
+                    alert('this product already used!')
+                }
+            }).catch(err => console.log(err))
         }
 
         // call function
         getProductsInfo()
 
         // event
-        parentId.addEventListener('change', onCategoryChanged)
+        ProductBrand.addEventListener('change', onCategoryChanged)
         tbody.addEventListener('click', onRemoveClicked)
     </script>
 }
