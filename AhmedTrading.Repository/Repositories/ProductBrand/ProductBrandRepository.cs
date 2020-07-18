@@ -38,6 +38,15 @@ namespace AhmedTrading.Repository
             }).ToList();
         }
 
+        public Task<List<ProductBrandViewModel>> ListAsync()
+        {
+            return Context.ProductBrand.Select(b => new ProductBrandViewModel
+            {
+                ProductBrandId = b.ProductBrandId,
+                BrandName = b.BrandName
+            }).ToListAsync();
+        }
+
         public bool RemoveCustom(int id)
         {
             if (Context.Product.Any(b => b.ProductBrandId == id)) return false;

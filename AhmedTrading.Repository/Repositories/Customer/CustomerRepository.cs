@@ -1,5 +1,6 @@
 ﻿using AhmedTrading.Data;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -90,28 +91,18 @@ namespace AhmedTrading.Repository
 
         public void CustomUpdate(CustomerAddUpdateViewModel model)
         {
-            var customer = Find(model.CustomerId);
+            var customer = Context.Customer.Include(c => c.CustomerPhone).FirstOrDefault(c => c.CustomerId == model.CustomerId);
             customer.CustomerAddress = model.CustomerAddress;
             customer.CustomerName = model.CustomerName;
-
-            Update(customer);
-
-            foreach (var item in model.PhoneNumbers.Where(p => p.CustomerPhoneId != 0))
+            customer.CustomerPhone = model.PhoneNumbers.Select(p => new CustomerPhone
             {
-                var phone = Context.CustomerPhone.Find(item.CustomerPhoneId);
-                phone.Phone = item.Phone;
-                phone.IsPrimary = item.IsPrimary ?? false;
-                Context.CustomerPhone.Update(phone);
-            }
-
-            var newPhones = model.PhoneNumbers.Where(p => p.CustomerPhoneId == 0).Select(p => new CustomerPhone
-            {
-                CustomerId = model.CustomerId,
+                CustomerPhoneId = p.CustomerPhoneId.GetValueOrDefault(),
                 Phone = p.Phone,
-                IsPrimary = p.IsPrimary ?? false
-            });
+                IsPrimary = p.IsPrimary ?? false,
+                InsertDate = DateTime.Now
+            }).ToList();
 
-            Context.CustomerPhone.AddRange(newPhones);
+            Context.Customer.Update(customer);
         }
 
         public void UpdatePaidDue(int id)
