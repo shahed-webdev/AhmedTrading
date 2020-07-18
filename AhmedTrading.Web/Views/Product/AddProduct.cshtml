@@ -32,16 +32,11 @@
                     </div>
                 </div>
 
-                <div class="col-lg-3">
-                    <div class="md-form">
-                        <input asp-for="SellingUnitPrice" class="form-control" type="number" required/>
-                        <label for="SellingUnitPrice">Selling Unit Price</label>
-                    </div>
-                </div>
 
                 <div class="col-lg-3">
                     <div class="md-form">
-                        <input asp-for="UnitType" class="form-control" required/>
+                        <input type="radio" asp-for="UnitType" class="form-control"/>
+                        <input type="radio" asp-for="UnitType" class="form-control"/>
                         <label for="UnitType">Unit Type</label>
                     </div>
                 </div>
@@ -61,7 +56,6 @@
                     <th><strong>Product Name</strong></th>
                     <th><strong>Selling Unit Price</strong></th>
                     <th><strong>Unit Type</strong></th>
-                    <th><strong>Stock</strong></th>
                     <th><strong>Remove</strong></th>
                 </tr>
             </thead>

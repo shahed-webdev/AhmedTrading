@@ -18,7 +18,7 @@ namespace AhmedTrading.Web.Controllers
 
         public IActionResult Index()
         {
-           // var data = _db.ProductBrands.ddl();
+            //var data = _db.ProductBrands.ddl();
             return View();
         }
 

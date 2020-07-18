@@ -15,7 +15,9 @@ namespace AhmedTrading.Repository
         {
             var product = new Product
             {
-                ProductName = model.ProductName
+                ProductName = model.ProductName,
+                ProductBrandId = model.ProductBrandId,
+                UnitType = model.UnitType
             };
 
             Add(product);
@@ -32,24 +34,18 @@ namespace AhmedTrading.Repository
         public Task<List<ProductViewModel>> FindByBrandAsync(int brandId = 0)
         {
             var products = Context.Product.Select(p =>
-                 new ProductViewModel
-                 {
-                     ProductId = p.ProductId,
-                     ProductBrandId = p.ProductBrandId,
-                     ProductName = p.ProductName,
-                     BrandName = p.ProductName,
-                     SellingUnitPrice = p.SellingUnitPrice,
-                     UnitType = p.UnitType,
-                     Stock = p.Stock
-                 });
-            if (brandId != 0)
-            {
-                return products.Where(p => p.ProductBrandId == brandId).ToListAsync();
-            }
-            else
-            {
-                return products.Take(20).ToListAsync();
-            }
+                new ProductViewModel
+                {
+                    ProductId = p.ProductId,
+                    ProductBrandId = p.ProductBrandId,
+                    ProductName = p.ProductName,
+                    BrandName = p.ProductName,
+                    SellingUnitPrice = p.SellingUnitPrice,
+                    UnitType = p.UnitType,
+                    Stock = p.Stock
+                });
+
+            return brandId != 0 ? products.Where(p => p.ProductBrandId == brandId).ToListAsync() : products.Take(20).ToListAsync();
         }
 
         public bool RemoveCustom(int id)
