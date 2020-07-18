@@ -2,12 +2,15 @@
 //date picker
  $('.datepicker').pickadate().val(moment(new Date()).format('DD MMMM, YYYY'));
 
-//global store
-let storage = [];
+ // material select initialization
+$('.mdb-select').materialSelect()
 
 //selectors
 //product info form
 const formCart = document.getElementById("cart-form")
+const inputProductName = formCart.inputProductName;
+const tbody = document.getElementById("tbody")
+const error = formCart.querySelector('#error');
 
 //payment selectors
 const formPayment = document.getElementById('formPayment');
@@ -21,12 +24,31 @@ const inputMemoNumber = formPayment.inputMemoNumber;
 const inputPurchaseDate = formPayment.inputPurchaseDate;
 const vendorError = formPayment.querySelector('#vendor-error');
 
+//global store
+let storage = [];
 
 //functions
-const getStorage = function () {
-    if (localStorage.getItem('cart-storage')) {
-        storage = JSON.parse(localStorage.getItem('cart-storage'));
-    };
+const localCart = {
+     get: function () {
+        if (localStorage.getItem('cart-storage')) {
+            storage = JSON.parse(localStorage.getItem('cart-storage'));
+        }
+    },
+    set: function (product) {
+        error.textContent = "";
+        const found = storage.some(item => item.ProductId === product.ProductId);
+        if (found) {
+            error.textContent ="This product already added!"
+            return;
+        }
+
+        product.PurchaseQuantity = 0;
+        storage.push(product)
+        localStorage.setItem('cart-storage', JSON.stringify(storage));
+
+        tbody.appendChild(createTableRow(product));
+        inputProductName.value = '';
+    }
 }
 
 //vendor autocomplete
@@ -48,6 +70,7 @@ $('#inputProductName').typeahead({
     },
     updater: function (item) {
         console.log(item)
+        localCart.set(item);
         return item;
     }
 });
@@ -55,7 +78,7 @@ $('#inputProductName').typeahead({
 
 //calculate purchase Total
 const purchaseTotalPrice = function () {
-    const multi = storage.map(item => item.PurchasePrice * item.ProductStocks.length);
+    const multi = storage.map(item => item.PurchasePrice * item.PurchaseQuantity);
     return multi.reduce((prev, current) => prev + current, 0);
 }
 
@@ -82,62 +105,71 @@ const appendTotalPrice = function () {
 //create table rows
 const createTableRow = function (item) {
     const tr = document.createElement("tr");
-    tr.setAttribute('data-sn', item.SN);
 
     //column 1
     const td1 = tr.insertCell(0);
-    td1.appendChild(document.createTextNode(item.Category));
+    const brand = document.createElement('strong');
+    brand.textContent = item.ProductName;
 
-    const p = document.createElement('p');
-    p.textContent = item.Description;
-    td1.appendChild(p);
+    const product = document.createElement('p');
+    product.textContent = item.BrandName;
+
+    td1.appendChild(product);
+    td1.appendChild(brand);
 
     //column 2
     const td2 = tr.insertCell(1);
-    td2.appendChild(document.createTextNode(item.ProductName));
-
-    const p2 = document.createElement('p');
-    p2.textContent = item.Note;
-    td2.appendChild(p2);
+    const inputQuantity = document.createElement('input');
+    inputQuantity.type = "number";
+    inputQuantity.required = true;
+    inputQuantity.classList.add('form-control','inputQuantity');
+    td2.appendChild(inputQuantity);
 
     //column 3
     const td3 = tr.insertCell(2);
-    td3.appendChild(document.createTextNode(item.PurchasePrice));
+    const inputUnitPrice = document.createElement('input');
+    inputUnitPrice.type = "number";
+    inputUnitPrice.required = true;
+    inputUnitPrice.classList.add('form-control','inputPurchaseUnitPrice');
+    td3.appendChild(inputUnitPrice);
 
     //column 4
     const td4 = tr.insertCell(3);
-    td4.appendChild(document.createTextNode(item.SellingPrice));
+    const inputSellingUnitPrice = document.createElement('input');
+    inputSellingUnitPrice.type = "number";
+    inputSellingUnitPrice.required = true;
+    inputSellingUnitPrice.classList.add('form-control','inputSellingUnitPrice');
+    inputSellingUnitPrice.value = item.SellingUnitPrice;
+    td4.appendChild(inputSellingUnitPrice);
 
     //column 5
     const td5 = tr.insertCell(4);
-    td5.appendChild(document.createTextNode(item.Warranty));
+    const inputTotalPrice = document.createElement('input');
+    inputTotalPrice.type = "number";
+    inputTotalPrice.required = true;
+    inputTotalPrice.classList.add('form-control','inputTotalPrice');
+    td5.appendChild(inputTotalPrice);
 
     //column 6
     const td6 = tr.insertCell(5);
-    const strong = document.createElement('strong');
-    strong.appendChild(document.createTextNode(item.ProductStocks.length));
-    strong.classList.add('badge-pill', 'badge-success', 'stock');
-    td6.appendChild(strong);
-
-    //column 6
-    const td7 = tr.insertCell(6);
     const removeIcon = document.createElement('i');
+    removeIcon.id = item.ProductId;
     removeIcon.classList.add('fal', 'fa-trash-alt', 'remove');
-    td7.appendChild(removeIcon);
-    td7.classList.add('text-center');
+    td6.appendChild(removeIcon);
+    td6.classList.add('text-center');
 
     return tr;
 }
 
 //show product on table
-const showCartedProduct = function () {
-    getStorage();
+const displayTableData = function () {
+    localCart.get();
     appendTotalPrice();
 
     const fragment = document.createDocumentFragment();
 
-    storage.forEach((item ,SN) => {
-        const tr = createTableRow(item, SN+1);
+    storage.forEach(item => {
+        const tr = createTableRow(item);
         fragment.appendChild(tr);
     });
 
@@ -145,9 +177,12 @@ const showCartedProduct = function () {
  }
 
 //call function
-showCartedProduct();
+displayTableData();
 
-
+//event listener
+formCart.addEventListener('submit', function(e) {
+    e.preventDefault();
+});
 
 //****VENDORS****//
 
@@ -210,7 +245,7 @@ $('#inputFindVendor').typeahead({
     },
     source: function (request, result) {
         $.ajax({
-            url: "/Purchase/FindVendor",
+            url: "/Vendor/FindVendor",
             data: { prefix: request },
             success: function (response) { result(response); },
             error: function (err) { console.log(err) }

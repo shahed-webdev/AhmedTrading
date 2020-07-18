@@ -9,129 +9,101 @@
     <style>
         table tr td p{ margin-bottom: 0; color: #777}
 
-        #showAddedCode .code-span { display: inline-block; margin: 5px; cursor: pointer }
-        #showAddedCode .code-span:hover::after { content: 'x'; padding-left: 2px; font-size: 16px; }
-        #payment-area li strong { font-size: 17px; }
-        #inputDiscount, #inputPaid, #inputPurchaseDate, #inputMemoNumber { display: inline-block; border-radius: 50px; text-align: right; color: #000; }
-        .list-group-item { padding: .75rem 0; }
-        .has-error { border: 2px solid #ff0000 }
-        .remove { color: #ff0707; cursor: pointer; font-size: 15px; }
-        .stock { padding: .18rem .5rem; }
-       
-        #product-code-body span > i { font-size: .8rem }
-        #vendor-info li { font-size: 17px; line-height: 2.5; }
-        #vendor-info li:first-child { border-top: 0 }
-        #vendor-info li:last-child { border-bottom: 0 }
-        #vendor-info i { color: #8a8383 }
+        .remove { cursor: pointer }
+        .remove:hover { color: #ff0000 }
+        #formPayment { padding: 15px 0; color: #4f4f4f; }
+        #formPayment ul { list-style-type: none; padding: 0; }
+        #formPayment ul li strong { font-weight: 500; }
     </style>
 }
 
 <div class="m-md-3">
     <h4 class="mb-3 page-header">Purchase</h4>
 
-    <section class="card card-body">
-        <form id="cart-form">
-            <div class="md-form">
-                <div class="md-form">
-                    <input id="inputProductName" autocomplete="off" class="form-control" type="text" required />
-                    <label for="inputProductName">Find Product By Name</label>
-                </div>
-            </div>
-        </form>   
-    </section>
-
-    <section class="card card-body mt-3">
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th><strong>Brand</strong></th>
-                        <th><strong>Name</strong></th>
-                        <th><strong>Selling Unit.P</strong></th>
-                        <th><strong>Quantity</strong></th>
-                        <th><strong>Purchase Unit.P</strong></th>
-                        <th><strong>Line Total</strong></th>
-                        <th style="width:50px"><strong>Remove</strong></th>
-                    </tr>
-                </thead>
-                <tbody id="tbody"></tbody>
-            </table>
-        </div>
-    </section>
-
     <section class="my-4">
         <div class="row">
-            <div class="col-lg-6 mb-3">
-                <div class="card card-body">
-                    <div class="d-flex">
-                        <div class="flex-grow-1">
+            <div class="col-lg-8 mb-3">
+                <div class="card px-4 mb-3">
+                    <form id="cart-form">
+                        <div class="md-form">
                             <div class="md-form">
-                                <input placeholder="Find Vendor" type="text" id="inputFindVendor" class="form-control" autocomplete="off" />
+                                <input id="inputProductName" autocomplete="off" class="form-control" type="text" required />
+                                <label for="inputProductName">Find Product By Name</label>
+                                <span id="error" class="field-validation-error"></span>
                             </div>
                         </div>
+                    </form>
+                </div>
 
-                        <div>
-                            <a id="vendorAddClick" data-url="/Vendor/Create" class="btn btn-floating amber accent-4 mt-3" title="Add New" data-toggle="modal">
-                                <i class="fal fa-user-plus ml-1"></i>
-                            </a>
-                        </div>
+                <div class="card card-body">
+                    <div class="table-responsive">
+                        <table class="table mb-0">
+                            <thead>
+                                <tr>
+                                    <th><strong>Product</strong></th>
+                                    <th><strong>Selling Unit.P</strong></th>
+                                    <th><strong>Quantity</strong></th>
+                                    <th><strong>Purchase Unit.P</strong></th>
+                                    <th><strong>Total Price</strong></th>
+                                    <th style="width:10px"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody"></tbody>
+                        </table>
                     </div>
-                    <ul id="vendor-info" class="list-group list-group-flush"></ul>
-                    <input type="hidden" id="vendorId" />
                 </div>
             </div>
 
-            <div class="col-lg-6">
+            <div class="col-lg-4">
                 <div class="card card-body">
                     <form id="formPayment">
-                        <ul class="list-group list-group-flush" id="payment-area">
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <ul id="payment-area">
+                            <li class="d-flex justify-content-between align-items-center">
                                 <strong>Total Purchase Price</strong>
                                 <strong>৳<span id="totalPrice"></span></strong>
                             </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <strong>Discount</strong>
-                                <div class="flex-1 ml-3">
-                                    <input placeholder="Discount" id="inputDiscount" type="number" min="0" class="form-control" />
-                                </div>
+                            <li class="md-form">
+                                <label for="inputDiscount">Discount</label>
+                                <input id="inputDiscount" type="number" min="0" class="form-control" />
                             </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center green-text">
+                            <li class="d-flex justify-content-between align-items-center green-text">
                                 <strong>Total Payable</strong>
                                 <strong>৳<span id="totalPayable"></span></strong>
                             </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <strong>Total Paid</strong>
-                                <div class="flex-1 ml-3">
-                                    <input placeholder="Paid Amount" id="inputPaid" type="number" min="0" class="form-control" />
-                                </div>
+                            <li class="md-form">
+                                <label for="inputPaid">Total Paid</label>
+                                <input id="inputPaid" type="number" min="0" class="form-control" />
                             </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center orange-text">
+                            <li class="d-flex justify-content-between align-items-center orange-text">
                                 <strong>Total Due</strong>
                                 <strong>৳<span id="totalDue"></span></strong>
                             </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <strong>Payment Method</strong>
-                                <div class="flex-1 ml-3">
-                                    <select id="selectPaymentMethod" class="mdb-select" style="position: absolute; top: 1rem; left: 0px; height: 0px; width: 0px; opacity: 0; padding: 0px; pointer-events: none; display: inline!important;">
-                                        <option value="" selected>[ SELECT ]</option>
-                                        <option>Cash</option>
-                                        <option>Bank</option>
-                                        <option>Cheque</option>
-                                        <option>bkash</option>
-                                    </select>
-                                </div>
+                            <li class="md-form">
+                                <select id="selectPaymentMethod" class="mdb-select" style="position: absolute; top: 1rem; left: 0px; height: 0px; width: 0px; opacity: 0; padding: 0px; pointer-events: none; display: inline !important;">
+                                    <option value="" selected>[ Payment Method ]</option>
+                                    <option>Cash</option>
+                                    <option>Bank</option>
+                                    <option>Cheque</option>
+                                    <option>bkash</option>
+                                </select>
                             </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <strong>Memo Number</strong>
-                                <div class="flex-1 ml-3">
-                                    <input placeholder="Memo Number" id="inputMemoNumber" type="text" class="form-control text-left" required/>
-                                </div>
+                            <li class="md-form">
+                                <label for="inputMemoNumber">Memo Number</label>
+                                <input id="inputMemoNumber" type="text" class="form-control" required />
                             </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <strong>Purchase Date</strong>
-                                <div class="flex-1 ml-3">
-                                    <input placeholder="Purchase Date" id="inputPurchaseDate" type="text" class="form-control datepicker text-center" />
+                            <li class="md-form pt-3">
+                                <input id="inputPurchaseDate" type="text" class="form-control datepicker" required />
+                            </li>
+                            <li class="d-flex justify-content-between align-items-center">
+                                <div class="md-form mt-4 flex-1">
+                                    <input placeholder="Find Vendor" required type="text" id="inputFindVendor" class="form-control" autocomplete="off" />
+                                    <div id="VendorInfo" class="text-center"></div>
                                 </div>
+
+                                <input type="hidden" id="vendorId" />
+                                <a id="vendorAddClick" data-url="/Vendor/Create" class="btn-floating btn-sm blue-gradient" title="Add New" data-toggle="modal">
+                                    <i class="fal fa-user-plus ml-1"></i>
+                                </a>
                             </li>
                         </ul>
 
@@ -145,7 +117,6 @@
         </div>
     </section>
 </div>
-
 
 <!-- Insert Modal -->
 <div class="modal fade" id="InsertModal" tabindex="-1" role="dialog" aria-hidden="true"></div>

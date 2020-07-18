@@ -80,7 +80,7 @@ namespace AhmedTrading.Repository
                      ProductId = p.ProductId,
                      ProductBrandId = p.ProductBrandId,
                      ProductName = p.ProductName,
-                     BrandName = p.ProductName,
+                     BrandName = p.ProductBrand.BrandName,
                      SellingUnitPrice = p.SellingUnitPrice,
                      UnitType = p.UnitType,
                      Stock = p.Stock

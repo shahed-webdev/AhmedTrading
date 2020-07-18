@@ -45,6 +45,7 @@ namespace AhmedTrading.Web.Controllers
 
             _db.Products.AddCustom(model);
             await _db.SaveChangesAsync();
+
             return RedirectToAction("AddProduct");
         }
 

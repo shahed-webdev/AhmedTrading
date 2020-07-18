@@ -12,13 +12,13 @@ jQuery(function ($) {
  //menu click
 function showSidedrawer() {
     // show overlay
-    var options = {
+    const options = {
         onclose: function () {
             sidedrawerEl.removeClass('active').appendTo(document.body);
         }
     };
 
-    var overlayEl = $(mui.overlay('on', options));
+    const overlayEl = $(mui.overlay('on', options));
 
     // show element
     sidedrawerEl.appendTo(overlayEl);
