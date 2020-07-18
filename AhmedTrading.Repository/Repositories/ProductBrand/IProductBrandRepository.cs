@@ -11,5 +11,6 @@ namespace AhmedTrading.Repository
         Task<List<ProductBrandViewModel>> ListAsync();
         bool RemoveCustom(int id);
         void CustomUpdate(ProductBrandViewModel model);
+        ProductBrandViewModel FindCustom(int id);
     }
 }

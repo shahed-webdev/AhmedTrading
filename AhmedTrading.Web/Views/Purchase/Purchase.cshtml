@@ -31,66 +31,13 @@
 
     <section class="card card-body">
         <form id="cart-form">
-            <div class="form-row">
-                <div class="col-lg-3">
-                    <div class="md-form">
-                        <select id="ParentId" asp-items="ViewBag.ParentId" class="mdb-select" required>
-                            <option value="" disabled selected>Select Category</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="col-lg-3">
-                    <div class="md-form">
-                        <select id="selectProductId" class="mdb-select product-select" required>
-                            <option value="" disabled selected>Brand and Model</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="col-lg-3">
-                    <div class="md-form">
-                        <input id="inputPurchasePrice" class="form-control" type="number" required />
-                        <label for="inputPurchasePrice">Purchase Price</label>
-                    </div>
-                </div>
-
-                <div class="col-lg-3">
-                    <div class="md-form">
-                        <input id="inputSellingPrice" class="form-control" type="number" required />
-                        <label for="inputSellingPrice">Selling Price</label>
-                    </div>
+            <div class="md-form">
+                <div class="md-form">
+                    <input id="inputProductName" autocomplete="off" class="form-control" type="text" required />
+                    <label for="inputProductName">Find Product By Name</label>
                 </div>
             </div>
-
-            <div class="form-row">
-                <div class="col-lg-3">
-                    <div class="md-form">
-                        <input id="inputWarranty" class="form-control" type="text" />
-                        <label for="inputWarranty">Warranty</label>
-                    </div>
-                </div>
-
-                <div class="col-lg-4">
-                    <div class="md-form">
-                        <input id="inputDescription" class="form-control" type="text" />
-                        <label for="inputDescription">Description</label>
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div class="md-form">
-                        <input id="inputNote" class="form-control" type="text" />
-                        <label for="inputNote">Note</label>
-                    </div>
-                </div>
-                <div class="col-lg-2 text-right">
-                    <div class="md-form pt-1">
-                        <button type="submit" class="btn btn-sm btn-blue-grey btn-rounded"><i class="far fa-qrcode pr-2"></i>Add&nbspCode</button>
-                    </div>
-                    <label id="product-error" class="red-text d-block"></label>
-                </div>  
-            </div>
-        </form>
+        </form>   
     </section>
 
     <section class="card card-body mt-3">
@@ -98,12 +45,12 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th><strong>Category</strong></th>
-                        <th><strong>Brand and Model</strong></th>
-                        <th><strong>Purchase&nbspPrice</strong></th>
-                        <th><strong>Selling&nbspPrice</strong></th>
-                        <th><strong>Warranty</strong></th>
-                        <th><strong>Stock</strong></th>
+                        <th><strong>Brand</strong></th>
+                        <th><strong>Name</strong></th>
+                        <th><strong>Selling Unit.P</strong></th>
+                        <th><strong>Quantity</strong></th>
+                        <th><strong>Purchase Unit.P</strong></th>
+                        <th><strong>Line Total</strong></th>
                         <th style="width:50px"><strong>Remove</strong></th>
                     </tr>
                 </thead>
@@ -200,50 +147,11 @@
 </div>
 
 
-<!-- insert product Code Modal -->
-<div class="modal fade right" id="modalInsetCode" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-full-height modal-right modal-notify modal-success" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <p class="heading lead">Add Product Code</p>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true" class="white-text">×</span>
-                </button>
-            </div>
-
-            <div class="modal-body">
-                <form id="formAddCode">
-                    <div class="md-form mt-0 mb-2">
-                        <input id="inputProductCode" autocomplete="off" class="form-control" type="text" required />
-                        <label for="inputProductCode">Product Code</label>
-                        <i id="code-exist-error" class="text-danger"></i>
-                        <small class="d-block">Click on code to remove</small>
-                    </div>
-                </form>
-
-                <div id="showAddedCode"></div>
-            </div>
-
-            <div class="modal-footer justify-content-center">
-                <button id="btnAddToList" type="button" class="btn btn-rounded btn-success">
-                    add product to List
-                    <i class="fal fa-cart-arrow-down text-white"></i>
-                    <i class="fas fa-circle-notch fa-spin" style="display:none"></i>
-                </button>
-            </div>  
-        </div>
-    </div>
-</div>
-
-
 <!-- Insert Modal -->
 <div class="modal fade" id="InsertModal" tabindex="-1" role="dialog" aria-hidden="true"></div>
-<div>
-    <audio id="audio" src="~/audio/buzz.mp3"></audio>
-</div>
 
 @section Scripts {
     <partial name="_UnobtrusiveAjaxPartial" />
-    <script src="~/page-js/product-purchase.js?v=2.1"></script>
+    <script src="~/page-js/product-purchase.js?v.2"></script>
 }
 

@@ -37,15 +37,15 @@ namespace AhmedTrading.Web.Controllers
 
             var isExist = await _db.Products.IsExistAsync(model.ProductName).ConfigureAwait(false);
 
-            if (!isExist)
+            if (isExist)
             {
-                _db.Products.AddCustom(model);
-                await _db.SaveChangesAsync();
-                return RedirectToAction("AddProduct");
+                ModelState.AddModelError("ProductName", "Product Name Already Exist");
+                return View(model);
             }
 
-            ModelState.AddModelError("ProductName", "Product Name Already Exist");
-            return View(model);
+            _db.Products.AddCustom(model);
+            await _db.SaveChangesAsync();
+            return RedirectToAction("AddProduct");
         }
 
 
@@ -88,6 +88,7 @@ namespace AhmedTrading.Web.Controllers
             return View();
         }
 
+        //find product (ajax)
         public async Task<IActionResult> FindProductsByName(string name)
         {
             var data = await _db.Products.FindByNameAsync(name).ConfigureAwait(false);

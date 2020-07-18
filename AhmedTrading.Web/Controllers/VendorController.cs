@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AhmedTrading.Web.Controllers
 {
+    [Authorize]
     public class VendorController : Controller
     {
         private readonly IUnitOfWork _db;
@@ -24,6 +26,7 @@ namespace AhmedTrading.Web.Controllers
         {
             return PartialView("_Create");
         }
+
         [HttpPost]
         public async Task<IActionResult> Create(VendorViewModel model)
         {
@@ -53,6 +56,7 @@ namespace AhmedTrading.Web.Controllers
             return PartialView("_Edit", model);
         }
 
+        [HttpPost]
         public async Task<IActionResult> Edit(VendorViewModel model)
         {
             if (!ModelState.IsValid) return PartialView("_Edit", model);

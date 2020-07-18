@@ -31,7 +31,6 @@ namespace AhmedTrading.Repository
         {
             var response = new DbResponse<int>();
 
-
             var newPurchaseSn = await GetNewSnAsync().ConfigureAwait(false);
             var newPurchasePaymentSn = await db.PurchasePayments.GetNewSnAsync().ConfigureAwait(false);
             var purchase = new Purchase

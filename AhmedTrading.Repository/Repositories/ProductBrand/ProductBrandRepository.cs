@@ -60,5 +60,15 @@ namespace AhmedTrading.Repository
             brand.BrandName = model.BrandName;
             Context.ProductBrand.Update(brand);
         }
+
+        public ProductBrandViewModel FindCustom(int id)
+        {
+            return Context.ProductBrand.Select(p => new ProductBrandViewModel
+                {
+                    ProductBrandId = p.ProductBrandId,
+                    BrandName = p.BrandName
+                })
+                .FirstOrDefault(p => p.ProductBrandId == id);
+        }
     }
 }

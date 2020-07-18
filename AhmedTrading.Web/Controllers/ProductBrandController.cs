@@ -15,13 +15,19 @@ namespace AhmedTrading.Web.Controllers
             _db = db;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var data = await _db.ProductBrands.ListAsync().ConfigureAwait(false);
             return View();
         }
 
-        //POST: Create Brand (ajax)
+        // GET: data (ajax)
+        public async Task<IActionResult> GetData()
+        {
+            var data = await _db.ProductBrands.ListAsync().ConfigureAwait(false);
+            return Json(data);
+        }
+
+        // POST: Create Brand (ajax)
         [HttpPost]
         public async Task<IActionResult> CreateBrand(ProductBrandViewModel model)
         {
@@ -42,14 +48,13 @@ namespace AhmedTrading.Web.Controllers
         {
             if (id == null) return RedirectToAction("Index");
 
-            var model = _db.ProductBrands.Find(id.GetValueOrDefault());
-
+            var model = _db.ProductBrands.FindCustom(id.GetValueOrDefault());
             if (model == null) return RedirectToAction("Index");
 
             return View(model);
         }
 
-        //POST
+        // POST: Edit
         [HttpPost]
         public async Task<IActionResult> Edit(ProductBrandViewModel model)
         {

@@ -2,26 +2,12 @@
 //date picker
  $('.datepicker').pickadate().val(moment(new Date()).format('DD MMMM, YYYY'));
 
-// Material Select Initialization
-$('.mdb-select').materialSelect();
-
-
 //global store
 let storage = [];
-let tempStorage = null;
-let codeStorage = [];
 
 //selectors
 //product info form
 const formCart = document.getElementById("cart-form")
-const selectCategory = formCart.ParentId
-const selectProductId = formCart.selectProductId
-
-const inputPurchasePrice = formCart.inputPurchasePrice;
-const inputSellingPrice = formCart.inputSellingPrice;
-const inputWarranty = formCart.inputWarranty;
-const inputDescription = formCart.inputDescription;
-const productError = document.querySelector("#product-error")
 
 //payment selectors
 const formPayment = document.getElementById('formPayment');
@@ -35,57 +21,6 @@ const inputMemoNumber = formPayment.inputMemoNumber;
 const inputPurchaseDate = formPayment.inputPurchaseDate;
 const vendorError = formPayment.querySelector('#vendor-error');
 
-//form add code
-const formAddCode = document.getElementById("formAddCode");
-const codeExistError = formAddCode.querySelector("#code-exist-error");
-
-const tbody = document.getElementById("tbody");
-const modalInsetCode = $('#modalInsetCode');
-const showAddedCode = document.getElementById('showAddedCode');
-const btnAddTolist = document.getElementById('btnAddToList');
-const buzzAudio = document.getElementById('audio');
-
-
-//****Global product Code Storage****//
-const productCode = {
-    isExistServer: function (codeArray) {
-        const url = '/Purchase/PurchaseCodeIsExist';
-        const options = {
-            method: 'post',
-            url: url,
-            data: codeArray
-        }
-
-        return axios(options).then(response => response.data).catch(error => console.log(error.response));
-    },
-    isExist: function (newCode) {
-        if (!codeStorage.length) return false;
-
-        const codeExist = codeStorage.some(code => code === newCode);
-        codeExistError.innerText = codeExist ? `${newCode}: Already Added!` : '';
-
-        if (codeExist) buzzAudio.play();
-
-        return codeExist;
-    },
-    setStorage: function (code) {
-        if (codeStorage.indexOf(code) === -1) {
-            codeStorage.push(code);
-            localStorage.setItem('code-storage', JSON.stringify(codeStorage));
-        }
-    },
-    getStorage: function () {
-        if (localStorage.getItem('code-storage'))
-            codeStorage = JSON.parse(localStorage.getItem('code-storage'));
-    },
-    updateStorage: function (code) {
-        const index = codeStorage.indexOf(code);
-        if (index > -1) {
-            codeStorage.splice(index, 1);
-            localStorage.setItem('code-storage', JSON.stringify(codeStorage));
-        }
-    }
-}
 
 //functions
 const getStorage = function () {
@@ -94,31 +29,34 @@ const getStorage = function () {
     };
 }
 
-//product stock temp storage
-const getTempStorage = function () {
-    if (localStorage.getItem('temp-storage')) {
-        tempStorage = JSON.parse(localStorage.getItem('temp-storage'));
+//vendor autocomplete
+$('#inputProductName').typeahead({
+    minLength: 1,
+    displayText: function (item) {
+        return item.ProductName;
+    },
+    afterSelect: function (item) {
+        this.$element[0].value = item.ProductName
+    },
+    source: function (request, result) {
+        $.ajax({
+            url: "/Product/FindProductsByName",
+            data: { name: request },
+            success: function (response) { result(response); },
+            error: function (err) { console.log(err) }
+        });
+    },
+    updater: function (item) {
+        console.log(item)
+        return item;
     }
-}
+});
 
-//dropdown selected index 0
-const clearMDBdropDownList = function (mainSelector) {
-    const content = mainSelector.querySelectorAll('.select-dropdown li');
-    content.forEach(li => {
-        content[0].classList.add('active','selected');
-
-        if (li.classList.contains('selected')) {
-            li.classList.remove(['active', 'selected']);
-            li.click();
-            return;
-        }
-    });
-}
 
 //calculate purchase Total
 const purchaseTotalPrice = function () {
     const multi = storage.map(item => item.PurchasePrice * item.ProductStocks.length);
-    return multi.reduce((prev, curr) => prev + curr, 0);
+    return multi.reduce((prev, current) => prev + current, 0);
 }
 
 //append total price to DOM
@@ -206,374 +144,8 @@ const showCartedProduct = function () {
     tbody.appendChild(fragment);
  }
 
-//remove product from list
-const removeProduct = function (row, SN) {
-    //remove product code from code storage
-    const removedObj = storage.find(item => item.SN === SN).ProductStocks;
-    removedObj.forEach(stock => {
-        productCode.updateStorage(stock.ProductCode);
-    });
-
-    //remove product from storage
-    storage = storage.filter(item => item.SN !== SN);
-
-    //re-serial SN
-    storage = storage.map((item, i) => ({ ...item, SN : i+1 }));
-
-    //save to local storage
-    localStorage.setItem('cart-storage', JSON.stringify(storage));
-
-    //show product on table
-    tbody.innerHTML = '';
-    showCartedProduct();
-}
-
-//empty text input
-const clearInput = function () {
-    inputPurchasePrice.value = ''
-    inputPurchasePrice.nextElementSibling.classList.remove('active')
-
-    inputSellingPrice.value = ''
-    inputSellingPrice.nextElementSibling.classList.remove('active')
-
-    inputWarranty.value = ''
-    inputWarranty.nextElementSibling.classList.remove('active')
-
-    inputDescription.value = ''
-    inputDescription.nextElementSibling.classList.remove('active')
-
-    inputNote.value = ''
-    inputNote.nextElementSibling.classList.remove('active')
-}
-
-//category dropdown change
-const onCategoryChanged = function() {
-    const categoryId = +this.value
-
-
-    $('.product-select').materialSelect("destroy");
-
-    // Material Select Initialization
-    $('.product-select').materialSelect();
-
-    clearMDBdropDownList(formCart)
-
-    if (!categoryId) return;
-
-    const url = '/Product/GetProductByCategory'
-    const parameter = { params: { categoryId } }
-
-    axios.get(url, parameter).then(res => {
-        const fragment = document.createDocumentFragment()
-        const option1 = document.createElement("option");
-        option1.value = ""
-        option1.text = "Brand and Model"
-        option1.setAttribute("disabled", "disabled")
-        option1.setAttribute("selected", true)
-        fragment.appendChild(option1)
-
-        if (res.data.length) {
-            res.data.forEach(item => {
-                const option = document.createElement("option");
-                option.value = item.ProductId
-                option.text = item.ProductName
-                fragment.appendChild(option)
-            })
-        }
-
-        selectProductId.innerHTML = ''
-        selectProductId.appendChild(fragment)
-    })
-}
-
-//product dropdown change
-const onProductChanged = function() {
-    const productId = +this.value
-    if (!productId) return;
-
-    const url = '/Product/GetProductInfo'
-    const parameter = { params: { productId } }
-
-    //clear input value
-    clearInput()
-
-    axios.get(url, parameter).then(res => {
-        const { SellingPrice, Warranty, Description, Note } = res.data
-
-        if (SellingPrice) {
-            inputSellingPrice.value = SellingPrice
-            inputSellingPrice.nextElementSibling.classList.add('active')
-        }
-
-        if (Warranty) {
-            inputWarranty.value = Warranty
-            inputWarranty.nextElementSibling.classList.add('active')
-        }
-
-        if (Description) {
-            inputDescription.value = Description
-            inputDescription.nextElementSibling.classList.add('active')
-        }
-
-        if (Note) {
-            inputNote.value = Note
-            inputNote.nextElementSibling.classList.add('active')
-        }
-    })
-}
-
-
-//click remove or stock
-const ontableRowElementClicked = function (evt) {
-    const element = evt.target;
-    const removeClicked = element.classList.contains('remove');
-    const row = element.parentElement.parentElement;
-    const SN = +row.getAttribute('data-sn');
-
-    if (removeClicked)
-        removeProduct(row, SN);
-}
-
-//create product code span on modal
-const createCodeSpan = function (newCode) {
-    const iCode = document.createElement('span');
-    iCode.classList.add('badge-pill', 'badge-success', 'code-span');
-    iCode.appendChild(document.createTextNode(newCode));
-
-    return iCode;
-}
-
-//show product code on popup
-const showAddedProductCode = function () {
-    showAddedCode.innerHTML = '';
-
-    if (codeExistError.innerText)
-        codeExistError.innerText = '';
-
-    if (!tempStorage) return;
-
-    const stocks = tempStorage.ProductStocks;
-    const fragment = document.createDocumentFragment();
-
-    if (stocks.length > 0) {
-        stocks.forEach(stock => fragment.appendChild(createCodeSpan(stock.ProductCode)));    
-        showAddedCode.appendChild(fragment);
-    }
-}
-
-//set temp Storage value
-const setProductTempObject = function (element) {
-    const SN = tbody.querySelectorAll('tr').length + 1;
-    const ParentId = element.ParentId;
-    const ProductId = element.selectProductId;
-    const PurchasePrice = +element.inputPurchasePrice.value;
-    const SellingPrice = +element.inputSellingPrice.value;
-    const Warranty = element.inputWarranty.value;
-    const Description = element.inputDescription.value;
-    const Note = element.inputNote.value;
-
-    if (tempStorage === null) {
-        tempStorage = {
-            SN,
-            ProductCatalogId: +ParentId.value,
-            Category: ParentId.options[ParentId.selectedIndex].text,
-            ProductId: +ProductId.value,
-            ProductName: ProductId.options[ProductId.selectedIndex].text,
-            PurchasePrice,
-            SellingPrice,
-            Warranty,
-            Description,
-            Note,
-            ProductStocks: []
-        }
-    }
-    else {
-        tempStorage.ProductCatalogId = +ParentId.value;
-        tempStorage.Category = ParentId.options[ParentId.selectedIndex].text;
-        tempStorage.ProductId = +ProductId.value;
-        tempStorage.ProductName = ProductId.options[ProductId.selectedIndex].text;
-        tempStorage.PurchasePrice = PurchasePrice;
-        tempStorage.SellingPrice = SellingPrice;
-        tempStorage.Warranty = Warranty;
-        tempStorage.Description = Description;
-        tempStorage.Note = Note;
-    }
-
-    localStorage.setItem('temp-storage', JSON.stringify(tempStorage));
-}
-
-//open product code modal submit
-const onOpenProductCodeModal = function (form) {
-    form.preventDefault();
-    productError.textContent =''
-
-    //get temp obj
-    getTempStorage()
-
-    //save the last value of input
-    setProductTempObject(form.target);
-
-    const ProductId = +formCart.selectProductId.value;
-
-    //check product already added
-    let isAdded = false
-    storage.forEach(product => {
-        if (product.ProductId === ProductId) {
-            isAdded = true
-            return
-        }
-    })
-
-    if (isAdded) {
-        productError.textContent = 'This product already added!'
-        return
-    }
-
-    //show product code on modal
-    showAddedProductCode();
-
-    //open modal popup
-    modalInsetCode.modal('show');
-}
-
-//add product code to temp storage
-const onSubmitProductCode = function (form) {
-    form.preventDefault();
-
-    const element = form.target.inputProductCode;
-    const stock = { ProductCode: element.value };
-    const codeExist = productCode.isExist(stock.ProductCode);
-
-    if (!codeExist) {
-        //add code to temp storage
-        tempStorage.ProductStocks.push(stock);
-
-        //save code to global code hub
-        productCode.setStorage(stock.ProductCode);
-
-        //append code on modal
-        showAddedCode.appendChild(createCodeSpan(stock.ProductCode));
-
-        //save to local storage
-        localStorage.setItem('temp-storage', JSON.stringify(tempStorage));
-    }
-
-    //clear the code input field
-    element.value = '';
-}
-
-//remove product code
-const onProductCodeClicked = function (evt) {
-    const codeClicked = evt.target.classList.contains('code-span');
-    if (!codeClicked) return;
-
-    const code = evt.target.innerText;
-
-    tempStorage.ProductStocks = tempStorage.ProductStocks.filter(stock => stock.ProductCode !== code);
-
-    productCode.updateStorage(code);
-    
-    //remove code on modal
-    evt.target.remove();
-
-    //save to local storage
-    localStorage.setItem('temp-storage', JSON.stringify(tempStorage));
-}
-
-//match Existing Product code
-const matchExistingProductCode = function (stocks) {
-    const addedCode = showAddedCode.querySelectorAll('.code-span');
-    addedCode.forEach(added => {
-        stocks.forEach(stock => {
-            if (added.textContent === stock.ProductCode) {
-                added.classList.remove('badge-success');
-                added.classList.add('badge-danger');
-            }
-        })
-    });
-}
-
-//add product to list
-const onAddProductToList = function () {
-    productError.textContent = ''
-
-    const ParentId = selectCategory.value;
-    const ProductId = +selectProductId.value;
-    const PurchasePrice = +inputPurchasePrice.value;
-    const SellingPrice = +inputSellingPrice.value;
-
-    if (!ParentId || !ProductId || !PurchasePrice || !SellingPrice) {
-        productError.textContent='Provide product info!'
-        return
-    }
-
-    //set the last value of input
-    setProductTempObject(formCart);
-
-    if (tempStorage.ProductStocks.length) {
-        //start loading spinner
-        this.children[0].style.display = "none";
-        this.children[1].style.display = "inline-block";
-        this.disabled = true;
-
-        //check product code on server
-        const serverCode = productCode.isExistServer(tempStorage.ProductStocks);
-        serverCode.then(res => {
-            if (res.length) {
-                //play buzzer
-                buzzAudio.play();
-
-                //show matched code
-                matchExistingProductCode(res);
-                return;
-            }
-
-            //add value to cart storage
-            storage.push(tempStorage);
-
-            //show cart on table
-            tbody.appendChild(createTableRow(tempStorage));
-
-            //calculate and show price
-            appendTotalPrice();
-
-            //save to local storage
-            localStorage.setItem('cart-storage', JSON.stringify(storage));
-
-            //remove the stock temp storage
-            tempStorage = null;
-            localStorage.removeItem('temp-storage');
-
-            //clear the text input
-            clearInput()
-
-            //hide modal
-            modalInsetCode.modal('hide');
-
-        }).finally(() => {
-            this.children[0].style.display = "inline-block";
-            this.children[1].style.display = "none";
-            this.disabled = false;
-        });
-    }
-}
-
-
-//event listners
-formCart.addEventListener('submit', onOpenProductCodeModal);
-btnAddTolist.addEventListener('click', onAddProductToList);
-
-//add product code form
-formAddCode.addEventListener('submit', onSubmitProductCode);
-showAddedCode.addEventListener('click', onProductCodeClicked);
-
-selectCategory.addEventListener('change', onCategoryChanged);
-selectProductId.addEventListener('change', onProductChanged);
-tbody.addEventListener('click', ontableRowElementClicked);
-
 //call function
 showCartedProduct();
-productCode.getStorage();
 
 
 
@@ -711,7 +283,6 @@ const validation = function () {
 //remove localstorage
 const localStoreClear = function () {
     localStorage.removeItem('cart-storage');
-    localStorage.removeItem('code-storage');
 }
 
 //submit on server
