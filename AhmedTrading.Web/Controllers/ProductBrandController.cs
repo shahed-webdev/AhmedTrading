@@ -1,8 +1,7 @@
 ﻿using AhmedTrading.Repository;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace AhmedTrading.Web.Controllers
 {
@@ -16,9 +15,9 @@ namespace AhmedTrading.Web.Controllers
             _db = db;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-           // var data = _db.ProductBrands.ddl();
+            var data = await _db.ProductBrands.ListAsync().ConfigureAwait(false);
             return View();
         }
 

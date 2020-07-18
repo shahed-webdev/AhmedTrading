@@ -8,6 +8,7 @@ namespace AhmedTrading.Repository
     {
         Task<bool> IsExistAsync(string name, int updateId = 0);
         ICollection<DDL> ddl();
+        Task<List<ProductBrandViewModel>> ListAsync();
         bool RemoveCustom(int id);
         void CustomUpdate(ProductBrandViewModel model);
     }

@@ -62,7 +62,7 @@ namespace AhmedTrading.Web
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseCors();
+            //app.UseCors();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
