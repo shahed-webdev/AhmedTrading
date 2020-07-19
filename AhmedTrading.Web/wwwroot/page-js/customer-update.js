@@ -109,6 +109,8 @@ const reAssignIndex = function() {
         phone.name = `PhoneNumbers[${i}].Phone`;
         phone.id = `phone-${i}`;
         phone.nextElementSibling.setAttribute("for", `phone-${i}`);
+        phone.nextElementSibling.nextElementSibling.name = `PhoneNumbers[${i}].CustomerPhoneId`;
+
         elementIndex = i+1;
     });
 }

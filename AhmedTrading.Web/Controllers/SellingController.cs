@@ -20,7 +20,7 @@ namespace AhmedTrading.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Selling(SellingViewModel model)
+        public async Task<IActionResult> Selling([FromBody] SellingViewModel model)
         {
             model.RegistrationId = _db.Registrations.GetRegID_ByUserName(User.Identity.Name);
 

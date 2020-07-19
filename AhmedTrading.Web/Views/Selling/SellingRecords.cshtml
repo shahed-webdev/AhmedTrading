@@ -26,14 +26,14 @@
 
 @section scripts{
     <script>
-        $(function () {
+        $(function() {
             dataTable.getData();
         });
 
         //get data
         var dataTable = {
             table: null,
-            init: function () {
+            init: function() {
                 dataTable.table = $("#data-table").DataTable({
                     processing: true,
                     serverSide: true,
@@ -44,30 +44,30 @@
                         type: "POST"
                     },
                     columns:
-                        [
-                            {
-                                data: "SellingSn", "render": function (data, type, row, meta) {
-                                    return `<a class="blue-text" href="/Selling/SellingReceipt/${row.SellingId}">${data}</a>`;
-                                }
-                            },
-                            { data: "CustomerName" },
-                            { data: "SellingAmount", "render": dataTable.addSign },
-                            { data: "SellingPaidAmount", "render": dataTable.addSign },
-                            { data: "SellingDiscountAmount", "render": dataTable.addSign },
-                            { data: "SellingDueAmount", "render": dataTable.addSign },
-                            { data: "SellingDate", "render": function (data) { return moment(data).format('DD MMM YYYY') } }
-                        ],
+                    [
+                        {
+                            data: "SellingSn", "render": function(data, type, row, meta) {
+                                return `<a class="blue-text" href="/Selling/SellingReceipt/${row.SellingId}">${data}</a>`;
+                            }
+                        },
+                        { data: "CustomerName" },
+                        { data: "SellingAmount", "render": dataTable.addSign },
+                        { data: "SellingPaidAmount", "render": dataTable.addSign },
+                        { data: "SellingDiscountAmount", "render": dataTable.addSign },
+                        { data: "SellingDueAmount", "render": dataTable.addSign },
+                        { data: "SellingDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } }
+                    ],
                     columnDefs: [
-                        { 'searchable': false, 'targets': [2,3,4,5] },
-                        { 'className': "text-right", "targets": [2, 3, 4,5] },
+                        { 'searchable': false, 'targets': [2, 3, 4, 5] },
+                        { 'className': "text-right", "targets": [2, 3, 4, 5] },
                         { 'className': "text-left", "targets": [1] }
                     ]
                 });
             },
-            getData: function () {
+            getData: function() {
                 dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
             },
-            addSign: function (data) { return `${data}/-` },
+            addSign: function(data) { return `${data}/-` },
             button: {
                 buttons: [{
                     extend: 'print',
@@ -75,8 +75,8 @@
                     title: '',
                     exportOptions: {
                         //columns: [0,1] //Column value those print
-                    },
-                    customize: function (win) {
+                                        },
+                    customize: function(win) {
                         $(win.document.body).prepend(
                             `<nav class="mb-3 navbar blue-bg">
                                 <a class="navbar-brand ml-1">Ahmed Trading</a>
@@ -91,7 +91,8 @@
                     }
                 }
             }
-        }</script>
+        }
+    </script>
 }
 
 

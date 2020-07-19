@@ -7,7 +7,7 @@
 
 @section Styles{
     <style>
-        table tr td p{ margin-bottom: 0; color: #777}
+        table tr td p{ margin-bottom: 0; color: #777 }
 
         .remove { cursor: pointer }
         .remove:hover { color: #ff0000 }
@@ -24,33 +24,32 @@
         <div class="row">
             <div class="col-lg-8 mb-3">
                 <div class="card px-4 mb-3">
-                    <form id="cart-form">
-                        <div class="md-form">
-                            <div class="md-form">
-                                <input id="inputProductName" autocomplete="off" class="form-control" type="text" required />
-                                <label for="inputProductName">Find Product By Name</label>
-                                <span id="error" class="field-validation-error"></span>
-                            </div>
-                        </div>
-                    </form>
+                    <div class="md-form">
+                        <input id="inputProductName" autocomplete="off" class="form-control" type="text">
+                        <label for="inputProductName">Find Product By Name</label>
+                        <span id="error" class="field-validation-error"></span>
+                    </div>  
                 </div>
 
                 <div class="card card-body">
-                    <div class="table-responsive">
-                        <table class="table mb-0">
-                            <thead>
+                    <form id="tableForm">
+                        <div class="table-responsive">
+                            <table class="table mb-0">
+                                <thead>
                                 <tr>
                                     <th><strong>Product</strong></th>
                                     <th><strong>Selling Unit.P</strong></th>
                                     <th><strong>Quantity</strong></th>
                                     <th><strong>Purchase Unit.P</strong></th>
                                     <th><strong>Total Price</strong></th>
-                                    <th style="width:10px"></th>
+                                    <th style="width: 10px"></th>
                                 </tr>
-                            </thead>
-                            <tbody id="tbody"></tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody id="tbody"></tbody>
+                            </table>
+                        </div>
+                        <input id="btnTableForm" type="submit" class="d-none"/>
+                    </form>
                 </div>
             </div>
 
@@ -96,20 +95,20 @@
                             </li>
                             <li class="d-flex justify-content-between align-items-center">
                                 <div class="md-form mt-4 flex-1">
-                                    <input placeholder="Find Vendor" required type="text" id="inputFindVendor" class="form-control" autocomplete="off" />
+                                    <input placeholder="Find Vendor" type="text" id="inputFindVendor" class="form-control" autocomplete="off" />
                                     <div id="VendorInfo" class="text-center"></div>
                                 </div>
 
-                                <input type="hidden" id="vendorId" />
-                                <a id="vendorAddClick" data-url="/Vendor/Create" class="btn-floating btn-sm blue-gradient" title="Add New" data-toggle="modal">
-                                    <i class="fal fa-user-plus ml-1"></i>
+                                <input type="hidden" id="hiddenVendorId" />
+                                <a id="vendorAddClick" data-url="/Vendor/Create" class="btn-floating btn-sm purple-gradient" title="Add New" data-toggle="modal">
+                                    <i class="fal fa-user-plus"></i>
                                 </a>
                             </li>
                         </ul>
 
                         <div class="mt-4 text-center">
                             <i id="vendor-error" class="mt-2 text-center red-text"></i>
-                            <button type="submit" id="btnPurchase" class="btn blue-bg-btn btn-rounded btn-block mt-0">PURCHASE</button>
+                            <button type="submit" id="btnPurchase" class="btn btn-deep-purple btn-rounded btn-block mt-0">PURCHASE</button>
                         </div>
                     </form>
                 </div>
@@ -123,6 +122,6 @@
 
 @section Scripts {
     <partial name="_UnobtrusiveAjaxPartial" />
-    <script src="~/page-js/product-purchase.js?v.2"></script>
+    <script src="~/page-js/product-purchase.js?v=1.6"></script>
 }
 

@@ -3,14 +3,14 @@
  $('.datepicker').pickadate().val(moment(new Date()).format('DD MMMM, YYYY'));
 
  // material select initialization
-$('.mdb-select').materialSelect()
+ $('.mdb-select').materialSelect();
 
 //selectors
 //product info form
-const formCart = document.getElementById("cart-form")
-const inputProductName = formCart.inputProductName;
-const tbody = document.getElementById("tbody")
-const error = formCart.querySelector('#error');
+const tableForm = document.getElementById("tableForm");
+const btnTableForm = tableForm.btnTableForm;
+const tbody = document.getElementById("tbody");
+const error = document.querySelector('#error');
 
 //payment selectors
 const formPayment = document.getElementById('formPayment');
@@ -29,36 +29,42 @@ let storage = [];
 
 //functions
 const localCart = {
-     get: function () {
+    get: function() {
         if (localStorage.getItem('cart-storage')) {
             storage = JSON.parse(localStorage.getItem('cart-storage'));
         }
     },
-    set: function (product) {
+    set: function() {
+        localStorage.setItem('cart-storage', JSON.stringify(storage));
+    },
+    addToTable: function (product) {
         error.textContent = "";
+
         const found = storage.some(item => item.ProductId === product.ProductId);
         if (found) {
-            error.textContent ="This product already added!"
+            error.textContent = `This product already added!`
             return;
         }
 
+        product.PurchaseUnitPrice = 0;
+        product.SellingUnitPrice = 0;
         product.PurchaseQuantity = 0;
-        storage.push(product)
-        localStorage.setItem('cart-storage', JSON.stringify(storage));
+        storage.push(product);
+
+        this.set();
 
         tbody.appendChild(createTableRow(product));
-        inputProductName.value = '';
     }
 }
 
-//vendor autocomplete
+//product autocomplete
 $('#inputProductName').typeahead({
     minLength: 1,
     displayText: function (item) {
         return item.ProductName;
     },
     afterSelect: function (item) {
-        this.$element[0].value = item.ProductName
+        this.$element[0].value = ''
     },
     source: function (request, result) {
         $.ajax({
@@ -69,8 +75,7 @@ $('#inputProductName').typeahead({
         });
     },
     updater: function (item) {
-        console.log(item)
-        localCart.set(item);
+        localCart.addToTable(item);
         return item;
     }
 });
@@ -78,7 +83,7 @@ $('#inputProductName').typeahead({
 
 //calculate purchase Total
 const purchaseTotalPrice = function () {
-    const multi = storage.map(item => item.PurchasePrice * item.PurchaseQuantity);
+    const multi = storage.map(item => item.PurchaseUnitPrice * item.PurchaseQuantity);
     return multi.reduce((prev, current) => prev + current, 0);
 }
 
@@ -105,6 +110,7 @@ const appendTotalPrice = function () {
 //create table rows
 const createTableRow = function (item) {
     const tr = document.createElement("tr");
+    tr.setAttribute("data-id", item.ProductId);
 
     //column 1
     const td1 = tr.insertCell(0);
@@ -119,35 +125,45 @@ const createTableRow = function (item) {
 
     //column 2
     const td2 = tr.insertCell(1);
-    const inputQuantity = document.createElement('input');
-    inputQuantity.type = "number";
-    inputQuantity.required = true;
-    inputQuantity.classList.add('form-control','inputQuantity');
-    td2.appendChild(inputQuantity);
-
-    //column 3
-    const td3 = tr.insertCell(2);
-    const inputUnitPrice = document.createElement('input');
-    inputUnitPrice.type = "number";
-    inputUnitPrice.required = true;
-    inputUnitPrice.classList.add('form-control','inputPurchaseUnitPrice');
-    td3.appendChild(inputUnitPrice);
-
-    //column 4
-    const td4 = tr.insertCell(3);
     const inputSellingUnitPrice = document.createElement('input');
     inputSellingUnitPrice.type = "number";
     inputSellingUnitPrice.required = true;
-    inputSellingUnitPrice.classList.add('form-control','inputSellingUnitPrice');
+    inputSellingUnitPrice.step = 0.01;
+    inputSellingUnitPrice.min = 1;
+    inputSellingUnitPrice.classList.add('form-control', 'inputSellingUnitPrice');
     inputSellingUnitPrice.value = item.SellingUnitPrice;
-    td4.appendChild(inputSellingUnitPrice);
+    td2.appendChild(inputSellingUnitPrice);
+
+    //column 3
+    const td3 = tr.insertCell(2);
+    const inputQuantity = document.createElement('input');
+    inputQuantity.type = "number";
+    inputQuantity.required = true;
+    inputQuantity.min = 1;
+    inputQuantity.classList.add('form-control', 'inputQuantity');
+    inputQuantity.value = item.PurchaseQuantity;
+    td3.appendChild(inputQuantity);
+
+    //column 4
+    const td4 = tr.insertCell(3);
+    const inputUnitPrice = document.createElement('input');
+    inputUnitPrice.type = "number";
+    inputUnitPrice.required = true;
+    inputUnitPrice.step = 0.01;
+    inputUnitPrice.min = 1;
+    inputUnitPrice.classList.add('form-control', 'inputPurchaseUnitPrice');
+    inputUnitPrice.value = item.PurchaseUnitPrice;
+    td4.appendChild(inputUnitPrice);
 
     //column 5
     const td5 = tr.insertCell(4);
     const inputTotalPrice = document.createElement('input');
     inputTotalPrice.type = "number";
     inputTotalPrice.required = true;
+    inputTotalPrice.step = 0.01;
+    inputTotalPrice.min = 1;
     inputTotalPrice.classList.add('form-control','inputTotalPrice');
+    inputTotalPrice.value = item.PurchaseUnitPrice * item.PurchaseQuantity;
     td5.appendChild(inputTotalPrice);
 
     //column 6
@@ -174,23 +190,104 @@ const displayTableData = function () {
     });
 
     tbody.appendChild(fragment);
- }
+}
+
+//update product price
+const updateProduct = function(productId, field, value) {
+    storage.forEach((item, index) => {
+        if (item.ProductId === productId) {
+            storage[index][field] = value;
+            return;
+        }
+    });
+
+    localCart.set();
+    //update total price
+    appendTotalPrice();
+}
+
+//event listener 
+//on remove
+tbody.addEventListener('click', function (evt) {
+    const element = evt.target;
+    const onRemove = element.classList.contains('remove');
+
+    if (onRemove) {
+        const id = +element.id;
+        storage = storage.filter(item => item.ProductId !== id);
+        localCart.set();
+
+        element.parentElement.parentElement.remove();
+
+        //update total price
+        appendTotalPrice();
+    }
+});
+
+//on input value
+tbody.addEventListener('input', function (evt) {
+    const element = evt.target;
+    const row = element.parentElement.parentElement;
+    const productId = +element.parentElement.parentElement.getAttribute('data-id');
+
+    const onQuantity = element.classList.contains('inputQuantity');
+    const onPurchaseUnitPrice = element.classList.contains('inputPurchaseUnitPrice');
+    const onTotalPrice = element.classList.contains('inputTotalPrice');
+    const onSellingUnitPrice = element.classList.contains('inputSellingUnitPrice');
+
+    if (onSellingUnitPrice) {
+        //update value
+        updateProduct(productId, "SellingUnitPrice", +element.value);
+    }
+
+    if (onQuantity) {
+        const purchaseUnitPrice = +row.querySelector('.inputPurchaseUnitPrice').value;
+        const quantity = +element.value;
+        const totalPrice = row.querySelector('.inputTotalPrice');
+
+        totalPrice.value = (quantity * purchaseUnitPrice).toFixed(2);
+
+        //update value
+        updateProduct(productId, "PurchaseQuantity", +element.value);
+    }
+
+    if (onPurchaseUnitPrice) {
+        const purchaseUnitPrice = +element.value;
+        const quantity = +row.querySelector('.inputQuantity').value;
+        const totalPrice = row.querySelector('.inputTotalPrice');
+
+        totalPrice.value = (quantity * purchaseUnitPrice).toFixed(2);
+
+        //update value
+        updateProduct(productId, "PurchaseUnitPrice", +element.value);
+    }
+
+    if (onTotalPrice) {
+        const totalPrice = +element.value;
+        const quantity = +row.querySelector('.inputQuantity').value;
+        const purchaseUnitPrice = row.querySelector('.inputPurchaseUnitPrice');
+
+        const unitPrice = (totalPrice / quantity).toFixed(2);
+        purchaseUnitPrice.value = unitPrice;
+
+        //update Quantity
+        updateProduct(productId, "PurchaseQuantity", quantity);
+
+        //update UnitPrice
+        updateProduct(productId, "PurchaseUnitPrice", unitPrice);
+    }
+});
 
 //call function
 displayTableData();
 
-//event listener
-formCart.addEventListener('submit', function(e) {
-    e.preventDefault();
-});
 
 //****VENDORS****//
-
 //selectors
 const vendorAddClick = document.getElementById('vendorAddClick');
 const inputFindVendor = document.getElementById('inputFindVendor');
-const vendorInfo = document.getElementById('vendor-info');
-const hiddenVendorId = document.getElementById('vendorId');
+const vendorInfo = document.getElementById('VendorInfo');
+const hiddenVendorId = document.getElementById('hiddenVendorId');
 const insertModal = $('#InsertModal');
 
 //functions
@@ -205,17 +302,14 @@ const onVendorAddClicked = function () {
 }
 
 //append vendor info to DOM
-const appendVendorInfo = function (data) {
+const appendVendorInfo = function(data) {
     hiddenVendorId.value = data.VendorId;
     vendorInfo.innerHTML = '';
 
-    const html = `
-        <li class="list-group-item"><i class="fas fa-building"></i> ${data.VendorCompanyName}</li>
-        <li class="list-group-item"><i class="fas fa-user-tie"></i> ${data.VendorName}</li>
-        <li class="list-group-item"><i class="fas fa-phone"></i> ${data.VendorPhone}</li>
-        <li class="list-group-item"><i class="fas fa-map-marker-alt"></i> ${data.VendorAddress}</li>`;
+    const html = `<span class="badge badge-pill badge-success">${data.VendorCompanyName}</span>
+        <span class="badge badge-pill badge-info">${data.VendorPhone}</span>`;
 
-    vendorInfo.innerHTML= html;
+    vendorInfo.innerHTML = html;
 }
 
 //vendor create success
@@ -304,7 +398,7 @@ const validation = function () {
     vendorError.textContent = ''
 
     if (!hiddenVendorId.value) {
-        vendorInfo.innerHTML = '<li class="list-group-item list-group-item-danger text-center"><i class="fas fa-exclamation-triangle mr-1 red-text"></i>Select or add Vendor for Purchase!</li>';
+        vendorError.innerHTML = '<span><i class="fas fa-exclamation-triangle mr-1 red-text"></i>Select or add Vendor!</li>';
         return false;
     }
 
@@ -320,6 +414,12 @@ const localStoreClear = function () {
     localStorage.removeItem('cart-storage');
 }
 
+//check for validation
+const onCheckFormValid = function (evt) {
+    evt.preventDefault()
+    tableForm.btnTableForm.click();
+}
+
 //submit on server
 const onPurchaseSubmitClicked = function(evt) {
     evt.preventDefault();
@@ -328,7 +428,7 @@ const onPurchaseSubmitClicked = function(evt) {
     if (!valid) return;
 
     //disable button on submit
-    const btnSubmit = evt.target.btnPurchase;
+    const btnSubmit = formPayment.btnPurchase;
     btnSubmit.innerText = 'submitting..';
     btnSubmit.disabled = true;
 
@@ -357,7 +457,8 @@ const onPurchaseSubmitClicked = function(evt) {
 }
 
 //event listener
-formPayment.addEventListener('submit', onPurchaseSubmitClicked);
+formPayment.addEventListener('submit', onCheckFormValid);
+tableForm.addEventListener('submit', onPurchaseSubmitClicked);
 inputDiscount.addEventListener('input', onInputDiscount);
 inputPaid.addEventListener('input', onInputPaid);
 

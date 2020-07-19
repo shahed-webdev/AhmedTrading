@@ -23,8 +23,8 @@
             <form id="formCode">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="md-form mt-0 mb-0 flex-1">
-                        <input id="inputProductCode" autocomplete="off" type="text" class="form-control" required />
-                        <label for="inputProductCode">Product Name</label>
+                        <input id="inputProductName" autocomplete="off" type="text" class="form-control" required />
+                        <label for="inputProductName">Product Name</label>
                         <span id="codeError" class="field-validation-error"></span>
                     </div>
 
@@ -55,23 +55,11 @@
         //*****SELECTORS*****/
         // product code form
         const formCode = document.getElementById('formCode')
-        const inputProductCode = formCode.inputProductCode
+        const inputProductCode = formCode.inputProductName
         const codeError = formCode.querySelector('#codeError')
         const btnFind = formCode.btnFind
         const infoContainer = document.querySelector('.info-container')
 
-
-        // on Product code submit
-        formCode.addEventListener('submit', evt => {
-            evt.preventDefault()
-            const url = '/Product/FindProductsByName'
-            const param = { params: { name: inputProductCode.value } };
-
-            axios.get(url, param).then(res => {
-                appendData(res.data)
-                console.log(res)
-            }).catch(err => console.log(err))
-        })
 
         //append data
         function appendData(product) {
@@ -92,5 +80,28 @@
             const bill = document.getElementById('receipt')
             product.SellingId ? bill.innerHTML = `<strong class="green-text">Bill No: </strong><a target="_blank" href="/Selling/SellingReceipt/${product.SellingId}" id="receiptNo">#${product.SellingSn}</a>` : bill.innerHTML = '';
         }
+
+        //product autocomplete
+        $('#inputProductName').typeahead({
+            minLength: 1,
+            displayText: function (item) {
+                return item.ProductName;
+            },
+            afterSelect: function (item) {
+                this.$element[0].value = ''
+            },
+            source: function (request, result) {
+                $.ajax({
+                    url: "/Product/FindProductsByName",
+                    data: { name: request },
+                    success: function (response) { result(response); },
+                    error: function (err) { console.log(err) }
+                });
+            },
+            updater: function (item) {
+                console.log(item);
+                return item;
+            }
+        });
     </script>
 }

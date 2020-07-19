@@ -47,11 +47,9 @@
             <tr>
                 <th><strong>SL.</strong></th>
                 <th><strong>Product</strong></th>
-                <th><strong>Description</strong></th>
-                <th><strong>Warranty</strong></th>
-                <th><strong>Qty.</strong></th>
+                <th><strong>Quantity</strong></th>
                 <th><strong>U.Price</strong></th>
-                <th><strong>Price</strong></th>
+                <th><strong>Line Total</strong></th>
             </tr>
         </thead>
         <tbody>
@@ -61,16 +59,19 @@
                 {
                     <tr>
                         <td class="text-center">@index</td>
-     
-                        <td class="text-right">৳@item.SellingPrice</td>
-                
+                        <td>
+                            <strong>@item.BrandName</strong>
+                            <p class="mb-0">@item.ProductName</p>
+                        </td>
+                        <td class="text-center">@item.SellingQuantity</td>
+                        <td class="text-right">@item.SellingUnitPrice/-</td>
+                        <td class="text-right">@item.SellingPrice/-</td>
                     </tr>
-
                     index++;
                 }
             }
             <tr>
-                <td colspan="6" class="text-center">
+                <td colspan="4" class="text-center">
                     <span id="amount-word"></span>
                 </td>
                 <td class="text-right">
@@ -78,43 +79,33 @@
                     {
                         <h5>Discount:<strong>৳@Model.SellingDiscountAmount</strong> </h5>
                     }
-                    <h5>Total Taka:<strong>৳@Model.SellingTotalPrice</strong> </h5>
-                    <h5>Cash Paid:<strong>৳@Model.SellingPaidAmount</strong> </h5>
+                    <h5>Total Amount:<strong>৳@Model.SellingTotalPrice</strong> </h5>
+                    <h5>Paid:<strong>৳@Model.SellingPaidAmount</strong> </h5>
                     <h5>Due:<strong>৳@Model.SellingDueAmount</strong> </h5>
                 </td>
             </tr>
         </tbody>
     </table>
 
-    <div class="paid-record row">
+    <div class="paid-record">
         @if (Model.Payments.Count > 0)
         {
-            <div class="col">
-                <fieldset class="border p-2">
-                    <legend>Paid Record</legend>
-
-                    @foreach (var item in Model.Payments)
-                    {
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <span>৳@item.PaidAmount/- <small>@item.PaymentMethod</small></span>
-                                <small>@item.PaidDate.ToString("d MMM yyyy")</small>
-                            </li>
-                        </ul>
-
-                    }
-                </fieldset>
-            </div>
-        }
-        <div class="col">
             <fieldset class="border p-2">
-                <legend>Note</legend>
-                <small>
-                    No warranty will be applicable in case of burning or physical damage. Warranty will
-                    also be void if warranty sticker is removed. Sold products are non-refundable.
-                </small>
+                <legend>Paid Record</legend>
+
+                @foreach (var item in Model.Payments)
+                {
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>৳@item.PaidAmount/- <small>@item.PaymentMethod</small></span>
+                            <small>@item.PaidDate.ToString("d MMM yyyy")</small>
+                        </li>
+                    </ul>
+
+                }
             </fieldset>
-        </div>
+
+        }
     </div>
 </div>
 
