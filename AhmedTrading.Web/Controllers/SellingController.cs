@@ -2,9 +2,11 @@
 using JqueryDataTables.LoopsIT;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AhmedTrading.Web.Controllers
 {
+    [Authorize]
     public class SellingController : Controller
     {
         private readonly IUnitOfWork _db;

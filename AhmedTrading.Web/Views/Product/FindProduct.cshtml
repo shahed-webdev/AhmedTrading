@@ -20,30 +20,20 @@
         <h4 class="mb-3 page-header d-print-none">Find Product</h4>
 
         <div class="card card-body mb-3 p-5">
-            <form id="formCode">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="md-form mt-0 mb-0 flex-1">
-                        <input id="inputProductName" autocomplete="off" type="text" class="form-control" required />
-                        <label for="inputProductName">Product Name</label>
-                        <span id="codeError" class="field-validation-error"></span>
-                    </div>
-
-                    <button id="btnFind" type="submit" class="btn btn-sm btn-deep-orange">
-                        <i class="far fa-search text-white"></i>
-                    </button>
-                </div>
-            </form>
-        </div>
+            <div class="md-form mt-0 mb-0 flex-1">
+                <input id="inputProductName" autocomplete="off" type="text" class="form-control" required />
+                <label for="inputProductName">Product Name</label>
+            </div>
+        </div> 
 
         <div class="card card-body p-5 info-container">
             <div class="text-center">
-                <h4 class="mb-1 font-weight-bold"><strong id="category"></strong></h4>
+                <h5><strong id="productName2"></strong></h5>
             </div>
             <ul class="striped list-unstyled mb-0">
-                <li id="receipt"></li>
-                <li><strong>Code:</strong><span id="productCode"></span></li>
-                <li><strong>Brand:</strong><span id="productName"></span></li>
-                <li><strong>Purchase Price:</strong><span id="purchasePrice"></span></li>
+                <li><strong>Stock:</strong><span id="stock"></span></li>
+                <li><strong>Brand:</strong><span id="productBrand"></span></li>
+                <li><strong>Name:</strong><span id="productName"></span></li>
                 <li><strong>Selling Price:</strong><span id="sellingPrice"></span></li>
             </ul>
         </div>
@@ -52,54 +42,42 @@
 
 @section Scripts{
     <script>
-        //*****SELECTORS*****/
-        // product code form
-        const formCode = document.getElementById('formCode')
-        const inputProductCode = formCode.inputProductName
-        const codeError = formCode.querySelector('#codeError')
-        const btnFind = formCode.btnFind
-        const infoContainer = document.querySelector('.info-container')
-
-
         //append data
         function appendData(product) {
-            codeError.textContent = '';
-            if (!product.length) {
-                codeError.textContent = `"${inputProductCode.value}" Not found!`;
-                infoContainer.classList.remove('show')
-                return;
-            }
+            const infoContainer = document.querySelector('.info-container');
+            const stock = document.getElementById('stock');
 
             infoContainer.classList.add('show')
-            document.getElementById('category').textContent = product.ProductCatalogName;
-            document.getElementById('productCode').textContent = product.ProductCode;
-            document.getElementById('productName').textContent = product.ProductName;
-            document.getElementById('purchasePrice').textContent = product.PurchasePrice;
-            document.getElementById('sellingPrice').textContent = product.SellingPrice;
 
-            const bill = document.getElementById('receipt')
-            product.SellingId ? bill.innerHTML = `<strong class="green-text">Bill No: </strong><a target="_blank" href="/Selling/SellingReceipt/${product.SellingId}" id="receiptNo">#${product.SellingSn}</a>` : bill.innerHTML = '';
+            stock.textContent = `${product.Stock} ${product.UnitType}`;
+            stock.className = product.Stock > 0 ? "text-success" : "text-danger";
+
+            document.getElementById('productBrand').textContent = product.BrandName;
+            document.getElementById('productName').textContent = product.ProductName;
+            document.getElementById('productName2').textContent = product.ProductName;
+            document.getElementById('sellingPrice').textContent = product.SellingUnitPrice;
         }
 
         //product autocomplete
         $('#inputProductName').typeahead({
             minLength: 1,
-            displayText: function (item) {
+            displayText: function(item) {
                 return item.ProductName;
             },
-            afterSelect: function (item) {
+            afterSelect: function(item) {
                 this.$element[0].value = ''
             },
-            source: function (request, result) {
+            source: function(request, result) {
                 $.ajax({
                     url: "/Product/FindProductsByName",
                     data: { name: request },
-                    success: function (response) { result(response); },
-                    error: function (err) { console.log(err) }
+                    success: function(response) { result(response); },
+                    error: function(err) { console.log(err) }
                 });
             },
-            updater: function (item) {
+            updater: function(item) {
                 console.log(item);
+                appendData(item);
                 return item;
             }
         });

@@ -1,8 +1,10 @@
 ﻿using AhmedTrading.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AhmedTrading.Web.Controllers
 {
+    [Authorize]
     public class VendorAdvanceController : Controller
     {
         private readonly IUnitOfWork _db;

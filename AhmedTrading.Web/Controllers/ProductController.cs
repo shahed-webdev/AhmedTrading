@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AhmedTrading.Web.Controllers
 {
+    [Authorize]
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _db;
@@ -95,7 +97,6 @@ namespace AhmedTrading.Web.Controllers
             var data = await _db.Products.FindByNameAsync(name).ConfigureAwait(false);
             return Json(data);
         }
-
 
         //Delete Product
         public int DeleteProduct(int id)
