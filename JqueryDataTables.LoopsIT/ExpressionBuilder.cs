@@ -7,11 +7,9 @@ namespace JqueryDataTables.LoopsIT
 {
     public class ExpressionBuilder
     {
-        private static MethodInfo containsMethod = typeof(string).GetMethod("Contains");
-        private static MethodInfo startsWithMethod =
-        typeof(string).GetMethod("StartsWith", new Type[] { typeof(string) });
-        private static MethodInfo endsWithMethod =
-        typeof(string).GetMethod("EndsWith", new Type[] { typeof(string) });
+        private static MethodInfo containsMethod = typeof(string).GetMethod("Contains", new Type[] { typeof(string) });
+        private static MethodInfo startsWithMethod = typeof(string).GetMethod("StartsWith", new Type[] { typeof(string) });
+        private static MethodInfo endsWithMethod = typeof(string).GetMethod("EndsWith", new Type[] { typeof(string) });
 
 
         public static Expression<Func<T, bool>> GetExpression<T>(FilterDefinition filter)

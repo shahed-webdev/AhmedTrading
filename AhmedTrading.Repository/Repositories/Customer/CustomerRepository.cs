@@ -1,4 +1,5 @@
 ﻿using AhmedTrading.Data;
+using JqueryDataTables.LoopsIT;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,21 @@ namespace AhmedTrading.Repository
             });
 
             return cList.ToList();
+        }
+
+        public DataResult<CustomerListViewModel> ListDataTable(DataRequest request)
+        {
+            var cList = Context.Customer.Select(c => new CustomerListViewModel
+            {
+                CustomerId = c.CustomerId,
+                CustomerName = c.CustomerName,
+                CustomerAddress = c.CustomerAddress,
+                PhonePrimary = c.CustomerPhone.FirstOrDefault(p => p.IsPrimary == true).Phone,
+                Due = c.Due,
+                SignUpDate = c.InsertDate
+            });
+
+            return cList.ToDataResult(request);
         }
 
         public async Task<bool> IsPhoneNumberExistAsync(string number, int id = 0)

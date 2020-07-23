@@ -28,4 +28,10 @@ namespace AhmedTrading.Repository
         public double TotalAmount { get; set; }
         public double TotalDiscount { get; set; }
     }
+
+
+    public class VendorProfileViewModel
+    {
+
+    }
 }

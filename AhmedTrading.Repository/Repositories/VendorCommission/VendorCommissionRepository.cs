@@ -1,4 +1,5 @@
 ﻿using AhmedTrading.Data;
+using JqueryDataTables.LoopsIT;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -45,6 +46,20 @@ namespace AhmedTrading.Repository
                     Year = v.MonthDate.Year
                 }).ToListAsync();
             return commission;
+        }
+
+        public DataResult<VendorCommissionViewModel> ListDataTable(DataRequest request)
+        {
+            var commission = Context.VendorCommission.Include(v => v.Product)
+                .Select(v => new VendorCommissionViewModel
+                {
+                    MonthName = v.MonthDate.ToString("MMMM"),
+                    ProductName = v.Product.ProductName,
+                    Commission = v.Commission,
+                    MonthNumber = v.MonthDate.Month,
+                    Year = v.MonthDate.Year
+                });
+            return commission.ToDataResult(request);
         }
 
         public void RemoveCustom(int id)

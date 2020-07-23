@@ -1,4 +1,5 @@
 ﻿using AhmedTrading.Data;
+using JqueryDataTables.LoopsIT;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,6 +45,21 @@ namespace AhmedTrading.Repository
                 }).ToListAsync();
 
             return records;
+        }
+
+        public DataResult<VendorAdvanceRecordViewModel> VendorWiseRecordsDataTable(DataRequest request)
+        {
+            var records = Context.VendorAdvance
+                .Select(v => new VendorAdvanceRecordViewModel
+                {
+                    VendorAdvanceId = v.VendorAdvanceId,
+                    Advance = v.Advance,
+                    AdvanceDate = v.AdvanceDate,
+                    PaymentMethod = v.PaymentMethod,
+                    AdvanceDetails = v.AdvanceDetails
+                });
+
+            return records.ToDataResult(request);
         }
 
         public void RemoveCustom(int id)
