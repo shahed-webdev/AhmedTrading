@@ -16,37 +16,52 @@ namespace AhmedTrading.Web.Controllers
             _db = db;
         }
 
-        public IActionResult Add(VendorCommissionAddModel model)
+        public async Task<IActionResult> List(int? id)
         {
+            if (id == null) return RedirectToAction("List", "Vendor");
+
+            var model = await _db.VendorCommissions.ListAsync(id.GetValueOrDefault()).ConfigureAwait(false);
+            return View(model);
+        }
+
+        public IActionResult Create(int? id)
+        {
+            if (id == null) RedirectToAction("List");
+            ViewBag.VendorId = id;
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Create(VendorCommissionAddModel model)
+        {
+            if (!ModelState.IsValid) return View(model);
+            
             try
             {
                 _db.VendorCommissions.AddCustom(model);
                 _db.SaveChanges();
+
+                return RedirectToAction("List");
             }
             catch (Exception e)
             {
                 ModelState.AddModelError("Commission", e.Message);
+                return View(model);
             }
-
-            return View(model);
         }
 
-        public async Task<IActionResult> List(int vendorId)
-        {
-            var model = await _db.VendorCommissions.ListAsync(vendorId).ConfigureAwait(false);
-            return View(model);
-        }
-        public IActionResult Remove(int id)
+
+        public int Remove(int id)
         {
             try
             {
                 _db.VendorCommissions.RemoveCustom(id);
+                return 1;
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                ModelState.AddModelError("", e.Message);
+                return -1;
             }
-            return View();
         }
 
         protected override void Dispose(bool disposing)
@@ -57,7 +72,5 @@ namespace AhmedTrading.Web.Controllers
             }
             base.Dispose(disposing);
         }
-
-
     }
 }
