@@ -1,4 +1,5 @@
 ﻿using AhmedTrading.Data;
+using JqueryDataTables.LoopsIT;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,21 @@ namespace AhmedTrading.Repository
             }).ToListAsync().ConfigureAwait(false);
 
             return vendor;
+        }
+
+        public DataResult<VendorViewModel> ListDataTable(DataRequest request)
+        {
+            var vendor = Context.Vendor.Select(v => new VendorViewModel
+            {
+                VendorId = v.VendorId,
+                VendorCompanyName = v.VendorCompanyName,
+                VendorName = v.VendorName,
+                VendorAddress = v.VendorAddress,
+                VendorPhone = v.VendorPhone,
+                InsertDate = v.InsertDate,
+                Balance = v.Balance
+            });
+            return vendor.ToDataResult(request);
         }
 
         public async Task<ICollection<VendorViewModel>> SearchAsync(string key)

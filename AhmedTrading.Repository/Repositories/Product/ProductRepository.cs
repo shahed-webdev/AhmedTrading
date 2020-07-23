@@ -1,4 +1,5 @@
 ﻿using AhmedTrading.Data;
+using JqueryDataTables.LoopsIT;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,6 +47,22 @@ namespace AhmedTrading.Repository
                 });
 
             return brandId != 0 ? products.Where(p => p.ProductBrandId == brandId).ToListAsync() : products.Take(20).ToListAsync();
+        }
+
+        public DataResult<ProductViewModel> FindByBrandDataTable(DataRequest request)
+        {
+            var products = Context.Product.Select(p =>
+                new ProductViewModel
+                {
+                    ProductId = p.ProductId,
+                    ProductBrandId = p.ProductBrandId,
+                    ProductName = p.ProductName,
+                    BrandName = p.ProductName,
+                    SellingUnitPrice = p.SellingUnitPrice,
+                    UnitType = p.UnitType,
+                    Stock = p.Stock
+                });
+            return products.ToDataResult(request);
         }
 
         public bool RemoveCustom(int id)

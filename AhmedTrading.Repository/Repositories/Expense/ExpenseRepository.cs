@@ -1,4 +1,5 @@
 ﻿using AhmedTrading.Data;
+using JqueryDataTables.LoopsIT;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,23 @@ namespace AhmedTrading.Repository
             }).ToList();
 
             return expense;
+        }
+
+        public DataResult<ExpenseViewModel> ListDataTable(DataRequest request)
+        {
+            var expense = Context.Expense.Include(e => e.ExpenseCategory).Select(e => new ExpenseViewModel
+            {
+                ExpenseId = e.ExpenseId,
+                RegistrationId = e.RegistrationId,
+                ExpenseCategoryId = e.ExpenseCategoryId,
+                CategoryName = e.ExpenseCategory.CategoryName,
+                ExpenseAmount = e.ExpenseAmount,
+                ExpenseFor = e.ExpenseFor,
+                ExpensePaymentMethod = e.ExpensePaymentMethod,
+                ExpenseDate = e.ExpenseDate
+            });
+
+            return expense.ToDataResult(request);
         }
 
         public Task<List<ExpenseViewModel>> ToListCustomAsync()
