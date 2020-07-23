@@ -39,7 +39,8 @@ namespace AhmedTrading.Repository
             var commission = Context.VendorCommission.Include(v => v.Product).Where(v => v.VendorId == vendorId)
                 .Select(v => new VendorCommissionViewModel
                 {
-                    MonthName = v.MonthDate.ToString("MMMM"),
+                    VendorCommissionId = v.VendorCommissionId,
+                    MonthName = v.MonthDate.ToString("MMMM yyyy"),
                     ProductName = v.Product.ProductName,
                     Commission = v.Commission,
                     MonthNumber = v.MonthDate.Month,

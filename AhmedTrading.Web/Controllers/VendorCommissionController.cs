@@ -19,6 +19,7 @@ namespace AhmedTrading.Web.Controllers
         public async Task<IActionResult> List(int? id)
         {
             if (id == null) return RedirectToAction("List", "Vendor");
+            ViewBag.VendorInfo = _db.Vendors.FindCustom(id);
 
             var model = await _db.VendorCommissions.ListAsync(id.GetValueOrDefault()).ConfigureAwait(false);
             return View(model);
@@ -26,8 +27,9 @@ namespace AhmedTrading.Web.Controllers
 
         public IActionResult Create(int? id)
         {
-            if (id == null) RedirectToAction("List");
+            if (id == null) return RedirectToAction("List");
             ViewBag.VendorId = id;
+
             return View();
         }
 
@@ -40,8 +42,7 @@ namespace AhmedTrading.Web.Controllers
             {
                 _db.VendorCommissions.AddCustom(model);
                 _db.SaveChanges();
-
-                return RedirectToAction("List");
+                return RedirectToAction("List", new { id = model.VendorId });
             }
             catch (Exception e)
             {

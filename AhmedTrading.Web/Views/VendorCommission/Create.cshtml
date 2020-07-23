@@ -10,32 +10,30 @@
             <div class="col-lg-8 mx-auto">
                 <h4 class="page-header mb-3">Add Commission</h4>
                 <div class="card card-body">
-                    <form>
+                    <form asp-action="Create">
                         <div class="md-form">
-                            <input id="inputProductName" required type="text" class="form-control"/>
+                            <input id="inputProductName" autocomplete="off" required type="text" class="form-control" />
                             <label for="inputProductName">Product Name</label>
-                            <input id="productId" type="hidden" name="ProductId"/>
-                            
+                            <input id="productId" type="hidden" name="ProductId" />
                         </div>
                         <div class="md-form">
-                            <input asp-for="Commission" type="number" required class="form-control"/>
+                            <input asp-for="Commission" type="number" required class="form-control" />
                             <label asp-for="Commission">Commission Amount</label>
                             <span asp-validation-for="Commission"></span>
                         </div>
                         <div class="form-group">
-                            <label>Month</label>
-                            <select id="monthName" name="MonthDate" class="form-control" required>
+                            <label for="selectMonthName">Month</label>
+                            <select id="selectMonthName" name="MonthDate" class="form-control" required>
                                 <option value="">SELECT MONTH</option>
                             </select>
                         </div>
-                        <input type="hidden" name="VendorId" value="@ViewBag.VendorId"/>
+                        <input type="hidden" name="VendorId" value="@ViewBag.VendorId" />
                         <button type="submit" class="btn blue-bg-btn mb-1 waves-effect waves-light">Create <i class="fas fa-check ml-1"></i></button>
                     </form>
                 </div>
             </div>
         </div>
-    </div>   
-
+    </div>
 
 @section Scripts {
     <script>
@@ -46,25 +44,25 @@
             var option = document.createElement("OPTION");
             option.text = `${month}  ${year}`;
             option.value = `1/${i + 1}/${year}`;
-            document.getElementById('monthName').options.add(option);
+            document.getElementById('selectMonthName').options.add(option);
         });
 
 
         //product autocomplete
         $('#inputProductName').typeahead({
             minLength: 1,
-            displayText: function(item) {
+            displayText: function (item) {
                 return item.ProductName;
             },
-            afterSelect: function(item) {
+            afterSelect: function (item) {
                 this.$element[0].value = item.ProductName
             },
-            source: function(request, result) {
+            source: function (request, result) {
                 $.ajax({
                     url: "/Product/FindProductsByName",
                     data: { name: request },
-                    success: function(response) { result(response); },
-                    error: function(err) { console.log(err) }
+                    success: function (response) { result(response); },
+                    error: function (err) { console.log(err) }
                 });
             },
             updater: function (item) {

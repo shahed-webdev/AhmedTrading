@@ -4,6 +4,7 @@ namespace AhmedTrading.Repository
 {
     public class VendorCommissionViewModel
     {
+        public int VendorCommissionId { get; set; }
         public string MonthName { get; set; }
         public string ProductName { get; set; }
         public double Commission { get; set; }
