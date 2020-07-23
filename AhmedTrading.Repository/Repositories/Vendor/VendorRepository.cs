@@ -132,5 +132,30 @@ namespace AhmedTrading.Repository
         {
             return Context.Vendor?.Sum(v => v.Balance) ?? 0;
         }
+
+        public VendorProfileViewModel ProfileDetails(int id, IUnitOfWork db)
+        {
+            var vendor = Find(id);
+            if (vendor == null) return null;
+            var products = db.Products.FindByVendor(vendor.VendorId);
+
+            return new VendorProfileViewModel
+            {
+                VendorId = vendor.VendorId,
+                VendorCompanyName = vendor.VendorCompanyName,
+                VendorName = vendor.VendorName,
+                VendorAddress = vendor.VendorAddress,
+                VendorPhone = vendor.VendorPhone,
+                Balance = vendor.Balance,
+                Advance = vendor.Advance,
+                Commission = vendor.Commission,
+                Paid = vendor.Paid,
+                ReturnAmount = vendor.ReturnAmount,
+                TotalAmount = vendor.TotalAmount,
+                TotalDiscount = vendor.TotalDiscount,
+                Products = products
+
+            };
+        }
     }
 }

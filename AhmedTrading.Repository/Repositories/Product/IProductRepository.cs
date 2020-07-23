@@ -10,10 +10,12 @@ namespace AhmedTrading.Repository
         Task<bool> IsExistAsync(string name, int updateId = 0);
         Task<List<ProductViewModel>> FindByBrandAsync(int brandId = 0);
         DataResult<ProductViewModel> FindByBrandDataTable(DataRequest request);
+        List<ProductViewModel> FindByVendor(int vendorId);
         bool RemoveCustom(int id);
         Task<ProductViewModel> FindByIdAsync(int ProductId);
         Task<List<ProductViewModel>> FindByNameAsync(string name);
         void CustomUpdate(ProductUpdateModel model);
+
 
 
     }

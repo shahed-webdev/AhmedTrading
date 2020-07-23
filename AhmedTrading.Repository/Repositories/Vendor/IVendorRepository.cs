@@ -16,7 +16,7 @@ namespace AhmedTrading.Repository
         void UpdatePaidDue(int id);
         bool RemoveCustom(int id);
         double TotalDue();
-        VendorProfileViewModel ProfileDetails(int id);
+        VendorProfileViewModel ProfileDetails(int id, IUnitOfWork db);
     }
 
 }

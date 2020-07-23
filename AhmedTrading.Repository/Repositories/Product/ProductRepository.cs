@@ -65,6 +65,30 @@ namespace AhmedTrading.Repository
             return products.ToDataResult(request);
         }
 
+        public List<ProductViewModel> FindByVendor(int vendorId)
+        {
+            var products = Context.Purchase
+                   .Include(p => p.PurchaseList)
+                   .ThenInclude(l => l.Product)
+                   .Where(p => p.VendorId == vendorId)
+                   .SelectMany(p => p.PurchaseList.Select(l => l.Product)).Distinct();
+
+            if (products == null) return new List<ProductViewModel>();
+
+            var productModel = products.Select(p =>
+                new ProductViewModel
+                {
+                    ProductId = p.ProductId,
+                    ProductBrandId = p.ProductBrandId,
+                    ProductName = p.ProductName,
+                    BrandName = p.ProductName,
+                    SellingUnitPrice = p.SellingUnitPrice,
+                    UnitType = p.UnitType,
+                    Stock = p.Stock
+                }).ToList();
+            return productModel;
+        }
+
         public bool RemoveCustom(int id)
         {
             if (Context.PurchaseList.Any(e => e.ProductId == id)) return false;
