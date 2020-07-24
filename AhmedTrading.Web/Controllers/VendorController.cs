@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Threading.Tasks;
+using JqueryDataTables.LoopsIT;
 using Microsoft.AspNetCore.Authorization;
 
 namespace AhmedTrading.Web.Controllers
@@ -16,10 +17,16 @@ namespace AhmedTrading.Web.Controllers
             _db = db;
         }
 
-        public async Task<IActionResult> List()
+        public IActionResult List()
         {
-            var model = await _db.Vendors.ToListCustomAsync();
-            return View(model);
+            return View();
+        }
+
+        //For Data-table
+        public IActionResult VendorList(DataRequest request)
+        {
+            var list = _db.Vendors.ListDataTable(request);
+            return Json(list);
         }
 
         public IActionResult Create()

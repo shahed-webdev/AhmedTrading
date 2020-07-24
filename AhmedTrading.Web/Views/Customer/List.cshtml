@@ -32,28 +32,67 @@
 
 @section scripts{
     <script>
-        $(function() {
-            appendTable()
+        $(function () {
+            dataTable.getData();
         });
 
-        //append table data
-        function appendTable() {
-            axios.get('/Customer/CustomerList').then(response => {
-                let html = '';
-                response.data.forEach(row => {
-                    html += `<tr>
-                    <td class="text-left"><a class="blue-text" href="/Customer/Details/${row.CustomerId}">${row.CustomerName}</a></td>
-                    <td>${row.PhonePrimary}</td>
-                    <td class="text-left">${row.CustomerAddress ? row.CustomerAddress:''}</td>
-                    <td><a class="fas fa-edit" href="/Customer/Update/${row.CustomerId}"></a></td</tr>`
-                })
-
-                //selector
-                const tBody = document.getElementById('t-body');
-                tBody.innerHTML = html;
-
-                $("#individual-table").DataTable();
-            })
+        //get data
+        var dataTable = {
+            table: null,
+            init: function () {
+                dataTable.table = $("#data-table").DataTable({
+                    processing: true,
+                    serverSide: true,
+                    dom: '<"row"<"col-sm-6"Bl><"col-sm-6"f>><"row"<"col-sm-12"<tr>>><"row"<"col-sm-5"i><"col-sm-7"p>>',
+                    buttons: dataTable.button,
+                    ajax: {
+                        url: "/Customer/CustomerList",
+                        type: "POST"
+                    },
+                    columns:
+                        [
+                            {
+                                data: "CustomerName", "render": function (data, type, row, meta) {
+                                    return `<a class="blue-text" href="/Customer/Details/${row.CustomerId}">${row.CustomerName}</a>`;
+                                }
+                            },
+                            { data: "PhonePrimary" },
+                            { data: "CustomerAddress" },
+                            { data: "CustomerId", "render": function (data, type, row, meta) { return `<a class="fas fa-edit" href="/Customer/Update/${row.CustomerId}"></a>` } }
+                        ],
+                    columnDefs: [
+                        { 'searchable': false, 'targets': [3] },
+                        { 'className': "text-left", "targets": [0,2] }
+                    ]
+                });
+            },
+            getData: function () {
+                dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
+            },
+            addSign: function (data) { return `${data}/-` },
+            button: {
+                buttons: [{
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Print',
+                    title: '',
+                    exportOptions: {
+                        //columns: [0,1] //Column value those print
+                    },
+                    customize: function (win) {
+                        $(win.document.body).prepend(
+                            `<nav class="mb-3 navbar blue-bg">
+                                <a class="navbar-brand ml-1">Ahmed Trading</a>
+                              </nav>
+                             <h3 class="h3-responsive">${$('h4').text()}</h3>`);
+                    },
+                    autoPrint: true
+                }],
+                dom: {
+                    button: {
+                        className: 'btn btn-dark btn-rounded btn-sm my-0'
+                    }
+                }
+            }
         }
     </script>
 }
