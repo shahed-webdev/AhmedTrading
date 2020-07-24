@@ -1,6 +1,4 @@
-﻿@using AhmedTrading.Repository
-@model IEnumerable<VendorViewModel>
-
+﻿
 @{
     ViewBag.Title = "Vendor";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -31,36 +29,6 @@
                     <th style="width:50px">Delete</th>
                 </tr>
             </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                <tr>
-                    <td class="text-left">
-                        <a class="blue-text" href="/Vendor/Details/@item.VendorId"> @item.VendorCompanyName</a>
-                    </td>
-                    <td class="text-left">@item.VendorName</td>
-                    <td>@item.VendorPhone</td>
-                    <td>
-                        <a class="blue-text" href="/VendorCommission/List/@item.VendorId">
-                            @item.Commission
-                            <i class="fal fa-plus-circle"></i>
-                        </a>
-                    </td>
-                    <td>
-                        <a class="blue-text" href="/VendorAdvance/List/@item.VendorId">
-                            @item.Advance
-                            <i class="fal fa-plus-circle"></i>
-                        </a>
-                    </td>
-                    <td>
-                        <a class="fas fa-edit edit" href="/Vendor/Edit/@item.VendorId"></a>
-                    </td>
-                    <td>
-                        <a class="fas fa-trash-alt delete" href="/Vendor/Delete/@item.VendorId"></a>
-                    </td>
-                </tr>
-                }
-            </tbody>
         </table>
     </div>
 </div>
@@ -75,7 +43,7 @@
     <partial name="_UnobtrusiveAjaxPartial"/>
     <script>
         $(function() {
-            //dataTable.getData();
+            dataTable.getData();
         });
 
         //get data
@@ -86,7 +54,7 @@
                     processing: true,
                     serverSide: true,
                     ajax: {
-                        url: "/Vendors/IndexData",
+                        url: "/Vendor/VendorList",
                         type: "POST"
                     },
                     columns:
@@ -96,16 +64,22 @@
                                 return `<a title="click to details" class="blue-text" href="/Vendor/Details/${row.VendorId}">${data}<a/>`;
                             }
                         },
-                        { data: "VendorName" },
-                        { data: "VendorAddress" },
-                        { data: "VendorPhone" },
+                            { data: "VendorName" },
+                            { data: "VendorPhone" },
                         {
-                            data: "VendorDue", "render": function(data, type, row, meta) {
-                                return row.Due ? `<a title="click to paid" class="blue-text" href="/Vendors/DueReceipt/${row.VendorID}">${data}/-<a/>` : `${data}/-`;
+                            data: "Commission", "render": function(data, type, row, meta) {
+                                return `<a class="blue-text" href="/VendorCommission/List/${row.VendorId}">
+                                ${row.Commission} <i class="fal fa-plus-circle"></i></a>`;
                             }
                         },
-                        { data: "VendorId", "render": function(data) { return `<a class="edit fas fa-edit" href="/Vendors/Edit/${data}"></a>`; } },
-                        { data: "VendorId", "render": function(data) { return `<a style="color:#ff0000" class="delete fas fa-trash-alt" href="/Vendors/Delete/${data}"></a>`; } }
+                        {
+                            data: "Advance", "render": function(data, type, row, meta) {
+                                return `<a class="blue-text" href="/VendorAdvance/List/${row.VendorId}">
+                                ${row.Advance} <i class="fal fa-plus-circle"></i></a>`;
+                            }
+                        },
+                        { data: "VendorId", "render": function(data) { return `<a class="edit fas fa-edit" href="/Vendor/Edit/${data}"></a>`; } },
+                        { data: "VendorId", "render": function(data) { return `<a style="color:#ff0000" class="delete fas fa-trash-alt" href="/Vendor/Delete/${data}"></a>`; } }
                     ],
                     columnDefs: [
                         { 'searchable': false, 'targets': [4, 5, 6] },

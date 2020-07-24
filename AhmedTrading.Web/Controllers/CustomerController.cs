@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
+using JqueryDataTables.LoopsIT;
 
 namespace AhmedTrading.Web.Controllers
 {
@@ -29,9 +30,9 @@ namespace AhmedTrading.Web.Controllers
         }
 
         //For Data-table
-        public IActionResult CustomerList()
+        public IActionResult CustomerList(DataRequest request)
         {
-            var list = _db.Customers.ListCustom();
+            var list = _db.Customers.ListDataTable(request);
             return Json(list);
         }
 
