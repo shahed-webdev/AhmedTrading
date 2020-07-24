@@ -114,10 +114,10 @@ namespace AhmedTrading.Repository
 
                 var bankDeposit = new BankDeposit
                 {
-                    BankAccountId = 0,
-                    Amount = 0,
-                    Details = null,
-                    ActivityDate = default
+                    BankAccountId = model.BankAccountId,
+                    Amount = model.Amount,
+                    Details = model.Details,
+                    ActivityDate = model.ActivityDate
                 };
 
                 Context.BankDeposit.Add(bankDeposit);
