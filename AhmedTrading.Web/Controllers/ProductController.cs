@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Net;
 using System.Threading.Tasks;
+using JqueryDataTables.LoopsIT;
 using Microsoft.AspNetCore.Authorization;
 
 namespace AhmedTrading.Web.Controllers
@@ -24,9 +25,11 @@ namespace AhmedTrading.Web.Controllers
             return View();
         }
 
-        public async Task<IActionResult> GetProductByBrand(int brandId = 0)
+
+        //get product from ajax by categoryId
+        public IActionResult GetProductByBrand(DataRequest request)
         {
-            var productList = await _db.Products.FindByBrandAsync(brandId);
+            var productList = _db.Products.FindByBrandDataTable(request);
             return Json(productList);
         }
 

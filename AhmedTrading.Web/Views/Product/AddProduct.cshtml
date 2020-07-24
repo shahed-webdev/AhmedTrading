@@ -19,7 +19,7 @@
         <form id="formProduct" asp-action="AddProduct">
             <div class="d-flex align-items-center">
                 <div class="md-form">
-                    <select name="ProductBrandId" id="ProductBrand" asp-items="ViewBag.ProductBrand" class="mdb-select m-0" required>
+                    <select name="ProductBrandId" id="selectProductBrand" asp-items="ViewBag.ProductBrand" class="mdb-select m-0" required>
                         <option value="" selected>Select Brand</option>
                     </select>
                 </div>
@@ -49,87 +49,98 @@
     </section>
 
     <section class="card card-body mt-3">
-        <h4 id="categoryName"></h4>
-        <table class="table">
+        <h4 id="categoryName" class="font-weight-bold mb-3"></h4>
+
+        <table id="data-table" class="table table-bordered">
             <thead>
                 <tr>
                     <th><strong>Product Name</strong></th>
                     <th><strong>Selling Unit Price</strong></th>
-                    <th><strong>Unit Type</strong></th>
                     <th><strong>Stock</strong></th>
-                    <th><strong>Remove</strong></th>
+                    <th style="width: 50px"><strong>Remove</strong></th>
                 </tr>
             </thead>
-            <tbody id="tbody"></tbody>
         </table>
     </section>
 </div>
 
 @section Scripts{
     <script>
-        // Material Select Initialization
-        $('.mdb-select').materialSelect();
+        $(function() {
+            // Material Select Initialization
+            $('.mdb-select').materialSelect();
 
-        // selectors
-        const ProductBrand = document.getElementById('ProductBrand');
-        const tbody = document.getElementById('tbody');
+            dataTable.getData();
+        });
 
-        // functions
-        const getProductsInfo = function (brandId = 0) {
-            const url = '/Product/GetProductByBrand'
-            const param = { params: { brandId } };
-
-            axios.get(url, param).then(res => {
-                let html = '';
-                res.data.forEach(item => {
-                    html += `<tr>
-                            <td class="text-left">${item.ProductName}</td>
-                            <td>${item.SellingUnitPrice}</td>
-                            <td>${item.UnitType}</td>
-                            <td class="text-left">${item.Stock}</td>
-                            <td style="width:50px; text-align:center"><i class="fa fa-trash-alt remove red-text" id="${item.ProductId}"></i></td>
-                            </tr>`
-                })
-
-                tbody.innerHTML = ''
-                tbody.innerHTML = html
-            }).catch(err => console.log(err))
+        const dataTable = {
+            table: null,
+            filter: null,
+            init: function() {
+                dataTable.table = $("#data-table").DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: "/Product/GetProductByBrand",
+                        type: "POST",
+                        data: function(d) {
+                            d.filters = dataTable.filter;
+                        }
+                    },
+                    columns:
+                    [
+                        { data: "ProductName" },
+                        { data: "SellingUnitPrice" },
+                        { data: "Stock", "render": function(data, type, row, meta) { return `${data} ${row.UnitType}` } },
+                        { data: "ProductId", "render": function(data) { return `<a class="far fa-trash-alt red-text delete" href="/Product/DeleteProduct/${data}"></a>`; } }
+                    ],
+                    columnDefs: [
+                        { 'searchable': false, 'targets': [3] },
+                        { 'sortable': false, 'targets': [3] },
+                        { 'className': "text-left", "targets": [0, 2] }
+                    ]
+                });
+            },
+            getData: function() {
+                dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
+            }
         }
 
-        //on change dropdown
-        const onCategoryChanged = function () {
-            const brandId = +this.value;
-            if (!brandId) return;
+        //delete click
+        $('#data-table').on("click", ".delete", function(evt) {
+            evt.preventDefault();
+
+            var row = $(this).closest("tr");
+            var btnDelete = $(this);
+            const url = $(this).attr('href');
+
+            if (!url) return;
+
+            if (confirm("Are you sure you want to delete?")) {
+                $.post(url, function(response) {
+                    if (response === -1) {
+                        alert('This data already used in others place');
+                        btnDelete.removeAttr("href");
+                        return;
+                    }
+                    row.hide();
+                });
+            }
+        });
+
+        // selectors
+        const selectProductBrand = document.getElementById('selectProductBrand');
+
+        // event change category
+        selectProductBrand.addEventListener('change', function() {
+            const id = this.value;
+            if (!id) return;
 
             const categoryName = document.getElementById('categoryName')
             categoryName.textContent = this.options[this.selectedIndex].text;
 
-            getProductsInfo(brandId);
-        }
-
-        //remove
-        const onRemoveClicked = function (e) {
-            const clicked = e.target.classList.contains('remove');
-            if (!clicked) return;
-
-            const id = e.target.id
-            const url = '/Product/DeleteProduct'
-            const param = { params: { id } };
-
-            axios.get(url, param).then(res => {
-                if (res.data !== -1) {
-                    e.target.parentElement.parentElement.remove();
-                } else {
-                    alert('this product already used!')
-                }
-            }).catch(err => console.log(err))
-        }
-
-        // call function
-        getProductsInfo()
-
-        // event
-        ProductBrand.addEventListener('change', onCategoryChanged)
-        tbody.addEventListener('click', onRemoveClicked)
+            dataTable.filter = [{ Field: "ProductBrandId", Value: id, Operand: "==" }];
+            dataTable.getData();
+        });
     </script>
 }
