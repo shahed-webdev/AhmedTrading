@@ -207,10 +207,10 @@ namespace AhmedTrading.Repository
 
                 var bankWithdrew = new BankWithdrew
                 {
-                    BankAccountId = 0,
-                    Amount = 0,
-                    Details = null,
-                    ActivityDate = default
+                    BankAccountId = model.BankAccountId,
+                    Amount = model.Amount,
+                    Details = model.Details,
+                    ActivityDate = model.ActivityDate
                 };
 
                 Context.BankWithdrew.Add(bankWithdrew);
