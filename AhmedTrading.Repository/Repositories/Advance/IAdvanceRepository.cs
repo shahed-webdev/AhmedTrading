@@ -11,6 +11,7 @@ namespace AhmedTrading.Repository
         bool IsNameExist(string name, int UpdateId);
         DbResponse<AdvanceViewModel> Details(int id);
         DbResponse Delete(int id);
+        double TotalAdvance();
     }
 
 

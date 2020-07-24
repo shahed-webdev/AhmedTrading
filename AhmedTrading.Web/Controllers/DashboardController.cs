@@ -17,7 +17,8 @@ namespace AhmedTrading.Web.Controllers
 
         public IActionResult Index(int? year)
         {
-            return View();
+            var dashboard = new DashboardRepository(_db);
+            return View(dashboard.Summary());
         }
 
         //GET: Profile

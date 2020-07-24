@@ -22,5 +22,7 @@ namespace AhmedTrading.Repository
         DbResponse Withdrew(BankWithdrewModel model);
         DbResponse DeleteWithdrew(int id);
         DataResult<BankWithdrewViewModel> WithdrewListDataTable(DataRequest request);
+        double TotalDeposit();
+        double TotalWithdrew();
     }
 }
