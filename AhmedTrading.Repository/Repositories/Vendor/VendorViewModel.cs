@@ -16,6 +16,8 @@ namespace AhmedTrading.Repository
         [Required]
         public string VendorPhone { get; set; }
         public double Balance { get; set; }
+        public double Advance { get; set; }
+        public double Commission { get; set; }
         [Display(Name = "Add Date")]
         public DateTime InsertDate { get; set; }
     }

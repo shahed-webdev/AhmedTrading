@@ -16,8 +16,13 @@ namespace AhmedTrading.Repository
 
         public void AddCustom(VendorCommissionAddModel model)
         {
-            if (Context.VendorCommission.Any(c => c.VendorId == model.VendorId && c.ProductId == model.ProductId && c.MonthDate.Year == model.MonthDate.Year && c.MonthDate.Month == c.MonthDate.Month))
-                throw new Exception("Already commission added");
+            if (Context.VendorCommission.Any(c =>
+                c.VendorId == model.VendorId && c.ProductId == model.ProductId &&
+                c.MonthDate.Year == model.MonthDate.Year && c.MonthDate.Month == c.MonthDate.Month))
+            {
+                var productName = Context.Product.Find(model.ProductId).ProductName;
+                throw new Exception($"{productName} for {model.MonthDate:MMMM yyyy} Already commission added");
+            }
 
             var commission = new VendorCommission
             {

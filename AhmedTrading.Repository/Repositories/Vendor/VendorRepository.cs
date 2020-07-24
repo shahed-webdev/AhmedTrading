@@ -23,7 +23,9 @@ namespace AhmedTrading.Repository
                 VendorAddress = v.VendorAddress,
                 VendorPhone = v.VendorPhone,
                 InsertDate = v.InsertDate,
-                Balance = v.Balance
+                Balance = v.Balance,
+                Advance = v.Advance,
+                Commission = v.Commission
             }).ToListAsync().ConfigureAwait(false);
 
             return vendor;
@@ -39,7 +41,9 @@ namespace AhmedTrading.Repository
                 VendorAddress = v.VendorAddress,
                 VendorPhone = v.VendorPhone,
                 InsertDate = v.InsertDate,
-                Balance = v.Balance
+                Balance = v.Balance,
+                Advance = v.Advance,
+                Commission = v.Commission
             });
             return vendor.ToDataResult(request);
         }
@@ -55,7 +59,9 @@ namespace AhmedTrading.Repository
                     VendorAddress = v.VendorAddress,
                     VendorPhone = v.VendorPhone,
                     InsertDate = v.InsertDate,
-                    Balance = v.Balance
+                    Balance = v.Balance,
+                    Advance = v.Advance,
+                    Commission = v.Commission
                 }).Take(5).ToListAsync().ConfigureAwait(false);
         }
 
@@ -99,7 +105,9 @@ namespace AhmedTrading.Repository
                 VendorAddress = vendor.VendorAddress,
                 VendorPhone = vendor.VendorPhone,
                 InsertDate = vendor.InsertDate,
-                Balance = vendor.Balance
+                Balance = vendor.Balance,
+                Advance = vendor.Advance,
+                Commission = vendor.Commission
             };
         }
 

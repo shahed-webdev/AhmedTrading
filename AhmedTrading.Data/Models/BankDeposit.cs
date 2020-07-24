@@ -10,7 +10,6 @@ namespace AhmedTrading.Data
         public string Details { get; set; }
         public DateTime InsertDate { get; set; }
         public DateTime ActivityDate { get; set; }
-
         public virtual BankAccount BankAccount { get; set; }
     }
 }
