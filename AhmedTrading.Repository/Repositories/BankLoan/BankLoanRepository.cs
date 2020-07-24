@@ -176,5 +176,10 @@ namespace AhmedTrading.Repository
                 return new DbResponse(false, e.Message);
             }
         }
+
+        public double TotalLoan()
+        {
+            return Context.BankLoan?.Sum(b => b.LoanAmount) ?? 0;
+        }
     }
 }

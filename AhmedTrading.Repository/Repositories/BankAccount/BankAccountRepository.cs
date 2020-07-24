@@ -266,5 +266,15 @@ namespace AhmedTrading.Repository
             });
             return withdraws.ToDataResult(request);
         }
+
+        public double TotalDeposit()
+        {
+            return Context.BankDeposit?.Sum(s => s.Amount) ?? 0;
+        }
+
+        public double TotalWithdrew()
+        {
+            return Context.BankWithdrew?.Sum(s => s.Amount) ?? 0;
+        }
     }
 }

@@ -14,6 +14,7 @@ namespace AhmedTrading.Repository
         DataResult<PurchaseRecordViewModel> Records(DataRequest request);
         ICollection<int> Years();
         double TotalDue();
+        double TotalPurchase();
         double DailyPurchaseAmount(DateTime? date);
         ICollection<MonthlyAmount> MonthlyAmounts(int year);
         DbResponse DeleteReceipt(int id);

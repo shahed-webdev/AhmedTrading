@@ -196,7 +196,10 @@ namespace AhmedTrading.Repository
         {
             return Context.Purchase?.Sum(p => p.PurchaseDueAmount) ?? 0;
         }
-
+        public double TotalPurchase()
+        {
+            return Context.Purchase?.Sum(p => p.PurchaseTotalPrice - p.PurchaseDiscountAmount) ?? 0;
+        }
         public double DailyPurchaseAmount(DateTime? date)
         {
             var saleDate = date ?? DateTime.Now;

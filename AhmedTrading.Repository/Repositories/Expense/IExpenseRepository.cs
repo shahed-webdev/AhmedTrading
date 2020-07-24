@@ -16,6 +16,7 @@ namespace AhmedTrading.Repository
         ICollection<int> Years();
         double DailyExpenseAmount(DateTime? day);
         double ExpenseYearly(int year);
+        double TotalExpense();
         ICollection<MonthlyAmount> MonthlyAmounts(int year);
 
         ICollection<ExpenseViewModel> DateToDate(DateTime? sDateTime, DateTime? eDateTime);

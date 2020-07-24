@@ -103,5 +103,10 @@ namespace AhmedTrading.Repository
                 return new DbResponse(false, e.Message);
             }
         }
+
+        public double TotalAdvance()
+        {
+            return Context.Advance?.Sum(a => a.AdvanceAmount) ?? 0;
+        }
     }
 }

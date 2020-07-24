@@ -189,6 +189,11 @@ namespace AhmedTrading.Repository
             return Context.Selling?.Sum(s => s.SellingDueAmount) ?? 0;
         }
 
+        public double TotalSale()
+        {
+            return Context.Selling?.Sum(s => s.SellingTotalPrice - s.SellingDiscountAmount) ?? 0;
+        }
+
         public double DailySaleAmount(DateTime? date)
         {
             var saleDate = date ?? DateTime.Now;

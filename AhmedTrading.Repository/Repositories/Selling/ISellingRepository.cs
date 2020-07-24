@@ -14,6 +14,7 @@ namespace AhmedTrading.Repository
         DataResult<SellingRecordViewModel> Records(DataRequest request);
         ICollection<int> Years();
         double TotalDue();
+        double TotalSale();
         double DailySaleAmount(DateTime? day);
         ICollection<MonthlyAmount> MonthlyAmounts(int year);
 

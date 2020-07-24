@@ -121,6 +121,11 @@ namespace AhmedTrading.Repository
             return ToList().Where(s => s.ExpenseDate.Year == year).Sum(s => s.ExpenseAmount);
         }
 
+        public double TotalExpense()
+        {
+            return Context.Expense?.Sum(s => s.ExpenseAmount) ?? 0;
+        }
+
         public ICollection<MonthlyAmount> MonthlyAmounts(int year)
         {
             var months = Context.Expense.Where(e => e.ExpenseDate.Year == year)
