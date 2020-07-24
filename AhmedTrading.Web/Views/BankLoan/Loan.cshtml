@@ -1,0 +1,259 @@
+﻿
+@{
+    ViewData["Title"] = "Loan";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@section Styles
+{
+    <style>
+        .select-wrapper input.select-dropdown { margin-bottom: 7px }
+        #bankName { margin-bottom: 26px; color: #497fff; }
+    </style>  
+}
+
+<div class="m-md-3">
+    <h4 class="page-header mb-3">Bank Loan</h4>
+
+    <div class="card card-body">
+        <form id="formPost">
+            <div class="form-row align-items-center">
+                <div class="col-lg-3">
+                    <div class="md-form">
+                        <select ID="selectBankAccount" asp-items="ViewBag.bankName" class="mdb-select" required>
+                            <option value="">[ SELECT ACCOUNT ]</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="md-form">
+                        <label for="inputLoanName">Loan Name</label>
+                        <input id="inputLoanName" min="0" type="text" class="form-control" required />
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="md-form">
+                        <label for="inputLoanAmount">Loan Amount</label>
+                        <input id="inputLoanAmount" min="0" type="number" class="form-control" required />
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="md-form">
+                        <label for="inputLoanDate">Loan Date</label>
+                        <input id="inputLoanDate" type="text" class="form-control datepicker" required />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row align-items-center">
+                <div class="col-lg-3">
+                    <div class="md-form">
+                        <label for="inputInterestPercentage">Interest Percentage (input 0-100%)</label>
+                        <input id="inputInterestPercentage" type="number" min="0" max="100" class="form-control" required />
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="md-form">
+                        <label for="inputReturnPeriod">Return Period</label>
+                        <input id="inputReturnPeriod" type="text" class="form-control" required />
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="md-form">
+                        <label for="inputLoanDetails">Loan Details</label>
+                        <input id="inputLoanDetails" type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="md-form m-0">
+                        <input type="submit" value="Deposit" class="btn btn-blue btn-rounded" />
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <section class="mt-2">
+            <h5 id="bankName" class="font-weight-bold"></h5>
+            <table id="data-table" class="table table-sm table-bordered">
+                <thead>
+                    <tr>
+                        <th><strong>Loan Name</strong></th>
+                        <th><strong>Loan Amount</strong></th>
+                        <th><strong>Return Amount</strong></th>
+                        <th><strong>Remaining Amount</strong></th>
+                        <th><strong>Interest %</strong></th>
+                        <th><strong>Return Period</strong></th>
+                        <th><strong>Loan Details</strong></th>
+                        <th><strong>Loan Date</strong></th>
+                        <th style="width: 30px"><strong></strong></th>
+                    </tr>
+                </thead>
+            </table>
+        </section>
+    </div>
+</div>
+
+
+@section scripts{
+    <script>
+        $(function() {
+            // material select initialization
+            $('.mdb-select').materialSelect();
+
+            //date picker
+            $('.datepicker').pickadate();
+        });
+
+        //dropdown selected index 0
+        const clearMDBDropDownList = function(mainSelector) {
+            const content = mainSelector.querySelectorAll('.select-dropdown li');
+            content.forEach(li => {
+                content[0].classList.add('active', 'selected');
+
+                if (li.classList.contains('selected')) {
+                    li.classList.remove(['active', 'selected']);
+                    li.click();
+                    return;
+                }
+            });
+        }
+
+        //get data
+        var dataTable = {
+            table: null,
+            filter: null,
+            init: function() {
+                dataTable.table = $("#data-table").DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: "/BankLoan/LoanData",
+                        type: "POST",
+                        data: function(d) {
+                            d.filters = dataTable.filter;
+                        }
+                    },
+                    columns:
+                    [
+                        { data: "LoanName" },
+                        {
+                            data: "LoanAmount", "render": function(data, type, row, meta) {
+                                return data > 0 ? `<a title="click here to return loan" class="blue-text" href="/BankLoan/LoanReturn/${row.BankLoanId}">${data} <i class="fal fa-exchange"></i></a>` : data;
+                            }
+                        },
+                        { data: "ReturnAmount" },
+                        { data: "RemainingAmount" },
+                        { data: "InterestPercentage" },
+                        { data: "ReturnPeriod" },
+                        { data: "LoanDetails" },
+                        { data: "LoanDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } },
+                        { data: "BankLoanId", "render": function(data) { return `<a style="color:#ff0000" class="delete fas fa-trash-alt" href="/BankLoan/DeleteLoan/${data}"></a>`; } }
+                    ],
+                    columnDefs: [
+                        { searchable: false, 'targets': [8] },
+                        { sortable: false, 'targets': [8] },
+                        { className: "text-right", "targets": [1, 3, 4, 5] },
+                        { className: "text-left", "targets": [0, 6] }
+                    ]
+                });
+            },
+            getData: function() {
+                dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
+            },
+            addSign: function(data) { return `${data}/-` }
+        }
+
+        //selectors
+        const form = document.getElementById("formPost");
+
+        //submit form
+        form.addEventListener('submit', function(evt) {
+            evt.preventDefault();
+            const model = {
+                BankAccountId: +this.selectBankAccount.value,
+                LoanName: this.inputLoanName.value,
+                LoanAmount: +this.inputLoanAmount.value,
+                LoanDate: new Date(this.inputLoanDate.value),
+                InterestPercentage: +this.inputInterestPercentage.value,
+                ReturnPeriod: this.inputReturnPeriod.value,
+                LoanDetails: this.inputLoanDetails.value
+            }
+
+            const url = '/BankLoan/AddLoan';
+            const options = {
+                method: 'POST',
+                url: url,
+                data: model
+            }
+            axios(options).then(response => {
+                dataTable.getData();
+                resetForm(form);
+            }).catch(error => {
+                console.log(error.response);
+            })
+        });
+
+        //on change bank name
+        form.selectBankAccount.addEventListener('change', function() {
+            const id = +this.value;
+            if (!id) return;
+
+            dataTable.filter = [{ Field: "BankAccountId", Value: id, Operand: "==" }];
+            dataTable.getData();
+
+            bankInfo(id);
+        })
+
+        //bank info
+        function bankInfo(id) {
+            $.get('/BankAccount/AccountDetails', { bankId: id }, function(response) {
+                bankName.textContent = `${response.AccountName} ৳${response.Balance}`;
+            });
+        }
+
+        //reset form
+        function resetForm(form) {
+            clearMDBDropDownList(form);
+
+            form.inputLoanName.value = '';
+            form.inputLoanName.previousElementSibling.classList.remove('active');
+
+            form.inputLoanAmount.value = '';
+            form.inputLoanAmount.previousElementSibling.classList.remove('active');
+
+            form.inputLoanDate.value = '';
+            form.inputLoanDate.previousElementSibling.classList.remove('active');
+
+            form.inputInterestPercentage.value = '';
+            form.inputInterestPercentage.previousElementSibling.classList.remove('active');
+
+            form.inputReturnPeriod.value = '';
+            form.inputReturnPeriod.previousElementSibling.classList.remove('active');
+
+            form.inputLoanDetails.value = '';
+            form.inputLoanDetails.previousElementSibling.classList.remove('active');
+        }
+
+        //Delete click
+        $('#data-table').on("click", ".delete", function(evt) {
+            evt.preventDefault();
+
+            var row = $(this).closest("tr");
+            var btnDelete = $(this);
+            const url = $(this).attr('href');
+
+            if (!url) return;
+
+            if (confirm("Are you sure you want to delete?")) {
+                $.post(url, function(response) {
+                    if (!response) {
+                        alert('This data already used in others place');
+                        btnDelete.removeAttr("href");
+                        return;
+                    }
+                    row.hide();
+                });
+            }
+        });
+    </script>
+}
+

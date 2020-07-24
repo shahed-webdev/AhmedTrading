@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace AhmedTrading.Web.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "admin, product")]
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _db;

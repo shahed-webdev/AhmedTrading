@@ -8,6 +8,7 @@
     <style>
         .account-name { cursor: pointer }
         .account-name:hover { color: #4992df; }
+        .account-name i { pointer-events: none; color: #8a8a8a; }
 
         .inputName { border: 1px solid #B6B4B4; border-radius: 3px; padding: 6px; text-align: center; box-shadow: 1px 0 7px rgba(0, 0, 0, 0.2); width: 100% }
         .inputName:focus { border: 1px solid #00bfff }
@@ -16,7 +17,7 @@
 <div class="m-md-3">
     <div class="row">
         <div class="col justify-content-center align-self-center">
-            <h4 class="page-header">Bank List</h4>
+            <h4 class="page-header">Bank Account List</h4>
         </div>
         <div class="col text-right">
             <a id="CreateClick" data-url="/BankAccount/Create" class="btn-floating blue-bg-btn" title="Add New" data-toggle="modal">
@@ -65,7 +66,7 @@
                         [
                             {
                                 data: "AccountName", "render": function (data, type, row, meta) {
-                                    return `<div class="account-name" data-old="${data}" data-id="${row.BankAccountId}">${data}</div>`;
+                                    return `<div class="account-name" data-old="${data}" data-id="${row.BankAccountId}">${data} <i class="fal fa-edit"></i></div>`;
                                 }
                             },
                             { data: "Balance", "render": dataTable.addSign },
@@ -147,8 +148,9 @@
                 url: url,
                 data: model
             }
+
             axios(options).then(response => {
-                form.parentElement.innerText = newValue;
+                form.parentElement.innerHTML = `${newValue} <i class="fal fa-edit"></i>`;
                 form.remove();
             }).catch(error => {
                 console.log(error.response);

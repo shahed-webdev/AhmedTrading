@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Bank Deposit";
+    ViewData["Title"] = "Bank Withdrew";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 @section Styles
@@ -12,7 +12,7 @@
 }
 
 <div class="m-md-3">
-    <h4 class="page-header mb-3">Bank Deposit</h4>
+    <h4 class="page-header mb-3">Bank Withdrew</h4>
 
     <div class="card card-body">
         <form id="formPost">
@@ -34,7 +34,7 @@
                     <input id="inputActivityDate" type="text" class="form-control datepicker" required />
                 </div>
                 <div class="md-form m-0">
-                    <input type="submit" value="Deposit" class="btn btn-blue btn-rounded" />
+                    <input type="submit" value="Withdrew" class="btn btn-blue btn-rounded" />
                 </div>
             </div>
         </form>
@@ -65,6 +65,7 @@
             //date picker
             $('.datepicker').pickadate().val(moment(new Date()).format('DD MMMM, YYYY'));
         });
+
         //dropdown selected index 0
         const clearMDBDropDownList = function(mainSelector) {
             const content = mainSelector.querySelectorAll('.select-dropdown li');
@@ -88,7 +89,7 @@
                     processing: true,
                     serverSide: true,
                     ajax: {
-                        url: "/BankAccount/DepositData",
+                        url: "/BankAccount/WithdrewData",
                         type: "POST",
                         data: function(d) {
                             d.filters = dataTable.filter;
@@ -99,7 +100,7 @@
                         { data: "Amount", "render": dataTable.addSign },
                         { data: "Details" },
                         { data: "ActivityDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } },
-                        { data: "BankDepositId", "render": function(data) { return `<a style="color:#ff0000" class="delete fas fa-trash-alt" href="/BankAccount/DeleteDeposit/${data}"></a>`; } }
+                        { data: "BankWithdrewId", "render": function(data) { return `<a style="color:#ff0000" class="delete fas fa-trash-alt" href="/BankAccount/DeleteWithdrew/${data}"></a>`; } }
                     ]
                 });
             },
@@ -122,7 +123,7 @@
                 ActivityDate: new Date(this.inputActivityDate.value)
             }
 
-            const url = '/BankAccount/Deposit';
+            const url = '/BankAccount/Withdrew';
             const options = {
                 method: 'POST',
                 url: url,
@@ -152,6 +153,7 @@
         function bankInfo(id) {
             $.get('/BankAccount/AccountDetails', { bankId: id }, function(response) {
                 bankName.textContent = `${response.AccountName} ৳${response.Balance}`;
+                form.inputAmount.setAttribute('max', response.Balance);
             });
         }
 
