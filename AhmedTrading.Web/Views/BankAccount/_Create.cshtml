@@ -1,0 +1,29 @@
+﻿@using AhmedTrading.Repository
+@model BankAccountCreateModel
+@{
+    Layout = null;
+}
+
+<div class="modal-dialog cascading-modal" role="document">
+    <div class="modal-content">
+        <div class="modal-header blue-bg white-text">
+            <h4 class="m-0"><i class="fas fa-plus-circle"></i> Create Bank</h4>
+            <button type="button" class="close waves-effect waves-light" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <form data-ajax-update="#InsertModal" data-ajax="true" data-ajax-url="/BankAccount/Create" data-ajax-method="post" data-ajax-success="onCreateSuccess">
+                <div class="md-form">
+                            <input asp-for="AccountName" class="form-control" required/>
+                            <label asp-for="AccountName">Company Name</label>
+                            <span asp-validation-for="AccountName"></span>
+                        </div>
+                <div class="text-center mt-1-half">
+                    <button type="submit" class="btn blue-bg-btn mb-1 waves-effect waves-light">Create <i class="fas fa-check ml-1"></i></button>
+                </div>
+            </form>         
+        </div>
+    </div>   
+</div>

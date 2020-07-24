@@ -1,19 +1,19 @@
 ﻿@using AhmedTrading.Repository
-@model IEnumerable<VendorCommissionViewModel>
+@model IEnumerable<VendorAdvanceRecordViewModel>
 
 @{
-    ViewBag.Title = "Vendor Commission";
+    ViewBag.Title = "Vendor Advance";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <div class=" m-md-3">
     <div class="row">
         <div class="col justify-content-center align-self-center">
-            <h4 class="page-header mb-2">Vendor Commission</h4>
-            <p>@ViewBag.VendorInfo.VendorCompanyName, @ViewBag.VendorInfo.VendorPhone, <strong>@ViewBag.VendorInfo.Commission/-</strong></p>
+            <h4 class="page-header mb-2">Vendor Advance</h4>
+            <p>@ViewBag.VendorInfo.VendorCompanyName, @ViewBag.VendorInfo.VendorPhone, <strong>@ViewBag.VendorInfo.Advance/-</strong></p>
         </div>
         <div class="col text-right">
-            <a id="CreateClick" data-url="/VendorCommission/Create" class="btn-floating blue-bg-btn" title="Add New" data-toggle="modal">
+            <a id="CreateClick" data-url="/VendorAdvance/Create" class="btn-floating blue-bg-btn" title="Add New" data-toggle="modal">
                 <i class="fa fa-plus" aria-hidden="true"></i>
             </a>
         </div>
@@ -23,9 +23,10 @@
         <table id="data-table" class="table table-sm table-bordered">
             <thead>
             <tr>
-                <th>Month</th>
-                <th>Product</th>
-                <th>Commission</th>
+                <th>Advance</th>
+                <th>Advance Date</th>
+                <th>Payment Method</th>
+                <th>Details</th>
                 <th style="width:50px">Delete</th>
             </tr>
             </thead>
@@ -33,12 +34,11 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td class="text-left">@item.MonthName</td>
-                    <td class="text-left">@item.ProductName</td>
-                    <td class="text-left">@item.Commission</td>
-                    <td>
-                        <a class="fas fa-trash-alt delete" href="/VendorCommission/Remove/@item.VendorCommissionId"></a>
-                    </td>
+                    <td>@item.AdvanceDate.ToString("d MMM yyyy")</td>
+                    <td class="text-right">@item.Advance/-</td>
+                    <td>@item.PaymentMethod</td>
+                    <td class="text-left">@item.AdvanceDetails</td>
+                    <td><a class="fas fa-trash-alt delete" href="/VendorAdvance/Delete/@item.VendorAdvanceId"></a></td>
                 </tr>
             }
             </tbody>
@@ -57,7 +57,6 @@
             $.get($(this).data("url"), function(data) {
                 $('#InsertModal').html(data).modal('show');
 
-                monthDropDownList();
                 $("#hiddenVendorId").val(@ViewBag.VendorInfo.VendorId);
             });
         });
@@ -98,44 +97,6 @@
                 });
             }
         });
-
-
-        //product autocomplete
-        $('#InsertModal').on('input', '#inputProductName', function(e) {
-            $(`#${this.id}`).typeahead({
-                minLength: 1,
-                displayText: function(item) {
-                    return item.ProductName;
-                },
-                afterSelect: function(item) {
-                    this.$element[0].value = item.ProductName
-                },
-                source: function(request, result) {
-                    $.ajax({
-                        url: "/Product/FindProductsByName",
-                        data: { name: request },
-                        success: function(response) { result(response); },
-                        error: function(err) { console.log(err) }
-                    });
-                },
-                updater: function(item) {
-                    document.getElementById('productId').value = item.ProductId;
-                    return item;
-                }
-            });
-        })
-
-        function monthDropDownList() {
-            const year = new Date().getFullYear();
-            const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
-            months.forEach((month, i) => {
-                var option = document.createElement("OPTION");
-                option.text = `${month}  ${year}`;
-                option.value = `1/${i + 1}/${year}`;
-                document.getElementById('selectMonthName').options.add(option);
-            });
-        }
     </script>
 }
 

@@ -84,6 +84,15 @@ namespace AhmedTrading.Web.Controllers
             return Json(data);
         }
 
+        public IActionResult Details(int? id)
+        {
+            if (id == null) return RedirectToAction("List");
+
+            var model = _db.Vendors.ProfileDetails(id.GetValueOrDefault(),_db);
+            return View(model);
+        }
+
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

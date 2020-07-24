@@ -1,0 +1,99 @@
+﻿@using AhmedTrading.Repository
+@model VendorProfileViewModel
+
+@{
+    ViewBag.Title = "Vendor Details";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section Styles
+{
+    <style>
+        .comm-advance h4 {
+            font-size: 18px;
+            font-weight: bold; 
+        }
+    </style>
+}
+
+
+<div class=" m-md-3">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="page-header mb-1">@Model.VendorCompanyName</h4>
+            <h5 class="font-weight-bold mb-0">Balance: @Model.Balance/-</h5>
+        </div>
+        <div class="comm-advance">
+            <h4 class="text-success">Total Commission: <strong>@Model.Commission/-</strong></h4>
+            <h4 class="text-info">Total Advance: <strong>@Model.Advance/-</strong></h4>
+        </div>
+    </div>   
+
+    <section class="row">
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="media white z-depth-1 rounded">
+                <i class="far fa-money-bill-alt fa-lg blue z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                <div class="media-body p-1">
+                    <p class="text-uppercase text-muted mb-1"><small>Purchase</small></p>
+                    <h5 class="font-weight-bold mb-0">৳@Model.TotalAmount</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="media white z-depth-1 rounded">
+                <i class="fas fa-chart-bar fa-lg deep-purple z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                <div class="media-body p-1">
+                    <p class="text-uppercase text-muted mb-1"><small>Discount</small></p>
+                    <h5 class="font-weight-bold mb-0">৳@Model.TotalDiscount</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="media white z-depth-1 rounded">
+                <i class="fas fa-chart-pie fa-lg teal z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                <div class="media-body p-1">
+                    <p class="text-uppercase text-muted mb-1"><small>Return Amount</small></p>
+                    <h5 class="font-weight-bold mb-0">৳@Model.ReturnAmount</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="media white z-depth-1 rounded">
+                <i class="fas fa-download fa-lg pink z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                <div class="media-body p-1">
+                    <p class="text-uppercase text-muted mb-1"><small>Paid</small></p>
+                    <h5 class="font-weight-bold mb-0">৳@Model.Paid</h5>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="card card-body">
+        <table class="table table-sm">
+            <thead>
+            <tr>
+                <th><strong>Brand</strong></th>
+                <th><strong>Product Name</strong></th>
+                <th><strong>Selling U.Price</strong></th>
+                <th><strong>Stock</strong></th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Products)
+            {
+                <tr>
+                    <td>@item.BrandName</td>
+                    <td>@item.ProductName</td>
+                    <td>@item.SellingUnitPrice/-</td>
+                    <td>@item.Stock @item.UnitType</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </section>
+</div>
+
+

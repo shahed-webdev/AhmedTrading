@@ -1,4 +1,5 @@
-﻿using AhmedTrading.Repository;
+﻿using System.Threading.Tasks;
+using AhmedTrading.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,17 +15,31 @@ namespace AhmedTrading.Web.Controllers
             _db = db;
         }
 
-        public IActionResult AdvanceAdd(VendorAdvanceAddViewModel model)
+        public async Task<IActionResult> List(int? id)
         {
-            _db.VendorAdvances.AddCustom(model);
-            _db.SaveChanges();
-            return View();
+            if (id == null) return RedirectToAction("List", "Vendor");
+
+            var model = await _db.VendorAdvances.VendorWiseRecords(id.GetValueOrDefault());
+            ViewBag.VendorInfo = _db.Vendors.FindCustom(id);
+
+            return View(model);
         }
 
-        public IActionResult AdvanceAdd(int vendorId)
+        public IActionResult Create()
         {
-            var model = _db.VendorAdvances.VendorWiseRecords(vendorId);
-            return View(model);
+            return PartialView("_Create");
+        }
+
+        [HttpPost]
+        public IActionResult Create(VendorAdvanceAddViewModel model)
+        {
+            if (!ModelState.IsValid) return PartialView("_Create", model);
+
+            _db.VendorAdvances.AddCustom(model);
+            _db.SaveChanges();
+
+            var result = new AjaxContent<VendorAdvanceAddViewModel> { Status = true, Data = model };
+            return Json(result);
         }
 
         public int Delete(int id)
