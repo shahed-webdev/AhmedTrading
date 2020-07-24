@@ -35,14 +35,16 @@
                 @foreach (var item in Model)
                 {
                 <tr>
-                    <td class="text-left">@item.VendorCompanyName</td>
+                    <td class="text-left">
+                        <a class="blue-text" href="/Vendor/Details/@item.VendorId"> @item.VendorCompanyName</a>
+                    </td>
                     <td class="text-left">@item.VendorName</td>
                     <td>@item.VendorPhone</td>
                     <td>
-                        <a class="blue-text" href="/VendorCommission/List/@item.VendorId">Commission</a>
+                        <a class="blue-text" href="/VendorCommission/List/@item.VendorId">@item.Commission</a>
                     </td>
                     <td>
-                        <a class="blue-text" href="/VendorAdvance/List/@item.VendorId">Advance</a>
+                        <a class="blue-text" href="/VendorAdvance/List/@item.VendorId">@item.Advance</a>
                     </td>
                     <td>
                         <a class="fas fa-edit edit" href="/Vendor/Edit/@item.VendorId"></a>

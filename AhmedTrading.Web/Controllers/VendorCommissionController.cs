@@ -25,38 +25,37 @@ namespace AhmedTrading.Web.Controllers
             return View(model);
         }
 
-        public IActionResult Create(int? id)
+        public IActionResult Create()
         {
-            if (id == null) return RedirectToAction("List");
-            ViewBag.VendorId = id;
-
-            return View();
+            return PartialView("_Create");
         }
 
         [HttpPost]
         public IActionResult Create(VendorCommissionAddModel model)
         {
-            if (!ModelState.IsValid) return View(model);
-            
+            if (!ModelState.IsValid) return PartialView("_Create", model);
+
             try
             {
                 _db.VendorCommissions.AddCustom(model);
                 _db.SaveChanges();
-                return RedirectToAction("List", new { id = model.VendorId });
+
+                var result = new AjaxContent<VendorCommissionAddModel> { Status = true, Data = model };
+                return Json(result);
             }
             catch (Exception e)
             {
                 ModelState.AddModelError("Commission", e.Message);
-                return View(model);
+                return PartialView("_Create", model);
             }
         }
-
 
         public int Remove(int id)
         {
             try
             {
                 _db.VendorCommissions.RemoveCustom(id);
+                _db.SaveChanges();
                 return 1;
             }
             catch (Exception)
