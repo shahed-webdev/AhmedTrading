@@ -10,5 +10,6 @@ namespace AhmedTrading.Repository
         Task<List<VendorCommissionViewModel>> ListAsync(int vendorId = 0);
         DataResult<VendorCommissionViewModel> ListDataTable(DataRequest request);
         void RemoveCustom(int id);
+        double TotalCommission();
     }
 }

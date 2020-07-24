@@ -77,5 +77,10 @@ namespace AhmedTrading.Repository
             Context.VendorCommission.Remove(commission);
             Context.Vendor.Update(vendor);
         }
+
+        public double TotalCommission()
+        {
+            return Context.VendorCommission?.Sum(c => c.Commission) ?? 0;
+        }
     }
 }

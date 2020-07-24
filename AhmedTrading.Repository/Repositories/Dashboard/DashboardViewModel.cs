@@ -16,5 +16,6 @@
         public double VendorDue { get; set; }
         public double Loan { get; set; }
         public double Advance { get; set; }
+        public double Commission { get; set; }
     }
 }

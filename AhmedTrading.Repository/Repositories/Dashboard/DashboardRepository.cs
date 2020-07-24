@@ -21,7 +21,8 @@
                 CustomerDue = _db.Selling.TotalDue(),
                 VendorDue = _db.Purchases.TotalDue(),
                 Loan = _db.BankLoans.TotalLoan(),
-                Advance = _db.Advance.TotalAdvance()
+                Advance = _db.Advance.TotalAdvance(),
+                Commission = _db.VendorCommissions.TotalCommission()
             };
             return summary;
         }
