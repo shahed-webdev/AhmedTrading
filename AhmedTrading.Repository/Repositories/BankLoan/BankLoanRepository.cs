@@ -1,5 +1,6 @@
 ﻿using AhmedTrading.Data;
 using JqueryDataTables.LoopsIT;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 
@@ -53,7 +54,7 @@ namespace AhmedTrading.Repository
         {
             try
             {
-                var loan = Context.BankLoan.Find(id);
+                var loan = Context.BankLoan.Include(b => b.BankAccount).FirstOrDefault(b => b.BankLoanId == id);
                 if (loan == null) return new DbResponse<BankLoanViewModel>(false, "No Data Found");
 
                 var bankLoan = new BankLoanViewModel
