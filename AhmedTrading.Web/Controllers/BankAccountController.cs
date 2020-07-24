@@ -7,20 +7,22 @@ using AhmedTrading.Repository;
 using JqueryDataTables.LoopsIT;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace AhmedTrading.Web.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "admin, bank-account")]
     public class BankAccountController : Controller
     {
         private readonly IUnitOfWork _db;
+
         public BankAccountController(IUnitOfWork db)
         {
             _db = db;
         }
 
         /***BANK ACCOUNT**/
-        public IActionResult BankList()
+        public IActionResult AccountList()
         {
             return View();
         }
@@ -66,19 +68,15 @@ namespace AhmedTrading.Web.Controllers
 
         public IActionResult Delete(int id)
         {
-           var response=  _db.BankAccounts.DeleteAccount(id);
-          
-           if (response.IsSuccess)
-               return Ok(response.IsSuccess);
-
-           return Ok(response.IsSuccess);
+            var response = _db.BankAccounts.DeleteAccount(id);
+            return Ok(response.IsSuccess);
         }
-
 
 
         /***BANK DEPOSIT**/
         public IActionResult BankDeposit()
         {
+            ViewBag.bankName = new SelectList(_db.BankAccounts.Ddl(), "value", "label");
             return View();
         }
 
@@ -94,10 +92,10 @@ namespace AhmedTrading.Web.Controllers
         {
             if (!ModelState.IsValid) return UnprocessableEntity("Invalid Model State");
 
-           var response= _db.BankAccounts.Deposit(model);
-           if (response.IsSuccess) return Ok(response.IsSuccess);
+            var response = _db.BankAccounts.Deposit(model);
+            if (response.IsSuccess) return Ok(response.IsSuccess);
 
-           return UnprocessableEntity(response.Message);
+            return UnprocessableEntity(response.Message);
         }
 
         [HttpPost]
@@ -107,6 +105,48 @@ namespace AhmedTrading.Web.Controllers
             if (response.IsSuccess) return Ok(response.IsSuccess);
 
             return UnprocessableEntity(response.Message);
+        }
+
+
+        /***BANK WITHDRAW**/
+        public IActionResult BankWithdrew()
+        {
+            ViewBag.bankName = new SelectList(_db.BankAccounts.Ddl(), "value", "label"); ;
+            return View();
+        }
+
+        //request from data-table(ajax)
+        public IActionResult WithdrewData(DataRequest request)
+        {
+            var data = _db.BankAccounts.WithdrewListDataTable(request);
+            return Json(data);
+        }
+
+        [HttpPost]
+        public IActionResult Withdrew([FromBody] BankWithdrewModel model)
+        {
+            if (!ModelState.IsValid) return UnprocessableEntity("Invalid Model State");
+
+            var response = _db.BankAccounts.Withdrew(model);
+            if (response.IsSuccess) return Ok(response.IsSuccess);
+
+            return UnprocessableEntity(response.Message);
+        }
+
+        [HttpPost]
+        public IActionResult DeleteWithdrew(int id)
+        {
+            var response = _db.BankAccounts.DeleteWithdrew(id);
+            if (response.IsSuccess) return Ok(response.IsSuccess);
+
+            return UnprocessableEntity(response.Message);
+        }
+
+        //account info(ajax)
+        public IActionResult AccountDetails(int bankId)
+        {
+            var data = _db.BankAccounts.AccountDetails(bankId);
+            return Json(data);
         }
     }
 }
