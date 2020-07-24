@@ -5,6 +5,7 @@ namespace AhmedTrading.Repository
 {
     public interface IUnitOfWork : IDisposable
     {
+        IAdvanceRepository Advance { get; }
         IBankAccountRepository BankAccounts { get; }
         IBankLoanRepository BankLoans { get; }
         ICustomerRepository Customers { get; }

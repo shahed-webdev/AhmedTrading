@@ -10,6 +10,7 @@ namespace AhmedTrading.Repository
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
+            Advance = new AdvanceRepository(_context);
             BankAccounts = new BankAccountRepository(_context);
             BankLoans = new BankLoanRepository(_context);
             Customers = new CustomerRepository(_context);
@@ -32,6 +33,7 @@ namespace AhmedTrading.Repository
         }
 
 
+        public IAdvanceRepository Advance { get; }
         public IBankAccountRepository BankAccounts { get; }
         public IBankLoanRepository BankLoans { get; }
         public ICustomerRepository Customers { get; }
