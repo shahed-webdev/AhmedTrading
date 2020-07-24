@@ -10,6 +10,8 @@ namespace AhmedTrading.Repository
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
+            BankAccounts = new BankAccountRepository(_context);
+            BankLoans = new BankLoanRepository(_context);
             Customers = new CustomerRepository(_context);
             PageLinks = new PageLinkRepository(_context);
             PageLinkCategories = new PageLinkCategoryRepository(_context);
@@ -30,6 +32,8 @@ namespace AhmedTrading.Repository
         }
 
 
+        public IBankAccountRepository BankAccounts { get; }
+        public IBankLoanRepository BankLoans { get; }
         public ICustomerRepository Customers { get; }
         public IPageLinkRepository PageLinks { get; private set; }
         public IPageLinkCategoryRepository PageLinkCategories { get; private set; }
