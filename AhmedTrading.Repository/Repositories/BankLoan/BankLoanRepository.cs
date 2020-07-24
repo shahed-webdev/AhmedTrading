@@ -60,6 +60,7 @@ namespace AhmedTrading.Repository
                 {
                     BankLoanId = loan.BankLoanId,
                     BankAccountId = loan.BankAccountId,
+                    AccountName = loan.BankAccount.AccountName,
                     LoanName = loan.LoanName,
                     LoanAmount = loan.LoanAmount,
                     LoanDate = loan.LoanDate,

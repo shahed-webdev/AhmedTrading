@@ -101,8 +101,6 @@ namespace AhmedTrading.Repository
 
         public Task<PurchaseReceiptViewModel> PurchaseReceiptAsync(int id, IUnitOfWork db)
         {
-            // var categoryList = db.ProductCatalogs.CatalogDll();
-
             var purchaseReceipt = Context.Purchase
                 .Include(p => p.Vendor)
                 .Include(p => p.Registration)
@@ -222,6 +220,173 @@ namespace AhmedTrading.Repository
                 .ToList();
 
             return months;
+        }
+
+        public DbResponse DeleteReceipt(int id)
+        {
+            try
+            {
+                var purchase = Context.Purchase.Include(p => p.PurchaseList).FirstOrDefault(p => p.PurchaseId == id);
+                if (purchase == null) return new DbResponse(false, "No Data Found");
+                if (Context.PurchasePaymentList.Any(p => p.PurchaseId == purchase.PurchaseId)) return new DbResponse(false, "Payment Exist");
+
+                foreach (var list in purchase.PurchaseList)
+                {
+                    var product = Context.Product.Find(list.ProductId);
+                    product.Stock -= list.PurchaseQuantity;
+
+                    Context.Product.Update(product);
+                }
+                Context.Purchase.Remove(purchase);
+                Context.SaveChanges();
+
+                return new DbResponse(true, "Success");
+            }
+            catch (Exception e)
+            {
+                return new DbResponse(false, e.Message);
+            }
+        }
+
+        public DbResponse<PurchaseReceiptViewModel> FindReceipt(int id, IUnitOfWork db)
+        {
+            try
+            {
+                var purchaseReceipt = Context.Purchase
+                    .Include(p => p.Vendor)
+                    .Include(p => p.Registration)
+                    .Include(p => p.PurchaseList)
+                    .ThenInclude(pl => pl.Product)
+                    .ThenInclude(pd => pd.ProductBrand)
+                    .Include(p => p.PurchaseList)
+                    .ThenInclude(pl => pl.Product)
+                    .Include(p => p.PurchasePaymentList)
+                    .ThenInclude(p => p.PurchasePayment)
+                    .Select(p => new PurchaseReceiptViewModel
+                    {
+                        PurchaseSn = p.PurchaseSn,
+                        PurchaseId = p.PurchaseId,
+                        PurchaseTotalPrice = p.PurchaseTotalPrice,
+                        PurchaseDiscountAmount = p.PurchaseDiscountAmount,
+                        PurchasePaidAmount = p.PurchasePaidAmount,
+                        PurchaseDueAmount = p.PurchaseDueAmount,
+                        PurchaseDate = p.PurchaseDate,
+                        MemoNumber = p.MemoNumber,
+                        Products = p.PurchaseList.Select(pd => new PurchaseProductListViewModel
+                        {
+                            ProductId = pd.ProductId,
+                            ProductBrandId = pd.Product.ProductBrandId,
+                            BrandName = pd.Product.ProductBrand.BrandName,
+                            ProductName = pd.Product.ProductName,
+                            SellingUnitPrice = pd.SellingUnitPrice,
+                            PurchaseUnitPrice = pd.PurchaseUnitPrice,
+                            PurchaseQuantity = pd.PurchaseQuantity,
+                            UnitType = pd.Product.UnitType,
+                            PurchasePrice = pd.PurchasePrice
+                        }).ToList(),
+                        Payments = p.PurchasePaymentList.Select(pp => new PurchasePaymentListViewModel
+                        {
+                            PaymentMethod = pp.PurchasePayment.PaymentMethod,
+                            PaidAmount = pp.PurchasePaidAmount,
+                            PaidDate = pp.PurchasePayment.PaidDate
+                        }).ToList(),
+                        VendorInfo = new VendorViewModel
+                        {
+                            VendorId = p.Vendor.VendorId,
+                            VendorCompanyName = p.Vendor.VendorCompanyName,
+                            VendorName = p.Vendor.VendorName,
+                            VendorAddress = p.Vendor.VendorAddress,
+                            VendorPhone = p.Vendor.VendorPhone,
+                            InsertDate = p.Vendor.InsertDate,
+                            Balance = p.Vendor.Balance
+                        },
+                        InstitutionInfo = db.Institutions.FindCustom(),
+                        SoildBy = p.Registration.Name
+                    }).FirstOrDefault(p => p.PurchaseId == id);
+
+                if (purchaseReceipt == null) return new DbResponse<PurchaseReceiptViewModel>(false, "No Data Found");
+
+                return new DbResponse<PurchaseReceiptViewModel>(true, "Success") { Data = purchaseReceipt };
+            }
+            catch (Exception e)
+            {
+                return new DbResponse<PurchaseReceiptViewModel>(false, e.Message);
+            }
+        }
+
+        public async Task<DbResponse> ChangeReceiptAsync(PurchaseReceiptChangeModel model, IUnitOfWork db)
+        {
+            try
+            {
+                var purchase = Context.Purchase.Include(p => p.PurchaseList).FirstOrDefault(p => p.PurchaseId == model.PurchaseId);
+                if (purchase == null) return new DbResponse(false, "No Data Found");
+
+                var newPurchasePaymentSn = await db.PurchasePayments.GetNewSnAsync();
+                purchase.MemoNumber = model.MemoNumber;
+                purchase.PurchaseDiscountAmount = model.PurchaseDiscountAmount;
+                purchase.PurchasePaidAmount = model.PurchasePaidAmount + model.PaidAmount;
+                purchase.PurchaseReturnAmount = model.PurchaseReturnAmount;
+                purchase.PurchaseTotalPrice = model.PurchaseTotalPrice;
+                foreach (var list in purchase.PurchaseList)
+                {
+                    var product = Context.Product.Find(list.ProductId);
+                    product.Stock -= list.PurchaseQuantity;
+
+                    Context.Product.Update(product);
+                }
+
+
+                purchase.PurchaseList = model.Products.Select(p => new PurchaseList
+                {
+                    ProductId = p.ProductId,
+                    PurchaseUnitPrice = p.PurchaseUnitPrice,
+                    SellingUnitPrice = p.SellingUnitPrice,
+                    PurchaseQuantity = p.PurchaseQuantity
+                }).ToList();
+
+                if (model.PaidAmount > 0)
+                {
+
+                    var purchaseList = new PurchasePaymentList
+                    {
+                        PurchaseId = model.PurchaseId,
+                        PurchasePaidAmount = model.PaidAmount,
+                        PurchasePayment = new PurchasePayment
+                        {
+                            PurchasePaymentId = 0,
+                            RegistrationId = purchase.RegistrationId,
+                            VendorId = purchase.VendorId,
+                            ReceiptSn = newPurchasePaymentSn,
+                            PaidAmount = model.PaidAmount,
+                            PaymentMethod = model.PaymentMethod,
+                            PaidDate = model.PaidDate
+                        }
+                    };
+                    Context.PurchasePaymentList.Add(purchaseList);
+                }
+
+                Context.Purchase.Update(purchase);
+                Context.SaveChanges();
+
+                //Update Product Info
+                foreach (var item in model.Products)
+                {
+                    var product = Context.Product.Find(item.ProductId);
+                    product.SellingUnitPrice = item.SellingUnitPrice;
+                    product.Stock += item.PurchaseQuantity;
+
+                    Context.Product.Update(product);
+                }
+
+                db.Vendors.UpdatePaidDue(purchase.VendorId);
+                db.SaveChanges();
+
+                return new DbResponse(true, "Success");
+            }
+            catch (Exception e)
+            {
+                return new DbResponse(false, e.Message);
+            }
         }
     }
 }

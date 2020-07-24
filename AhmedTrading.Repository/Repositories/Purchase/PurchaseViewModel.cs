@@ -57,4 +57,23 @@ namespace AhmedTrading.Repository
         public string MemoNumber { get; set; }
         public DateTime PurchaseDate { get; set; }
     }
+
+    public class PurchaseReceiptChangeModel
+    {
+        public PurchaseReceiptChangeModel()
+        {
+            Products = new HashSet<ProductPurchaseViewModel>();
+        }
+        public int PurchaseId { get; set; }
+        public double PurchaseTotalPrice { get; set; }
+        public double PurchaseDiscountAmount { get; set; }
+        public double PurchasePaidAmount { get; set; }
+        public double PurchaseDueAmount { get; set; }
+        public double PurchaseReturnAmount { get; set; }
+        public string MemoNumber { get; set; }
+        public double PaidAmount { get; set; }
+        public string PaymentMethod { get; set; }
+        public DateTime PaidDate { get; set; }
+        public ICollection<ProductPurchaseViewModel> Products { get; set; }
+    }
 }

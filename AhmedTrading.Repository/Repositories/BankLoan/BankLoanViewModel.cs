@@ -6,6 +6,7 @@ namespace AhmedTrading.Repository
     {
         public int BankLoanId { get; set; }
         public int BankAccountId { get; set; }
+        public string AccountName { get; set; }
         public string LoanName { get; set; }
         public double LoanAmount { get; set; }
         public DateTime LoanDate { get; set; }
@@ -13,6 +14,7 @@ namespace AhmedTrading.Repository
         public double RemainingAmount { get; set; }
         public double InterestPercentage { get; set; }
         public string ReturnPeriod { get; set; }
+
         public string LoanDetails { get; set; }
     }
 
