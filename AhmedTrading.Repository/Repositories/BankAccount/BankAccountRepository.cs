@@ -1,6 +1,7 @@
 ﻿using AhmedTrading.Data;
 using JqueryDataTables.LoopsIT;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace AhmedTrading.Repository
@@ -83,6 +84,17 @@ namespace AhmedTrading.Repository
             }
         }
 
+        public BankAccountViewModel AccountDetails(int id)
+        {
+            var bankAccount = Context.BankAccount.Select(b => new BankAccountViewModel
+            {
+                BankAccountId = b.BankAccountId,
+                AccountName = b.AccountName,
+                Balance = b.Balance
+            });
+            return bankAccount.FirstOrDefault(b => b.BankAccountId == id);
+        }
+
         public DataResult<BankAccountViewModel> AccountListDataTable(DataRequest request)
         {
             var bankAccount = Context.BankAccount.Select(b => new BankAccountViewModel
@@ -93,6 +105,15 @@ namespace AhmedTrading.Repository
             });
 
             return bankAccount.ToDataResult(request);
+        }
+
+        public ICollection<DDL> Ddl()
+        {
+            return Context.BankAccount.Select(b => new DDL
+            {
+                value = b.BankAccountId,
+                label = b.AccountName
+            }).ToList();
         }
 
         public bool IsExistAccount(string name)
