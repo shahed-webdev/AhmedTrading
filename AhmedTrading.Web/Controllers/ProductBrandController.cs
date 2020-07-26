@@ -24,7 +24,7 @@ namespace AhmedTrading.Web.Controllers
         public async Task<IActionResult> GetData()
         {
             var data = await _db.ProductBrands.ListAsync().ConfigureAwait(false);
-            return Json(data);
+            return Ok(data);
         }
 
         // POST: Create Brand (ajax)
@@ -38,7 +38,7 @@ namespace AhmedTrading.Web.Controllers
             _db.ProductBrands.AddCustom(model);
             var task = await _db.SaveChangesAsync();
 
-            if (task != 0) return Ok();
+            if (task != 0) return Ok("success");
 
             return UnprocessableEntity("Unable to insert record!");
         }
@@ -79,7 +79,7 @@ namespace AhmedTrading.Web.Controllers
 
             var task = await _db.SaveChangesAsync();
 
-            if (task != 0) return Ok();
+            if (task != 0) return Ok("success");
 
             return UnprocessableEntity("Unable to perform action!");
         }

@@ -42,8 +42,14 @@
     </div>
 </div>
 
+
 @section Scripts{
     <script>
+        $(function() {
+            $('#element').toast('show');
+        })
+
+
         const form = document.getElementById('formBrand');
         const existError = document.getElementById('existError');
         const tbody = document.getElementById('tbody');
@@ -59,8 +65,8 @@
                 type: "POST",
                 url: "/ProductBrand/CreateBrand",
                 data: model,
-                success: function(data) {
-                    console.log(data);
+                success: function() {
+                    getData();
                 },
                 error: function(error) {
                     existError.textContent = error.responseText;
@@ -99,12 +105,12 @@
             $.ajax({
                 type: "POST",
                 url: `/ProductBrand/Delete/${evt.target.id}`,
-                success: function(data) {
-                    console.log(data);
+                success: function() {
                     evt.target.parentElement.parentElement.remove();
                 },
                 error: function(error) {
                     console.log(error);
+                    alert(error.responseText);
                 }
             })
         });
