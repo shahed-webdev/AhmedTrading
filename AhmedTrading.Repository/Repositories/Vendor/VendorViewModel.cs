@@ -13,7 +13,6 @@ namespace AhmedTrading.Repository
         public string VendorCompanyName { get; set; }
         public string VendorName { get; set; }
         public string VendorAddress { get; set; }
-        [Required]
         public string VendorPhone { get; set; }
         public double Balance { get; set; }
         public double Advance { get; set; }
