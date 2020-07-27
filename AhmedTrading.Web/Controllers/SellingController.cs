@@ -1,8 +1,8 @@
 ﻿using AhmedTrading.Repository;
 using JqueryDataTables.LoopsIT;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 
 namespace AhmedTrading.Web.Controllers
 {
@@ -31,7 +31,6 @@ namespace AhmedTrading.Web.Controllers
             var response = await _db.Selling.AddCustomAsync(model, _db).ConfigureAwait(false);
 
             if (!response.IsSuccess) return UnprocessableEntity(response);
-
             _db.Customers.UpdatePaidDue(model.CustomerId);
             await _db.SaveChangesAsync();
 

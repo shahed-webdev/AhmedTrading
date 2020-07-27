@@ -13,7 +13,7 @@ namespace AhmedTrading.Repository
         CustomerAddUpdateViewModel FindCustom(int id);
         CustomerProfileViewModel ProfileDetails(int id);
         void CustomUpdate(CustomerAddUpdateViewModel model);
-        void UpdatePaidDue(int id);
+        void UpdatePaidDue(int? id);
         Task<ICollection<CustomerListViewModel>> SearchAsync(string key);
         double TotalDue();
         ICollection<CustomerDueViewModel> TopDue(int totalCustomer);

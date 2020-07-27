@@ -4,14 +4,16 @@ using AhmedTrading.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AhmedTrading.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200727060705_SellingCustomerNotRequired")]
+    partial class SellingCustomerNotRequired
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -953,7 +955,7 @@ namespace AhmedTrading.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CustomerId")
+                    b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("InsertDate")
@@ -1639,7 +1641,8 @@ namespace AhmedTrading.Data.Migrations
                     b.HasOne("AhmedTrading.Data.Customer", "Customer")
                         .WithMany("SellingPayment")
                         .HasForeignKey("CustomerId")
-                        .HasConstraintName("FK_SellingPayment_Customer");
+                        .HasConstraintName("FK_SellingPayment_Customer")
+                        .IsRequired();
 
                     b.HasOne("AhmedTrading.Data.Registration", "Registration")
                         .WithMany("SellingPayment")

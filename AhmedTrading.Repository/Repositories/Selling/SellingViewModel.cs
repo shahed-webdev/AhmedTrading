@@ -11,7 +11,7 @@ namespace AhmedTrading.Repository
         }
         public int SellingId { get; set; }
         public int RegistrationId { get; set; }
-        public int CustomerId { get; set; }
+        public int? CustomerId { get; set; }
         public double SellingTotalPrice { get; set; }
         public double SellingDiscountAmount { get; set; }
         public double SellingPaidAmount { get; set; }
@@ -64,7 +64,7 @@ namespace AhmedTrading.Repository
     public class SellingRecordViewModel
     {
         public int SellingId { get; set; }
-        public int CustomerId { get; set; }
+        public int? CustomerId { get; set; }
         public int SellingSn { get; set; }
         public string CustomerName { get; set; }
         public double SellingAmount { get; set; }

@@ -12,7 +12,7 @@ namespace AhmedTrading.Data
 
         public int SellingPaymentId { get; set; }
         public int RegistrationId { get; set; }
-        public int CustomerId { get; set; }
+        public int? CustomerId { get; set; }
         public int ReceiptSn { get; set; }
         public double PaidAmount { get; set; }
         public string PaymentMethod { get; set; }

@@ -121,9 +121,12 @@ namespace AhmedTrading.Repository
             Context.Customer.Update(customer);
         }
 
-        public void UpdatePaidDue(int id)
+        public void UpdatePaidDue(int? id)
         {
-            var customer = Find(id);
+            if (id == null) return;
+
+            var customer = Find(id.GetValueOrDefault());
+            if (customer == null) return;
 
             var obj = Context.Selling.Where(s => s.CustomerId == customer.CustomerId).GroupBy(s => s.CustomerId).Select(s =>
                 new
