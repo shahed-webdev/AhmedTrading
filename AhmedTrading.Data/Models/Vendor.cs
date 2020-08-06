@@ -24,6 +24,7 @@ namespace AhmedTrading.Data
         public double Paid { get; set; }
         public double Advance { get; set; }
         public double Commission { get; set; }
+        public double OpeningDue { get; set; }
         public double Balance { get; set; }
         public DateTime InsertDate { get; set; }
 

@@ -7,7 +7,8 @@ namespace AhmedTrading.Data
     {
         public void Configure(EntityTypeBuilder<Vendor> builder)
         {
-            builder.Property(e => e.Balance).HasComputedColumnSql("(((([Paid]+[Advance])+[Commission])+[TotalDiscount])-([TotalAmount]+[ReturnAmount]))");
+            builder.Property(e => e.OpeningDue).HasDefaultValueSql("0");
+            builder.Property(e => e.Balance).HasComputedColumnSql("(((([Paid]+[Advance])+[Commission])+[TotalDiscount])-([TotalAmount]+[ReturnAmount]+[OpeningDue]))");
 
             builder.Property(e => e.InsertDate)
                 .HasColumnType("datetime")

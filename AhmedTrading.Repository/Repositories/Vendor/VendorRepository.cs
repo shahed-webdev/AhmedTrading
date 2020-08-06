@@ -25,7 +25,8 @@ namespace AhmedTrading.Repository
                 InsertDate = v.InsertDate,
                 Balance = v.Balance,
                 Advance = v.Advance,
-                Commission = v.Commission
+                Commission = v.Commission,
+                OpeningDue = v.OpeningDue
             }).ToListAsync().ConfigureAwait(false);
 
             return vendor;
@@ -43,7 +44,8 @@ namespace AhmedTrading.Repository
                 InsertDate = v.InsertDate,
                 Balance = v.Balance,
                 Advance = v.Advance,
-                Commission = v.Commission
+                Commission = v.Commission,
+                OpeningDue = v.OpeningDue
             });
             return vendor.ToDataResult(request);
         }
@@ -61,7 +63,8 @@ namespace AhmedTrading.Repository
                     InsertDate = v.InsertDate,
                     Balance = v.Balance,
                     Advance = v.Advance,
-                    Commission = v.Commission
+                    Commission = v.Commission,
+                    OpeningDue = v.OpeningDue
                 }).Take(5).ToListAsync().ConfigureAwait(false);
         }
 
@@ -72,7 +75,8 @@ namespace AhmedTrading.Repository
                 VendorCompanyName = model.VendorCompanyName,
                 VendorName = model.VendorName,
                 VendorAddress = model.VendorAddress,
-                VendorPhone = model.VendorPhone
+                VendorPhone = model.VendorPhone,
+                OpeningDue = model.OpeningDue
             };
 
             Add(vendor);
@@ -88,7 +92,7 @@ namespace AhmedTrading.Repository
             vendor.VendorName = model.VendorName;
             vendor.VendorAddress = model.VendorAddress;
             vendor.VendorPhone = model.VendorPhone;
-
+            vendor.OpeningDue = model.OpeningDue;
             Update(vendor);
         }
 
@@ -107,7 +111,8 @@ namespace AhmedTrading.Repository
                 InsertDate = vendor.InsertDate,
                 Balance = vendor.Balance,
                 Advance = vendor.Advance,
-                Commission = vendor.Commission
+                Commission = vendor.Commission,
+                OpeningDue = vendor.OpeningDue
             };
         }
 
