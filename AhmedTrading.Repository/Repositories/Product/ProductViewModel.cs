@@ -18,6 +18,7 @@
         public string ProductName { get; set; }
         public double SellingUnitPrice { get; set; }
         public string UnitType { get; set; }
+        public double Stock { get; set; }
     }
 
     public class ProductPurchaseViewModel

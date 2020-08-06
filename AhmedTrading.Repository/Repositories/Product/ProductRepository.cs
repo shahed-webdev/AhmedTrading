@@ -138,6 +138,7 @@ namespace AhmedTrading.Repository
             product.ProductName = model.ProductName;
             product.UnitType = model.UnitType;
             product.SellingUnitPrice = model.SellingUnitPrice;
+            product.Stock = model.Stock;
             Context.Product.Update(product);
         }
     }
