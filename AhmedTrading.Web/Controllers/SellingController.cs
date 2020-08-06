@@ -90,6 +90,20 @@ namespace AhmedTrading.Web.Controllers
             return Json(data);
         }
 
+        //delete receipt if not payment
+        public IActionResult DeleteReceipt(int id)
+        {
+            var model = _db.Selling.ReceiptPaymentIsExist(id);
+            return Json(model);
+        }
+
+        //delete receipt with payment
+        public IActionResult ForceDeleteReceipt(int id)
+        {
+            var model = _db.Selling.DeleteReceipt(id);
+            return Json(model);
+        }
+
 
         protected override void Dispose(bool disposing)
         {

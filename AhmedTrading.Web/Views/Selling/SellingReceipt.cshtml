@@ -12,8 +12,12 @@
 <div class="container">
     <section class="my-4 d-print-none">
         <div class="d-flex justify-content-between">
-            <a class="btn btn-success btn-rounded" href="/Selling/Selling"><i class="fal fa-cart-plus mr-1"></i>Selling</a>
             <div>
+                <button id="btn-delete" class="btn btn-danger btn-rounded" data-id="@Model.SellingId"><i class="fas fa-trash mr-1"></i>Delete Permanently</button>
+                <div id="force-delete"></div>
+            </div>
+            <div>
+                <a class="btn btn-success btn-rounded" href="/Selling/Selling"><i class="fal fa-cart-plus mr-1"></i>Selling</a>
                 <button class="btn btn-elegant btn-rounded" onclick="print()"><i class="fal fa-print mr-1"></i>Print</button>
             </div>
         </div>
@@ -113,9 +117,51 @@
 
     @section scripts{
         <script src="~/js/amount-in-word.js"></script>
+
         <script>
-        $(function() {
-            $("#amount-word").text(`Taka (in word): ${number2text(@Model.SellingTotalPrice).toLowerCase()}`);
-        });
+            $(function() {
+                $("#amount-word").text(`Taka (in word): ${number2text(@Model.SellingTotalPrice).toLowerCase()}`);
+            });
+
+
+            const btnDelete = document.getElementById('btn-delete');
+
+            btnDelete.addEventListener('click', function(evt) {
+                const id = +this.getAttribute('data-id');
+                const url = '/Selling/DeleteReceipt';
+                const parameter = { params: { id } };
+                const request = axios.get(url, parameter);
+                const forceDeleteContainer = document.getElementById('force-delete');
+
+                forceDeleteContainer.innerHTML = '';
+
+                request.then(response => {
+                    if (!response.data.IsSuccess) {
+                        forceDeleteContainer.innerHTML = `<span class="red-text">${response.data.Message} <a data-id="@Model.SellingId" onclick="onDeleteClick(this)" class="blue-text"><i class="fas fa-trash mr-1"></i>force delete</a></span>`;
+                        return;
+                    }
+
+                    forceDelete(id);
+
+                }).catch(err => console.log(err));
+            });
+
+            //force delete click
+            function onDeleteClick(evt) {
+                const id = +evt.getAttribute('data-id');
+                forceDelete(id);
+            }
+
+            //force delete post
+            function forceDelete(id) {
+                const url = `/Selling/ForceDeleteReceipt/${id}`;
+                const request = axios.post(url);
+
+                request.then(response => {
+                    if (response.data.IsSuccess)
+                        location.href = `/Selling/SellingRecords`;
+
+                }).catch(err => console.log(err));
+            }
         </script>
     }

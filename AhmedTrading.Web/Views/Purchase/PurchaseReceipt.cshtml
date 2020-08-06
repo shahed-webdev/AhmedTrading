@@ -11,16 +11,14 @@
 }
 
 <section class="my-4 d-print-none">
-    <div class="card">
-        <div class="card-body d-flex justify-content-between">
-            <div id="delete-container">
-                <button id="btn-delete" class="btn btn-danger btn-rounded" data-id="@Model.PurchaseId"><i class="fas fa-trash mr-1"></i>Delete Permanently</button>
-                <div id="force-delete"></div>
-            </div>
-            <div>
-                <a class="btn btn-elegant btn-rounded" href="/Purchase/Purchase"><i class="fas fa-shopping-cart mr-1"></i>Purchase</a>
-                <button class="btn btn-amber btn-rounded" onclick="print()"><i class="fas fa-print mr-1"></i>Print</button>
-            </div>
+    <div class="d-flex justify-content-between">
+        <div>
+            <button id="btn-delete" class="btn btn-danger btn-rounded" data-id="@Model.PurchaseId"><i class="fas fa-trash mr-1"></i>Delete Permanently</button>
+            <div id="force-delete"></div>
+        </div>
+        <div>
+            <a class="btn btn-elegant btn-rounded" href="/Purchase/Purchase"><i class="fas fa-shopping-cart mr-1"></i>Purchase</a>
+            <button class="btn btn-amber btn-rounded" onclick="print()"><i class="fas fa-print mr-1"></i>Print</button>
         </div>
     </div>
 </section>
@@ -167,7 +165,6 @@
             $("#amount-word").text(`Taka (in word): ${number2text(@Model.PurchaseTotalPrice).toLowerCase()}`);
         });
 
-        const deleteContainer = document.getElementById('delete-container');
         const btnDelete = document.getElementById('btn-delete');
 
         btnDelete.addEventListener('click', function(evt) {
@@ -175,35 +172,38 @@
             const url = '/Purchase/DeleteReceipt';
             const parameter = { params: { id } };
             const request = axios.get(url, parameter);
-            const forceDelete = document.getElementById('force-delete');
+            const forceDeleteContainer = document.getElementById('force-delete');
 
-            forceDelete.innerHTML = '';
+            forceDeleteContainer.innerHTML = '';
 
             request.then(response => {
                 if (!response.data.IsSuccess) {
-                    forceDelete.innerHTML = `<span class="red-text">${response.data.Message} <a data-id="@Model.PurchaseId" onclick="forceDelete(this)" class="blue-text"><i class="fas fa-trash mr-1"></i>force delete</a></span>`;
+                    forceDeleteContainer.innerHTML = `<span class="red-text">${response.data.Message} <a data-id="@Model.PurchaseId" onclick="onDeleteClick(this)" class="blue-text"><i class="fas fa-trash mr-1"></i>force delete</a></span>`;
                     return;
                 }
-                console.log(response)
-                //location.href = `/Purchase/PurchaseRecords`;
+
+                forceDelete(id);
 
             }).catch(err => console.log(err));
         });
 
-        //force delete
-        function forceDelete(evt) {
+        //force delete click
+        function onDeleteClick(evt) {
             const id = +evt.getAttribute('data-id');
-            const url = '/Purchase/ForceDeleteReceipt';
-            const parameter = { params: { id } };
-            const request = axios.get(url, parameter);
+            forceDelete(id);
+        }
+
+        //force delete post
+        function forceDelete(id) {
+            const url = `/Purchase/ForceDeleteReceipt/${id}`;
+            const request = axios.post(url);
 
             request.then(response => {
-                console.log(response)
-                if (response.data.IsSuccess) 
+                if (response.data.IsSuccess)
                     location.href = `/Purchase/PurchaseRecords`;
 
             }).catch(err => console.log(err));
         }
-    </script> 
+    </script>
 }
 

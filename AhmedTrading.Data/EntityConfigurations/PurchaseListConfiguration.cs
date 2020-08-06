@@ -22,7 +22,7 @@ namespace AhmedTrading.Data
             builder.HasOne(d => d.Purchase)
                 .WithMany(p => p.PurchaseList)
                 .HasForeignKey(d => d.PurchaseId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_PurchaseList_Purchase");
         }
     }
