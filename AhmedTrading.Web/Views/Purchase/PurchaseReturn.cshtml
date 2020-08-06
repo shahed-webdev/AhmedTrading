@@ -1,4 +1,5 @@
-﻿
+﻿@using AhmedTrading.Repository
+@model PurchaseReceiptViewModel
 @{
     ViewData["Title"] = "Purchase";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -11,7 +12,6 @@
 
         .remove { cursor: pointer }
         .remove:hover { color: #ff0000 }
-
         #formPayment { padding: 15px 0; color: #4f4f4f; }
         #formPayment ul { list-style-type: none; padding: 0; }
         #formPayment ul li strong { font-weight: 500; }
@@ -19,7 +19,7 @@
 }
 
 <div class="m-md-3">
-    <h4 class="mb-3 page-header">Purchase</h4>
+    <h4 class="mb-3 page-header">Purchase Return</h4>
 
     <section class="my-4">
         <div class="row">
@@ -35,7 +35,7 @@
                 <div class="card card-body">
                     <form id="tableForm">
                         <div class="table-responsive">
-                            <table class="table mb-0" style="white-space: nowrap">
+                            <table class="table mb-0">
                                 <thead>
                                 <tr>
                                     <th><strong>Product</strong></th>
@@ -64,7 +64,7 @@
                             </li>
                             <li class="md-form">
                                 <label for="inputDiscount">Discount</label>
-                                <input id="inputDiscount" type="number" min="0" class="form-control" />
+                                <input id="inputDiscount" type="number" min="0" value="@Model.PurchaseDiscountAmount" class="form-control" />
                             </li>
                             <li class="d-flex justify-content-between align-items-center green-text">
                                 <strong>Total Payable</strong>
@@ -72,12 +72,9 @@
                             </li>
                             <li class="md-form">
                                 <label for="inputPaid">Total Paid</label>
-                                <input id="inputPaid" type="number" min="0" class="form-control" />
+                                <input id="inputPaid" value="@Model.PurchasePaidAmount" type="number" min="0" class="form-control" />
                             </li>
-                            <li class="d-flex justify-content-between align-items-center orange-text">
-                                <strong>Total Due</strong>
-                                <strong>৳<span id="totalDue"></span></strong>
-                            </li>
+
                             <li class="md-form">
                                 <select id="selectPaymentMethod" class="mdb-select" style="position: absolute; top: 1rem; left: 0px; height: 0px; width: 0px; opacity: 0; padding: 0px; pointer-events: none; display: inline !important;">
                                     <option value="" selected>[ Payment Method ]</option>
@@ -87,23 +84,24 @@
                                     <option>bkash</option>
                                 </select>
                             </li>
+
+                            <li class="d-flex justify-content-between align-items-center orange-text">
+                                <strong>Total Due</strong>
+                                <strong>৳<span id="totalDue"></span></strong>
+                            </li>
+                            
+                            <li class="md-form">
+                                <label for="inputReturn">Return Amount</label>
+                                <input id="inputReturn" type="number" min="0" class="form-control" />
+                            </li>
+                            <br />
                             <li class="md-form">
                                 <label for="inputMemoNumber">Memo Number</label>
-                                <input id="inputMemoNumber" type="text" class="form-control"/>
+                                <input id="inputMemoNumber" value="@Model.MemoNumber" type="text" class="form-control"/>
                             </li>
+
                             <li class="md-form pt-3">
                                 <input id="inputPurchaseDate" type="text" class="form-control datepicker" required />
-                            </li>
-                            <li class="d-flex justify-content-between align-items-center">
-                                <div class="md-form mt-4 flex-1">
-                                    <input placeholder="Find Vendor" type="text" id="inputFindVendor" class="form-control" autocomplete="off" />
-                                    <div id="VendorInfo" class="text-center"></div>
-                                </div>
-
-                                <input type="hidden" id="hiddenVendorId" />
-                                <a id="vendorAddClick" data-url="/Vendor/Create" class="btn-floating btn-sm purple-gradient" title="Add New" data-toggle="modal">
-                                    <i class="fal fa-user-plus"></i>
-                                </a>
                             </li>
                         </ul>
 
@@ -118,11 +116,12 @@
     </section>
 </div>
 
-<!-- Insert Modal -->
-<div class="modal fade" id="InsertModal" tabindex="-1" role="dialog" aria-hidden="true"></div>
-
 @section Scripts {
-    <partial name="_UnobtrusiveAjaxPartial" />
-    <script src="~/page-js/product-purchase.js?v=1.6"></script>
+    <script>
+        let arr = @Html.Raw(Json.Serialize(Model.Products));
+        localStorage.setItem('return-cart-storage', JSON.stringify(arr));
+    </script>
+
+    <script src="~/page-js/purchase-return.js?v=1.1"></script>
 }
 

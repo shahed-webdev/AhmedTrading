@@ -59,6 +59,7 @@ namespace AhmedTrading.Repository
                 CustomerId = c.CustomerId,
                 CustomerName = c.CustomerName,
                 CustomerAddress = c.CustomerAddress,
+                OpeningDue = c.OpeningDue,
                 PhoneNumbers = c.CustomerPhone.Select(p => new CustomerPhoneViewModel
                 {
                     CustomerPhoneId = p.CustomerPhoneId,

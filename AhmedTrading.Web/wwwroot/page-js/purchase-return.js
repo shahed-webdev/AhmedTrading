@@ -24,18 +24,17 @@ const inputMemoNumber = formPayment.inputMemoNumber;
 const inputPurchaseDate = formPayment.inputPurchaseDate;
 const vendorError = formPayment.querySelector('#vendor-error');
 
-//global store
 let storage = [];
 
 //functions
 const localCart = {
     get: function() {
-        if (localStorage.getItem('cart-storage')) {
-            storage = JSON.parse(localStorage.getItem('cart-storage'));
+        if (localStorage.getItem('return-cart-storage')) {
+            storage = JSON.parse(localStorage.getItem('return-cart-storage'));
         }
     },
     set: function() {
-        localStorage.setItem('cart-storage', JSON.stringify(storage));
+        localStorage.setItem('return-cart-storage', JSON.stringify(storage));
     },
     addToTable: function (product) {
         error.textContent = "";
@@ -95,16 +94,16 @@ const appendTotalPrice = function () {
     totalPayable.innerText = totalAmount;
     totalDue.innerText = totalAmount;
 
-    if (inputDiscount.value)
-        inputDiscount.value = '';
+    //if (inputDiscount.value)
+    //    inputDiscount.value = '';
 
-    if (inputPaid.value)
-        inputPaid.value = '';
+    //if (inputPaid.value)
+    //    inputPaid.value = '';
 
-    if (selectPaymentMethod.selectedIndex > 0) {
-        clearMDBdropDownList(formPayment);
-        selectPaymentMethod.removeAttribute('required');
-    }
+    //if (selectPaymentMethod.selectedIndex > 0) {
+    //    clearMDBdropDownList(formPayment);
+    //    selectPaymentMethod.removeAttribute('required');
+    //}
 }
 
 //create table rows
@@ -138,7 +137,6 @@ const createTableRow = function (item) {
     const td3 = tr.insertCell(2);
     const inputQuantity = document.createElement('input');
     inputQuantity.type = "number";
-    inputQuantity.step = 0.01;
     inputQuantity.required = true;
     inputQuantity.min = 1;
     inputQuantity.classList.add('form-control', 'inputQuantity');
@@ -283,79 +281,6 @@ tbody.addEventListener('input', function (evt) {
 displayTableData();
 
 
-//****VENDORS****//
-//selectors
-const vendorAddClick = document.getElementById('vendorAddClick');
-const inputFindVendor = document.getElementById('inputFindVendor');
-const vendorInfo = document.getElementById('VendorInfo');
-const hiddenVendorId = document.getElementById('hiddenVendorId');
-const insertModal = $('#InsertModal');
-
-//functions
-
-//get vendor insert modal
-const onVendorAddClicked = function () {
-    const url = this.getAttribute('data-url');
-
-    axios.get(url)
-        .then(response => insertModal.html(response.data).modal('show'))
-        .catch(err => console.log(err))
-}
-
-//append vendor info to DOM
-const appendVendorInfo = function(data) {
-    hiddenVendorId.value = data.VendorId;
-    vendorInfo.innerHTML = '';
-
-    const html = `<span class="badge badge-pill badge-success">${data.VendorCompanyName}</span>
-        <span class="badge badge-pill badge-info">${data.VendorPhone}</span>`;
-
-    vendorInfo.innerHTML = html;
-}
-
-//vendor create success
-function onCreateSuccess(response) {
-    if (response.Status) {
-        insertModal.modal('hide');
-        inputFindVendor.value = '';
-
-        appendVendorInfo(response.Data);
-    }
-    else {
-        insertModal.html(response);
-    }
-}
-
-//reset vendorId
-hiddenVendorId.value = ''
-
-//vendor autocomplete
-$('#inputFindVendor').typeahead({
-    minLength: 1,
-    displayText: function (item) {
-        return `${item.VendorCompanyName} (${item.VendorName}, ${item.VendorPhone})`;
-    },
-    afterSelect: function (item) {
-        this.$element[0].value = item.VendorCompanyName
-    },
-    source: function (request, result) {
-        $.ajax({
-            url: "/Vendor/FindVendor",
-            data: { prefix: request },
-            success: function (response) { result(response); },
-            error: function (err) { console.log(err) }
-        });
-    },
-    updater: function (item) {
-        appendVendorInfo(item);
-        return item;
-    }
-});
-
-//event listener
-vendorAddClick.addEventListener('click', onVendorAddClicked);
-
-
 //****PAYMENT SECTION****/
 
 //functions
@@ -412,7 +337,7 @@ const validation = function () {
 
 //remove localstorage
 const localStoreClear = function () {
-    localStorage.removeItem('cart-storage');
+    localStorage.removeItem('return-cart-storage');
 }
 
 //check for validation

@@ -27,10 +27,10 @@ namespace AhmedTrading.Repository
 
         public Task<bool> IsExistAsync(string name, int updateId = 0)
         {
-            var product = Context.Product.Where(p => p.ProductName == name);
+            if (updateId == 0)
+                return Context.Product.AnyAsync(p => p.ProductName == name);
 
-            if (updateId != 0) product.Where(p => p.ProductId != updateId);
-            return product.AnyAsync();
+            return Context.Product.AnyAsync(p => p.ProductName == name && p.ProductId != updateId);
         }
 
         public Task<List<ProductViewModel>> FindByBrandAsync(int brandId = 0)

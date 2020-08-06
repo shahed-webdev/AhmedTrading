@@ -3,7 +3,7 @@
  $('.mdb-select').materialSelect();
 
 // global storage
-let cartProducts = []
+ let cartProducts = [];
 
 
 //*****SELECTORS*****/
@@ -12,29 +12,26 @@ let cartProducts = []
  const tbody = document.getElementById("tbody");
  const error = document.querySelector('#error');
 
-
 //payment selectors
-const formPayment = document.getElementById('formPayment')
-const totalPrice = formPayment.querySelector('#totalPrice')
-const inputDiscount = formPayment.inputDiscount
-const totalPayable = formPayment.querySelector('#totalPayable')
-const inputPaid = formPayment.inputPaid
-const totalDue = formPayment.querySelector('#totalDue')
-const selectPaymentMethod = formPayment.selectPaymentMethod
+ const formPayment = document.getElementById('formPayment');
+ const totalPrice = formPayment.querySelector('#totalPrice');
+ const inputDiscount = formPayment.inputDiscount;
+ const totalPayable = formPayment.querySelector('#totalPayable');
+ const selectPaymentMethod = formPayment.selectPaymentMethod;
 
 //customer
-const hiddenCustomerId = formPayment.hiddenCustomerId
-const customerError = formPayment.querySelector('#customer-error')
+ const hiddenCustomerId = formPayment.hiddenCustomerId;
+ const customerError = formPayment.querySelector('#customer-error');
 
 //functions
 const localCart = {
     get: function () {
-        if (localStorage.getItem('selling-cart-storage')) {
-            cartProducts = JSON.parse(localStorage.getItem('selling-cart-storage'));
+        if (localStorage.getItem('quick-cart-storage')) {
+            cartProducts = JSON.parse(localStorage.getItem('quick-cart-storage'));
         }
     },
     set: function () {
-        localStorage.setItem('selling-cart-storage', JSON.stringify(cartProducts));
+        localStorage.setItem('quick-cart-storage', JSON.stringify(cartProducts));
     },
     addToTable: function (product) {
         error.textContent = "";
@@ -90,18 +87,9 @@ const localCart = {
 
      totalPrice.innerText = totalAmount
      totalPayable.innerText = totalAmount;
-     totalDue.innerText = totalAmount;
 
      if (inputDiscount.value)
          inputDiscount.value = '';
-
-     if (inputPaid.value)
-         inputPaid.value = '';
-
-     if (selectPaymentMethod.selectedIndex > 0) {
-         clearMDBdropDownList(formPayment);
-         selectPaymentMethod.removeAttribute('required');
-     }
  }
 
 //create table rows
@@ -135,7 +123,6 @@ const createTableRow = function (item) {
     const td3 = tr.insertCell(2);
     const inputQuantity = document.createElement('input');
     inputQuantity.type = "number";
-    inputQuantity.step = 0.01;
     inputQuantity.required = true;
     inputQuantity.min = 1;
     inputQuantity.classList.add('form-control', 'inputQuantity');
@@ -284,28 +271,7 @@ const onInputDiscount = function () {
     this.setAttribute('max', total);
 
     totalPayable.innerText = isValid ? grandTotal.toFixed() : total;
-    totalDue.innerText = isValid ? grandTotal.toFixed() : total;
-
-    if (inputPaid.value)
-        inputPaid.value = '';
 }
-
-//input paid amount
-const onInputPaid = function () {
-    const payable = +totalPayable.textContent;
-    const paid = +this.value;
-    const isValid = validInput(payable, paid);
-    const due = (payable - paid);
-
-    paid ? selectPaymentMethod.setAttribute('required', true) : selectPaymentMethod.removeAttribute('required');
-
-    this.setAttribute('max', payable);
-
-    totalDue.innerText = isValid ? due.toFixed() : payable;
-}
-
-//reset customer Id
-hiddenCustomerId.value = '';
 
 //validation info
 const validation = function () {
@@ -313,11 +279,6 @@ const validation = function () {
 
     if (!cartProducts.length) {
         customerError.innerText = 'Add product to sell!'
-        return false;
-    }
-
-    if (!hiddenCustomerId.value) {
-        customerError.innerText = 'Select or add customer!'
         return false;
     }
 
@@ -342,16 +303,16 @@ const onSellSubmitClicked = function(evt) {
     btnSubmit.disabled = true
 
     const body = {
-        CustomerId: +hiddenCustomerId.value,
+        CustomerId: null,
         SellingTotalPrice: +totalPrice.textContent,
-        SellingDiscountAmount: +inputDiscount.value | 0,
-        SellingPaidAmount: +inputPaid.value | 0,
-        PaymentMethod: inputPaid.value ? selectPaymentMethod.value : '',
+        SellingDiscountAmount: +inputDiscount.value || 0,
+        SellingPaidAmount: +totalPayable.innerText || 0,
+        PaymentMethod: selectPaymentMethod.value,
         SellingDate: new Date(),
         ProductList: cartProducts
     }
 
-    const url = '/Selling/Selling'
+    const url = '/Selling/QuickSelling'
     const options = {
         method: 'POST',
         url: url,
@@ -377,46 +338,12 @@ const onSellSubmitClicked = function(evt) {
 }
 
 //event listener
-formPayment.addEventListener('submit', onCheckFormValid)
-tableForm.addEventListener('submit', onSellSubmitClicked)
-inputDiscount.addEventListener('input', onInputDiscount)
-inputPaid.addEventListener('input', onInputPaid)
-
-//****CUSTOMER****//
-//customer autocomplete
-$('#inputCustomer').typeahead({
-    minLength: 1,
-    displayText: function (item) {
-        return `${item.CustomerName} ${item.PhonePrimary ? item.PhonePrimary: ''} ${item.OrganizationName ? item.OrganizationName: ''}`;
-    },
-    afterSelect: function (item) {
-        this.$element[0].value = item.CustomerName
-    },
-    source: function (request, result) {
-        $.ajax({
-            url: "/Selling/FindCustomers",
-            data: { prefix: request },
-            success: function (response) { result(response); },
-            error: function (err) { console.log(err) }
-        });
-    },
-    updater: function (item) {
-        appendInfo(item);
-        hiddenCustomerId.value = item.CustomerId;
-        customerError.innerText = ''
-        return item;
-    }
-})
-
-function appendInfo(item) {
-    const html = `<span class="badge badge-pill badge-success">${item.CustomerName}</span>
-        <span class="badge badge-pill badge-info">${item.PhonePrimary}</span>`;
-
-    document.getElementById('customerInfo').innerHTML = html;
-}
+ formPayment.addEventListener('submit', onCheckFormValid);
+ tableForm.addEventListener('submit', onSellSubmitClicked);
+ inputDiscount.addEventListener('input', onInputDiscount);
 
 
 //remove localstorage
 function localStoreClear() {
-    localStorage.removeItem('selling-cart-storage');
+    localStorage.removeItem('quick-cart-storage');
 }

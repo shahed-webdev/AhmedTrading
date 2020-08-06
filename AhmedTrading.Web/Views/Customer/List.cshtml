@@ -22,6 +22,7 @@
                         <th>Name</th>
                         <th>Mobile&nbsp;(Primary)</th>
                         <th>Address</th>
+                        <th>Due</th>
                         <th>Edit</th>
                     </tr>
                 </thead>
@@ -58,11 +59,13 @@
                             },
                             { data: "PhonePrimary" },
                             { data: "CustomerAddress" },
+                            { data: "Due", "render": dataTable.addSign },
                             { data: "CustomerId", "render": function (data, type, row, meta) { return `<a class="fas fa-edit" href="/Customer/Update/${row.CustomerId}"></a>` } }
                         ],
                     columnDefs: [
                         { 'searchable': false, 'targets': [3] },
-                        { 'className': "text-left", "targets": [0,2] }
+                        { 'className': "text-left", "targets": [0,2] },
+                        { 'className': "text-right", "targets": [3] }
                     ]
                 });
             },

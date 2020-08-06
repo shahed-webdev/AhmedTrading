@@ -62,6 +62,29 @@ namespace AhmedTrading.Web.Controllers
             return Json(data);
         }
 
+        public IActionResult PurchaseReturn(int? id)
+        {
+            if (id == null) return RedirectToAction("PurchaseRecords");
+
+            var model = _db.Purchases.FindReceipt(id.GetValueOrDefault(), _db);
+
+            return View(model.Data);
+        }
+
+        //delete receipt if not payment
+        public IActionResult DeleteReceipt(int id)
+        {
+            var model = _db.Purchases.ReceiptPaymentIsExist(id);
+            return Json(model);
+        }
+
+        //delete receipt with payment
+        public IActionResult ForceDeleteReceipt(int id)
+        {
+            var model = _db.Purchases.DeleteReceipt(id);
+            return Json(model);
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

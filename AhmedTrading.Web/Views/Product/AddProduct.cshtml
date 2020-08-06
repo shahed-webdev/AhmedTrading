@@ -23,13 +23,16 @@
                         <option value="" selected>Select Brand</option>
                     </select>
                 </div>
-
                 <div class="md-form mx-4">
                     <input asp-for="ProductName" class="form-control" required />
                     <label for="ProductName">Product Name</label>
                     <span asp-validation-for="ProductName"></span>
                 </div>
-
+                <div class="md-form mx-4">
+                    <input asp-for="Stock" class="form-control" type="number" step="0.01" value="0" required />
+                    <label for="Stock">Stock</label>
+                    <span asp-validation-for="Stock"></span>
+                </div>
                 <div>
                     <div class="custom-control custom-radio custom-control-inline">
                         <input type="radio" value="Ton" class="custom-control-input" id="1" name="UnitType">
@@ -46,7 +49,7 @@
                 </div>
             </div>
         </form>
-    </section>
+    </section>  
 
     <section class="card card-body mt-3">
         <h4 id="categoryName" class="font-weight-bold mb-3"></h4>
@@ -57,7 +60,8 @@
                     <th><strong>Product Name</strong></th>
                     <th><strong>Selling Unit Price</strong></th>
                     <th><strong>Stock</strong></th>
-                    <th style="width: 50px"><strong>Remove</strong></th>
+                    <th style="width: 30px"></th>
+                    <th style="width: 30px"></th>
                 </tr>
             </thead>
         </table>
@@ -90,17 +94,20 @@
                     columns:
                     [
                         { data: "ProductName" },
-                        { data: "SellingUnitPrice" },
+                        { data: "SellingUnitPrice", "render": dataTable.addSign },
                         { data: "Stock", "render": function(data, type, row, meta) { return `${data} ${row.UnitType}` } },
-                        { data: "ProductId", "render": function(data) { return `<a class="far fa-trash-alt red-text delete" href="/Product/DeleteProduct/${data}"></a>`; } }
+                        { data: "ProductId", "render": function(data) { return `<a class="far fa-trash-alt red-text delete" href="/Product/DeleteProduct/${data}"></a>`; } },
+                        { data: "ProductId", "render": function(data) { return `<a class="fas fa-edit" href="/Product/UpdateProduct/${data}"></a>`; } }
                     ],
                     columnDefs: [
-                        { 'searchable': false, 'targets': [3] },
-                        { 'sortable': false, 'targets': [3] },
-                        { 'className': "text-left", "targets": [0, 2] }
+                        { 'searchable': false, 'targets': [3, 4] },
+                        { 'sortable': false, 'targets': [3, 4] },
+                        { 'className': "text-left", "targets": [0] },
+                        { 'className': "text-right", "targets": [1, 2] }
                     ]
                 });
             },
+            addSign: function(data) { return `${data}/-` },
             getData: function() {
                 dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
             }

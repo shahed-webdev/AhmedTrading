@@ -56,36 +56,44 @@ namespace AhmedTrading.Web.Controllers
 
 
         //Update Product
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> UpdateProduct(int? id)
         {
-            if (id == null) return BadRequest(HttpStatusCode.BadRequest);
+            if (id == null) return RedirectToAction("AddProduct");
 
             var model = await _db.Products.FindByIdAsync(id.GetValueOrDefault()).ConfigureAwait(false);
-
-            if (model == null) return NotFound();
+            if (model == null) return RedirectToAction("AddProduct");
 
             ViewBag.ProductBrand = new SelectList(_db.ProductBrands.ddl(), "value", "label", model.ProductBrandId);
+            
+            var r = new ProductUpdateModel
+            {
+                ProductId = model.ProductId,
+                ProductBrandId = model.ProductBrandId,
+                ProductName = model.ProductName,
+                SellingUnitPrice = model.SellingUnitPrice,
+                UnitType = model.UnitType,
+                Stock = model.Stock
+            };
 
-            return PartialView("_Edit", model);
+            return View(r);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(ProductUpdateModel model)
+        public async Task<IActionResult> UpdateProduct(ProductUpdateModel model)
         {
+            ViewBag.ProductBrand = new SelectList(_db.ProductBrands.ddl(), "value", "label", model.ProductBrandId);
+
             var exist = await _db.Products.IsExistAsync(model.ProductName, model.ProductId).ConfigureAwait(false);
             if (exist) ModelState.AddModelError("ProductName", "Product Name already exist!");
 
-            if (!ModelState.IsValid) return PartialView("_Edit", model);
+            if (!ModelState.IsValid) return View(model);
 
             _db.Products.CustomUpdate(model);
 
             var task = await _db.SaveChangesAsync();
-            if (task != 0) return Json(model);
+            if (task != 0) return RedirectToAction("AddProduct");
 
-            ModelState.AddModelError("", "Unable to update");
-            Response.StatusCode = (int)HttpStatusCode.BadRequest;
-
-            return PartialView("_Edit", model);
+            return View(model);
         }
 
         //Find Product

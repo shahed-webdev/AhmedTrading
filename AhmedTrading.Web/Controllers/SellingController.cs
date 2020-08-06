@@ -21,6 +21,7 @@ namespace AhmedTrading.Web.Controllers
             return View();
         }
 
+
         [HttpPost]
         public async Task<IActionResult> Selling([FromBody] SellingViewModel model)
         {
@@ -37,7 +38,29 @@ namespace AhmedTrading.Web.Controllers
             return Ok(response);
         }
 
-        //Selling receipt
+
+        //Quick Selling
+        public IActionResult QuickSelling()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> QuickSelling([FromBody] SellingViewModel model)
+        {
+            model.RegistrationId = _db.Registrations.GetRegID_ByUserName(User.Identity.Name);
+
+            if (!ModelState.IsValid) UnprocessableEntity(ModelState);
+
+            var response = await _db.Selling.AddCustomAsync(model, _db).ConfigureAwait(false);
+
+            if (!response.IsSuccess) return UnprocessableEntity(response);
+
+            return Ok(response);
+        }
+
+
+        //Selling Receipt
         public async Task<IActionResult> SellingReceipt(int? id)
         {
             if (id == null) return RedirectToAction("Selling");
@@ -54,18 +77,20 @@ namespace AhmedTrading.Web.Controllers
             return Json(data);
         }
 
-        //selling record
+        //Selling Record
         public IActionResult SellingRecords()
         {
             return View();
         }
 
-        //request from data-table(ajax)
+        //Request from data-table(ajax)
         public IActionResult SellingRecordsData(DataRequest request)
         {
             var data = _db.Selling.Records(request);
             return Json(data);
         }
+
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

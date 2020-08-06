@@ -40,7 +40,10 @@
                     <div id="phone-wrapper" class="mb-5">
                         <partial name="_UpdatePhonePartial" model="@Model.PhoneNumbers" />
                     </div>
-
+                    <div class="md-form mb-5">
+                        <input asp-for="OpeningDue" type="number" step="0.01" min="0" class="form-control" />
+                        <label asp-for="OpeningDue">Opening Due</label>
+                    </div>
                     <div class="d-flex justify-content-between align-items-center">
                         <button id="btnSubmit" class="btn blue-bg-btn btn-rounded my-4 waves-effect" type="submit">Update Customer</button>
                         <a asp-action="List">Back to List</a>
