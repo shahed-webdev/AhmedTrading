@@ -110,6 +110,7 @@ namespace AhmedTrading.Repository
             var customer = Context.Customer.Include(c => c.CustomerPhone).FirstOrDefault(c => c.CustomerId == model.CustomerId);
             customer.CustomerAddress = model.CustomerAddress;
             customer.CustomerName = model.CustomerName;
+            customer.OpeningDue = model.OpeningDue;
             customer.CustomerPhone = model.PhoneNumbers.Select(p => new CustomerPhone
             {
                 CustomerPhoneId = p.CustomerPhoneId.GetValueOrDefault(),
@@ -181,6 +182,7 @@ namespace AhmedTrading.Repository
             {
                 CustomerName = model.CustomerName,
                 CustomerAddress = model.CustomerAddress,
+                OpeningDue = model.OpeningDue,
                 CustomerPhone = model.PhoneNumbers.Select(p => new CustomerPhone
                 {
                     Phone = p.Phone,

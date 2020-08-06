@@ -20,6 +20,7 @@ namespace AhmedTrading.Data
         public double ReturnAmount { get; set; }
         public double Paid { get; set; }
         public double Due { get; set; }
+        public double OpeningDue { get; set; }
         public DateTime InsertDate { get; set; }
 
         public virtual ICollection<CustomerPhone> CustomerPhone { get; set; }

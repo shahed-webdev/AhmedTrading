@@ -14,6 +14,7 @@ namespace AhmedTrading.Repository
         [Required]
         public string CustomerName { get; set; }
         public string CustomerAddress { get; set; }
+        public double OpeningDue { get; set; }
         [Required]
         public ICollection<CustomerPhoneViewModel> PhoneNumbers { get; set; }
     }

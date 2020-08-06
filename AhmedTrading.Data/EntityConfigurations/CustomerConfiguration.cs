@@ -12,8 +12,9 @@ namespace AhmedTrading.Data
             builder.Property(e => e.CustomerName)
                 .IsRequired()
                 .HasMaxLength(128);
+            builder.Property(e => e.OpeningDue).HasDefaultValueSql("0");
 
-            builder.Property(e => e.Due).HasComputedColumnSql("(([TotalAmount]+[ReturnAmount])-([TotalDiscount]+[Paid]))");
+            builder.Property(e => e.Due).HasComputedColumnSql("(([OpeningDue]+[TotalAmount]+[ReturnAmount])-([TotalDiscount]+[Paid]))");
 
             builder.Property(e => e.InsertDate)
                 .HasColumnType("datetime")
