@@ -18,5 +18,8 @@ namespace AhmedTrading.Repository
         double DailySaleAmount(DateTime? day);
         ICollection<MonthlyAmount> MonthlyAmounts(int year);
 
+        DbResponse ReceiptPaymentIsExist(int id);
+        DbResponse DeleteReceipt(int id);
+
     }
 }

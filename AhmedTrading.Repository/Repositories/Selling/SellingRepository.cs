@@ -219,5 +219,80 @@ namespace AhmedTrading.Repository
 
             return months;
         }
+
+        public DbResponse ReceiptPaymentIsExist(int id)
+        {
+            try
+            {
+                if (Context.SellingPaymentList.Any(s => s.SellingId == id))
+                    return new DbResponse(false, "Payment Exist");
+
+                return new DbResponse(true, "Success");
+            }
+            catch (Exception e)
+            {
+                return new DbResponse(false, e.Message);
+            }
+        }
+
+        public DbResponse DeleteReceipt(int id)
+        {
+            try
+            {
+                var selling = Context.Selling
+                    .Include(s => s.SellingList)
+                    .Include(s => s.SellingPaymentList)
+                    .FirstOrDefault(s => s.SellingId == id);
+                if (selling == null) return new DbResponse(false, "No Data Found");
+
+                //Payment Delete
+                double paidAmount = 0;
+                foreach (var list in selling.SellingPaymentList)
+                {
+                    var sellingPayment = Context.SellingPayment.Find(list.SellingPaymentId);
+
+                    if (sellingPayment.PaidAmount == list.SellingPaidAmount)
+                    {
+                        Context.SellingPaymentList.Remove(list);
+                        Context.SellingPayment.Remove(sellingPayment);
+                    }
+                    else
+                    {
+                        sellingPayment.PaidAmount -= list.SellingPaidAmount;
+                        Context.SellingPaymentList.Remove(list);
+                        Context.SellingPayment.Update(sellingPayment);
+                    }
+
+                    paidAmount += list.SellingPaidAmount;
+                }
+
+                //Product Stock Update
+                foreach (var list in selling.SellingList)
+                {
+                    var product = Context.Product.Find(list.ProductId);
+                    product.Stock += list.SellingQuantity;
+
+                    Context.Product.Update(product);
+                }
+                //Vendor balance Update
+                if (paidAmount > 0 && selling.CustomerId != null)
+                {
+                    var customer = Context.Customer.Find(selling.CustomerId);
+                    customer.Paid -= paidAmount;
+                    Context.Customer.Update(customer);
+                }
+
+                Context.Selling.Remove(selling);
+                Context.SaveChanges();
+
+
+
+                return new DbResponse(true, "Success");
+            }
+            catch (Exception e)
+            {
+                return new DbResponse(false, e.Message);
+            }
+        }
     }
 }
