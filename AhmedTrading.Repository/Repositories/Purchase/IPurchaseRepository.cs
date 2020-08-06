@@ -17,6 +17,9 @@ namespace AhmedTrading.Repository
         double TotalPurchase();
         double DailyPurchaseAmount(DateTime? date);
         ICollection<MonthlyAmount> MonthlyAmounts(int year);
+
+
+        DbResponse ReceiptPaymentIsExist(int id);
         DbResponse DeleteReceipt(int id);
         DbResponse<PurchaseReceiptViewModel> FindReceipt(int id, IUnitOfWork db);
         Task<DbResponse> ChangeReceiptAsync(PurchaseReceiptChangeModel model, IUnitOfWork db);

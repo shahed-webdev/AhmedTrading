@@ -225,14 +225,53 @@ namespace AhmedTrading.Repository
             return months;
         }
 
+        public DbResponse ReceiptPaymentIsExist(int id)
+        {
+            try
+            {
+                if (Context.PurchasePaymentList.Any(p => p.PurchaseId == id))
+                    return new DbResponse(false, "Payment Exist");
+
+                return new DbResponse(true, "Success");
+            }
+            catch (Exception e)
+            {
+                return new DbResponse(false, e.Message);
+            }
+        }
+
         public DbResponse DeleteReceipt(int id)
         {
             try
             {
-                var purchase = Context.Purchase.Include(p => p.PurchaseList).FirstOrDefault(p => p.PurchaseId == id);
+                var purchase = Context.Purchase
+                    .Include(p => p.PurchaseList)
+                    .Include(p => p.PurchasePaymentList)
+                    .FirstOrDefault(p => p.PurchaseId == id);
                 if (purchase == null) return new DbResponse(false, "No Data Found");
-                if (Context.PurchasePaymentList.Any(p => p.PurchaseId == purchase.PurchaseId)) return new DbResponse(false, "Payment Exist");
 
+                //Payment Delete
+                double paidAmount = 0;
+                foreach (var list in purchase.PurchasePaymentList)
+                {
+                    var purchasePayment = Context.PurchasePayment.Find(list.PurchasePaymentId);
+
+                    if (purchasePayment.PaidAmount == list.PurchasePaidAmount)
+                    {
+                        Context.PurchasePaymentList.Remove(list);
+                        Context.PurchasePayment.Remove(purchasePayment);
+                    }
+                    else
+                    {
+                        purchasePayment.PaidAmount -= list.PurchasePaidAmount;
+                        Context.PurchasePaymentList.Remove(list);
+                        Context.PurchasePayment.Update(purchasePayment);
+                    }
+
+                    paidAmount += list.PurchasePaidAmount;
+                }
+
+                //Product Stock Update
                 foreach (var list in purchase.PurchaseList)
                 {
                     var product = Context.Product.Find(list.ProductId);
@@ -240,8 +279,18 @@ namespace AhmedTrading.Repository
 
                     Context.Product.Update(product);
                 }
+                //Vendor balance Update
+                if (paidAmount > 0)
+                {
+                    var vendor = Context.Vendor.Find(purchase.VendorId);
+                    vendor.Paid -= paidAmount;
+                    Context.Vendor.Update(vendor);
+                }
+
                 Context.Purchase.Remove(purchase);
                 Context.SaveChanges();
+
+
 
                 return new DbResponse(true, "Success");
             }
