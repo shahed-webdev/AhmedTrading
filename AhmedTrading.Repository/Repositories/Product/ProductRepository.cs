@@ -18,7 +18,8 @@ namespace AhmedTrading.Repository
             {
                 ProductName = model.ProductName,
                 ProductBrandId = model.ProductBrandId,
-                UnitType = model.UnitType
+                UnitType = model.UnitType,
+                Stock = model.Stock
             };
 
             Add(product);
