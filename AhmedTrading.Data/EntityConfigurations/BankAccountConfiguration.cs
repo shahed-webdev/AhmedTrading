@@ -7,7 +7,13 @@ namespace AhmedTrading.Data
     {
         public void Configure(EntityTypeBuilder<BankAccount> builder)
         {
+            builder.Property(e => e.BankName)
+                .IsRequired()
+                .HasMaxLength(128);
             builder.Property(e => e.AccountName)
+                .IsRequired()
+                .HasMaxLength(128);
+            builder.Property(e => e.AccountNumber)
                 .IsRequired()
                 .HasMaxLength(128);
 

@@ -155,7 +155,7 @@ namespace AhmedTrading.Repository
             {
                 SellingId = s.SellingId,
                 CustomerId = s.CustomerId,
-                CustomerName = s.Customer.CustomerName,
+                CustomerName = string.IsNullOrEmpty(s.Customer.CustomerName) ? "CASH SALE" : s.Customer.CustomerName,
                 SellingSn = s.SellingSn,
                 SellingAmount = s.SellingTotalPrice,
                 SellingPaidAmount = s.SellingPaidAmount,

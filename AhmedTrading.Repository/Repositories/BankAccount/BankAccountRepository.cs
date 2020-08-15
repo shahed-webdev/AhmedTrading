@@ -17,11 +17,13 @@ namespace AhmedTrading.Repository
         {
             try
             {
-                if (IsExistAccount(model.AccountName)) return new DbResponse(false, "Account name already exist");
+                if (IsExistAccount(model.AccountName, model.AccountNumber)) return new DbResponse(false, "Account name already exist");
 
                 var bankAccount = new BankAccount
                 {
-                    AccountName = model.AccountName
+                    AccountName = model.AccountName,
+                    BankName = model.BankName,
+                    AccountNumber = model.AccountNumber
                 };
 
                 Context.BankAccount.Add(bankAccount);
@@ -67,10 +69,12 @@ namespace AhmedTrading.Repository
 
                 if (bankAccount == null) return new DbResponse(false, "No Data Found");
 
-                if (IsExistAccount(model.AccountName, model.BankAccountId)) return new DbResponse(false, "Account name already exist");
+                if (IsExistAccount(model.AccountName, model.AccountNumber, model.BankAccountId)) return new DbResponse(false, "Account already exist");
 
 
                 bankAccount.AccountName = model.AccountName;
+                bankAccount.AccountNumber = model.AccountNumber;
+                bankAccount.BankName = model.BankName;
 
 
                 Context.BankAccount.Update(bankAccount);
@@ -97,33 +101,42 @@ namespace AhmedTrading.Repository
 
         public DataResult<BankAccountViewModel> AccountListDataTable(DataRequest request)
         {
-            var bankAccount = Context.BankAccount.Select(b => new BankAccountViewModel
-            {
-                BankAccountId = b.BankAccountId,
-                AccountName = b.AccountName,
-                Balance = b.Balance
-            });
+            var bankAccount = Context.BankAccount
+                .OrderBy(b => b.BankName)
+                .ThenBy(b => b.AccountName)
+                .ThenBy(b => b.AccountNumber).Select(b => new BankAccountViewModel
+                {
+                    BankAccountId = b.BankAccountId,
+                    AccountName = b.AccountName,
+                    AccountNumber = b.AccountNumber,
+                    BankName = b.BankName,
+                    Balance = b.Balance
+                });
 
             return bankAccount.ToDataResult(request);
         }
 
         public ICollection<DDL> Ddl()
         {
-            return Context.BankAccount.Select(b => new DDL
-            {
-                value = b.BankAccountId,
-                label = b.AccountName
-            }).ToList();
+            return Context.BankAccount
+                .OrderBy(b => b.BankName)
+                .ThenBy(b => b.AccountName)
+                .ThenBy(b => b.AccountNumber)
+                .Select(b => new DDL
+                {
+                    value = b.BankAccountId,
+                    label = $"{b.AccountName} ({b.AccountNumber})"
+                }).ToList();
         }
 
-        public bool IsExistAccount(string name)
+        public bool IsExistAccount(string name, string number)
         {
-            return Context.BankAccount.Any(b => b.AccountName == name);
+            return Context.BankAccount.Any(b => b.AccountName == name || b.AccountNumber == number);
         }
 
-        public bool IsExistAccount(string name, int updateAccountId)
+        public bool IsExistAccount(string name, string number, int updateAccountId)
         {
-            return Context.BankAccount.Any(b => b.AccountName == name && b.BankAccountId != updateAccountId);
+            return Context.BankAccount.Any(b => (b.AccountName == name && b.BankAccountId != updateAccountId) || (b.AccountNumber == number && b.BankAccountId != updateAccountId));
         }
 
         public DbResponse Deposit(BankDepositModel model)

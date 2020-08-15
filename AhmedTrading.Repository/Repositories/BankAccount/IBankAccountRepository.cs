@@ -12,8 +12,8 @@ namespace AhmedTrading.Repository
         BankAccountViewModel AccountDetails(int id);
         DataResult<BankAccountViewModel> AccountListDataTable(DataRequest request);
         ICollection<DDL> Ddl();
-        bool IsExistAccount(string name);
-        bool IsExistAccount(string name, int updateAccountId);
+        bool IsExistAccount(string name, string number);
+        bool IsExistAccount(string name, string number, int updateAccountId);
 
         DbResponse Deposit(BankDepositModel model);
         DbResponse DeleteDeposit(int id);
