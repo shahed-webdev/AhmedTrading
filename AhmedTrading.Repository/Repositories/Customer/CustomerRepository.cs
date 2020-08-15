@@ -101,7 +101,8 @@ namespace AhmedTrading.Repository
                     SoldAmount = c.TotalAmount,
                     DiscountAmount = c.TotalDiscount,
                     DueAmount = c.Due,
-                    ReceivedAmount = c.Paid
+                    ReceivedAmount = c.Paid,
+                    OpeningDue = c.OpeningDue
                 });
             return customer.FirstOrDefault(c => c.CustomerId == id);
         }
