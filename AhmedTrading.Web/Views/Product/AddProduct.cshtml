@@ -14,7 +14,7 @@
 }
 
 <div class="m-md-3">
-    <h4 class="mb-3 page-header">Add Product Info</h4>
+    <h4 class="mb-3 page-header">Product Info</h4>
     <section class="card px-4 mt-3">
         <form id="formProduct" asp-action="AddProduct">
             <div class="d-flex align-items-center">
@@ -84,6 +84,8 @@
                 dataTable.table = $("#data-table").DataTable({
                     processing: true,
                     serverSide: true,
+                    dom: '<"row"<"col-sm-6"Bl><"col-sm-6"f>><"row"<"col-sm-12"<tr>>><"row"<"col-sm-5"i><"col-sm-7"p>>',
+                    buttons: dataTable.button,
                     ajax: {
                         url: "/Product/GetProductByBrand",
                         type: "POST",
@@ -110,6 +112,29 @@
             addSign: function(data) { return `${data}/-` },
             getData: function() {
                 dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
+            },
+            button: {
+                buttons: [{
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Print',
+                    title: '',
+                    exportOptions: {
+                        columns: [0,1,2] //Column value those print
+                    },
+                    customize: function (win) {
+                        $(win.document.body).prepend(
+                            `<nav class="mb-3 navbar blue-bg">
+                               <span class="navbar-brand ml-1">Ahamed Trading</span>
+                              </nav>
+                             <h4 class="h4-responsive">${$('#categoryName').text()}</h4>`);
+                    },
+                    autoPrint: true
+                }],
+                dom: {
+                    button: {
+                        className: 'btn btn-dark btn-rounded btn-sm my-0'
+                    }
+                }
             }
         }
 

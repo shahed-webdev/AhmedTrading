@@ -123,8 +123,9 @@ const createTableRow = function (item) {
     const td3 = tr.insertCell(2);
     const inputQuantity = document.createElement('input');
     inputQuantity.type = "number";
+    inputQuantity.step = 0.01;
     inputQuantity.required = true;
-    inputQuantity.min = 1;
+    inputQuantity.min = 0;
     inputQuantity.classList.add('form-control', 'inputQuantity');
 
     if (item.Stock < item.SellingQuantity)
@@ -140,7 +141,7 @@ const createTableRow = function (item) {
     inputSellingUnitPrice.type = "number";
     inputSellingUnitPrice.required = true;
     inputSellingUnitPrice.step = 0.01;
-    inputSellingUnitPrice.min = 1;
+    inputSellingUnitPrice.min = 0;
     inputSellingUnitPrice.classList.add('form-control', 'inputSellingUnitPrice');
     inputSellingUnitPrice.value = item.SellingUnitPrice;
     td4.appendChild(inputSellingUnitPrice);

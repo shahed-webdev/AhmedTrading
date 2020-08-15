@@ -57,14 +57,44 @@ namespace AhmedTrading.Web.Controllers
             return Json(result);
         }
 
-        [HttpPost]
-        public IActionResult UpdateBankName([FromBody] BankAccountUpdateModel model)
+        // GET: Vendors/Edit/5
+        public ActionResult Edit(int? id)
         {
-            var response = _db.BankAccounts.UpdateAccount(model);
-            if (response.IsSuccess) return Ok(response);
+            if (id == null) return BadRequest(HttpStatusCode.BadRequest);
 
-            return UnprocessableEntity(response);
+            var model = _db.BankAccounts.AccountDetails(id.GetValueOrDefault());
+            if (model == null) return NotFound();
+
+            return PartialView("_Edit", model);
         }
+
+        // POST: Vendors/Edit/5
+        [HttpPost]
+        public IActionResult Edit(BankAccountUpdateModel model)
+        {
+            var viewModel= new BankAccountViewModel
+            {
+                BankAccountId = model.BankAccountId,
+                BankName = model.BankName,
+                AccountName = model.AccountName,
+                AccountNumber = model.AccountNumber
+            };
+
+            if (!ModelState.IsValid) return PartialView("_Edit", viewModel);
+
+            var response = _db.BankAccounts.UpdateAccount(model);
+
+            if (!response.IsSuccess)
+            {
+                ModelState.AddModelError("AccountName", response.Message);
+                return PartialView("_Edit", viewModel);
+            }
+
+
+            var result = new AjaxContent<BankAccountViewModel> { Status = true, Data = viewModel };
+            return Json(result);
+        }
+
 
         public IActionResult Delete(int id)
         {

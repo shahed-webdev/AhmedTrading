@@ -21,7 +21,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h4 class="page-header mb-1">@Model.VendorCompanyName</h4>
-            <h5 class="font-weight-bold mb-0">Balance: @Model.Balance/-</h5>
+            <h5 class="font-weight-bold mb-0 @(Model.Balance <0 ? "red-text":"")">Balance: @Model.Balance/-</h5>
         </div>
         <div class="comm-advance">
             <h4 class="text-success">Total Commission: <strong>@Model.Commission/-</strong></h4>

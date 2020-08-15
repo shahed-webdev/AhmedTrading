@@ -55,14 +55,18 @@
                             { data: "VendorCompanyName" },
                             { data: "PurchaseAmount", "render": dataTable.addSign },
                             { data: "PurchasePaidAmount", "render": dataTable.addSign },
-                            { data: "PurchaseDueAmount", "render": dataTable.addSign },
+                            {
+                                data: "PurchaseDueAmount", "render": function(data, type, row, meta) {
+                                    return data > 0 ? `<a class="blue-text" href="/Purchase/PayDue/${row.PurchaseId}">${data}/-</a>` : data;
+                                }
+                            },
                             { data: "PurchaseDate", "render": function (data) { return moment(data).format('DD MMM YYYY') } },
                             { data: "PurchaseId", "render": function (data) { return `<a class="blue-text" href="/Purchase/PurchaseReturn/${data}">Return</a>`} }
                         ],
                     columnDefs: [
                         { 'searchable': false, 'targets': [3,4,5,6] },
                         { 'className': "text-right", "targets": [3, 4,5] },
-                        //{ 'className': "text-left", "targets": [1] }
+                        { 'className': "text-left", "targets": [2] }
                     ]
                 });
             },

@@ -54,7 +54,9 @@
                         { data: "SellingAmount", "render": dataTable.addSign },
                         { data: "SellingPaidAmount", "render": dataTable.addSign },
                         { data: "SellingDiscountAmount", "render": dataTable.addSign },
-                        { data: "SellingDueAmount", "render": dataTable.addSign },
+                        { data: "SellingDueAmount", "render": function(data, type, row, meta) {
+                            return data ? `<a class="blue-text" href="/Selling/DueCollection/${row.SellingId}">${data}/-</a>` : data;
+                        } },
                         { data: "SellingDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } }
                     ],
                     columnDefs: [
