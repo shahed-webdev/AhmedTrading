@@ -1,4 +1,7 @@
 ﻿
+//date picker
+$('.datepicker').pickadate().val(moment(new Date()).format('DD MMMM, YYYY'));
+
  // material select initialization
  $('.mdb-select').materialSelect();
 
@@ -18,6 +21,7 @@
  const inputDiscount = formPayment.inputDiscount;
  const totalPayable = formPayment.querySelector('#totalPayable');
  const selectPaymentMethod = formPayment.selectPaymentMethod;
+const inputSellingDate = formPayment.inputSellingDate
 
 //customer
  const hiddenCustomerId = formPayment.hiddenCustomerId;
@@ -309,7 +313,7 @@ const onSellSubmitClicked = function(evt) {
         SellingDiscountAmount: +inputDiscount.value || 0,
         SellingPaidAmount: +totalPayable.innerText || 0,
         PaymentMethod: selectPaymentMethod.value,
-        SellingDate: new Date(),
+        SellingDate: new Date(inputSellingDate.value),
         ProductList: cartProducts
     }
 
