@@ -59,7 +59,7 @@ namespace AhmedTrading.Repository
                     VendorCompanyName = v.VendorCompanyName,
                     VendorName = v.VendorName,
                     VendorAddress = v.VendorAddress,
-                    VendorPhone = v.VendorPhone,
+                    VendorPhone = v.VendorPhone ?? "",
                     InsertDate = v.InsertDate,
                     Balance = v.Balance,
                     Advance = v.Advance,

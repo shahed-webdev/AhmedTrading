@@ -156,7 +156,7 @@ namespace AhmedTrading.Repository
                       CustomerId = c.CustomerId,
                       CustomerName = c.CustomerName,
                       CustomerAddress = c.CustomerAddress,
-                      PhonePrimary = c.CustomerPhone.FirstOrDefault(p => p.Phone.Contains(key)).Phone,
+                      PhonePrimary = c.CustomerPhone.FirstOrDefault(p => p.Phone.Contains(key)).Phone ?? c.CustomerPhone.FirstOrDefault(p => p.IsPrimary == true).Phone,
                       Due = c.Due,
                       SignUpDate = c.InsertDate
                   }).Take(5).ToListAsync().ConfigureAwait(false);
