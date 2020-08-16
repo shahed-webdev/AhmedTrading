@@ -128,7 +128,7 @@ const createTableRow = function (item) {
     inputSellingUnitPrice.type = "number";
     inputSellingUnitPrice.required = true;
     inputSellingUnitPrice.step = 0.01;
-    inputSellingUnitPrice.min = 1;
+    inputSellingUnitPrice.min = 0;
     inputSellingUnitPrice.classList.add('form-control', 'inputSellingUnitPrice');
     inputSellingUnitPrice.value = item.SellingUnitPrice;
     td2.appendChild(inputSellingUnitPrice);
@@ -138,7 +138,8 @@ const createTableRow = function (item) {
     const inputQuantity = document.createElement('input');
     inputQuantity.type = "number";
     inputQuantity.required = true;
-    inputQuantity.min = 1;
+    inputQuantity.step = 0.01;
+    inputQuantity.min = 0;
     inputQuantity.classList.add('form-control', 'inputQuantity');
     inputQuantity.value = item.PurchaseQuantity;
     td3.appendChild(inputQuantity);
@@ -149,7 +150,7 @@ const createTableRow = function (item) {
     inputUnitPrice.type = "number";
     inputUnitPrice.required = true;
     inputUnitPrice.step = 0.01;
-    inputUnitPrice.min = 1;
+    inputUnitPrice.min = 0;
     inputUnitPrice.classList.add('form-control', 'inputPurchaseUnitPrice');
     inputUnitPrice.value = item.PurchaseUnitPrice;
     td4.appendChild(inputUnitPrice);
@@ -160,7 +161,7 @@ const createTableRow = function (item) {
     inputTotalPrice.type = "number";
     inputTotalPrice.required = true;
     inputTotalPrice.step = 0.01;
-    inputTotalPrice.min = 1;
+    inputTotalPrice.min = 0;
     inputTotalPrice.classList.add('form-control','inputTotalPrice');
     inputTotalPrice.value = item.PurchaseUnitPrice * item.PurchaseQuantity;
     td5.appendChild(inputTotalPrice);

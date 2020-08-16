@@ -93,7 +93,9 @@ namespace AhmedTrading.Repository
             var bankAccount = Context.BankAccount.Select(b => new BankAccountViewModel
             {
                 BankAccountId = b.BankAccountId,
+                BankName = b.BankName,
                 AccountName = b.AccountName,
+                AccountNumber = b.AccountNumber,
                 Balance = b.Balance
             });
             return bankAccount.FirstOrDefault(b => b.BankAccountId == id);

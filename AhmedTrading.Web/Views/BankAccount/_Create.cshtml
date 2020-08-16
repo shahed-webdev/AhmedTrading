@@ -16,14 +16,24 @@
         <div class="modal-body">
             <form data-ajax-update="#InsertModal" data-ajax="true" data-ajax-url="/BankAccount/Create" data-ajax-method="post" data-ajax-success="onCreateSuccess">
                 <div class="md-form">
-                            <input asp-for="AccountName" class="form-control" required/>
-                            <label asp-for="AccountName">Account Name</label>
-                            <span asp-validation-for="AccountName"></span>
-                        </div>
+                    <input asp-for="BankName" class="form-control" required />
+                    <label asp-for="BankName">Bank Name</label>
+                    <span asp-validation-for="BankName"></span>
+                </div>
+                <div class="md-form">
+                    <input asp-for="AccountName" class="form-control" required />
+                    <label asp-for="AccountName">Account Name</label>
+                    <span asp-validation-for="AccountName"></span>
+                </div>
+                <div class="md-form">
+                    <input asp-for="AccountNumber" class="form-control" required />
+                    <label asp-for="AccountNumber">Account Number</label>
+                    <span asp-validation-for="AccountNumber"></span>
+                </div>
                 <div class="text-center mt-1-half">
                     <button type="submit" class="btn blue-bg-btn mb-1 waves-effect waves-light">Create <i class="fas fa-check ml-1"></i></button>
                 </div>
-            </form>         
+            </form>
         </div>
-    </div>   
+    </div>
 </div>

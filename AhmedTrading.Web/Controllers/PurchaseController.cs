@@ -85,7 +85,28 @@ namespace AhmedTrading.Web.Controllers
             return Json(model);
         }
 
+        //GET: Due Collection
+        public async Task<IActionResult> PayDue(int? id)
+        {
+            if (id == null) return RedirectToAction("PurchaseRecords");
 
+            var model = await _db.Purchases.PurchaseReceiptAsync(id.GetValueOrDefault(), _db).ConfigureAwait(false);
+
+            if (model == null) return RedirectToAction("PurchaseRecords");
+            return View(model);
+        }
+
+        //vendor due collection(ajax)
+        [HttpPost]
+        public async Task<IActionResult> DueCollection([FromBody] PurchaseDuePaySingleModel model)
+        {
+            model.RegistrationId = _db.Registrations.GetRegID_ByUserName(User.Identity.Name);
+            var dbResponse = await _db.PurchasePayments.DuePaySingleAsync(model, _db).ConfigureAwait(false);
+
+            if (dbResponse.IsSuccess) return Ok();
+
+            return BadRequest(dbResponse.Message);
+        }
 
         protected override void Dispose(bool disposing)
         {

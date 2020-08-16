@@ -1,4 +1,7 @@
 ﻿
+//date picker
+$('.datepicker').pickadate().val(moment(new Date()).format('DD MMMM, YYYY'));
+
  // material select initialization
  $('.mdb-select').materialSelect();
 
@@ -19,6 +22,7 @@ const totalPrice = formPayment.querySelector('#totalPrice')
 const inputDiscount = formPayment.inputDiscount
 const totalPayable = formPayment.querySelector('#totalPayable')
 const inputPaid = formPayment.inputPaid
+const inputSellingDate = formPayment.inputSellingDate
 const totalDue = formPayment.querySelector('#totalDue')
 const selectPaymentMethod = formPayment.selectPaymentMethod
 
@@ -137,7 +141,7 @@ const createTableRow = function (item) {
     inputQuantity.type = "number";
     inputQuantity.step = 0.01;
     inputQuantity.required = true;
-    inputQuantity.min = 1;
+    inputQuantity.min = 0;
     inputQuantity.classList.add('form-control', 'inputQuantity');
 
     if (item.Stock < item.SellingQuantity)
@@ -153,7 +157,7 @@ const createTableRow = function (item) {
     inputSellingUnitPrice.type = "number";
     inputSellingUnitPrice.required = true;
     inputSellingUnitPrice.step = 0.01;
-    inputSellingUnitPrice.min = 1;
+    inputSellingUnitPrice.min = 0;
     inputSellingUnitPrice.classList.add('form-control', 'inputSellingUnitPrice');
     inputSellingUnitPrice.value = item.SellingUnitPrice;
     td4.appendChild(inputSellingUnitPrice);
@@ -347,7 +351,7 @@ const onSellSubmitClicked = function(evt) {
         SellingDiscountAmount: +inputDiscount.value | 0,
         SellingPaidAmount: +inputPaid.value | 0,
         PaymentMethod: inputPaid.value ? selectPaymentMethod.value : '',
-        SellingDate: new Date(),
+        SellingDate: new Date(inputSellingDate.value),
         ProductList: cartProducts
     }
 
