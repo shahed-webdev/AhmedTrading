@@ -44,6 +44,21 @@ namespace AhmedTrading.Repository
             return cList.ToDataResult(request);
         }
 
+        public DataResult<CustomerSellingViewModel> SaleRecords(DataRequest request)
+        {
+            var records = Context.Selling.Select(s => new CustomerSellingViewModel
+            {
+                SellingId = s.SellingId,
+                SellingSn = s.SellingSn,
+                SellingAmount = s.SellingTotalPrice,
+                SellingPaidAmount = s.SellingPaidAmount,
+                SellingDiscountAmount = s.SellingDiscountAmount,
+                SellingDueAmount = s.SellingDueAmount,
+                SellingDate = s.SellingDate
+            });
+            return records.ToDataResult(request);
+        }
+
         public async Task<bool> IsPhoneNumberExistAsync(string number, int id = 0)
         {
             if (id == 0)
@@ -175,6 +190,30 @@ namespace AhmedTrading.Repository
                 Name = c.CustomerName,
                 Due = c.Due
             }).ToList();
+        }
+
+        public DbResponse<CustomerDateWiseSaleSummary> SaleDateWise(int customerId, DateTime? fromDate, DateTime? toDate)
+        {
+            var sD = fromDate ?? new DateTime(1000, 1, 1);
+            var eD = toDate ?? new DateTime(3000, 12, 31);
+
+            var summary = Context.Selling
+                .Include(s => s.SellingPaymentList)
+                .ThenInclude(l => l.SellingPayment)
+                .Where(s => s.CustomerId == customerId && s.SellingDate <= eD && s.SellingDate >= sD)
+                .GroupBy(s => s.CustomerId)
+                .Select(g => new CustomerDateWiseSaleSummary
+                {
+                    SoldAmount = g.Sum(e => e.SellingTotalPrice),
+                    ReceivedAmount = g.Sum(e =>
+                        e.SellingPaymentList
+                            .Where(l => l.SellingPayment.PaidDate <= eD && l.SellingPayment.PaidDate >= sD)
+                            .Sum(l => l.SellingPaidAmount)),
+                    DiscountAmount = g.Sum(e => e.SellingTotalPrice),
+                    DueAmount = g.Sum(e => e.SellingDueAmount)
+                }).FirstOrDefault();
+
+            return new DbResponse<CustomerDateWiseSaleSummary>(true, "Success", summary);
         }
 
 

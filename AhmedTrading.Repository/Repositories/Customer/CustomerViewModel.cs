@@ -79,4 +79,12 @@ namespace AhmedTrading.Repository
         public string Name { get; set; }
         public double Due { get; set; }
     }
+
+    public class CustomerDateWiseSaleSummary
+    {
+        public double SoldAmount { get; set; }
+        public double ReceivedAmount { get; set; }
+        public double DiscountAmount { get; set; }
+        public double DueAmount { get; set; }
+    }
 }
