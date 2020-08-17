@@ -284,6 +284,8 @@ namespace AhmedTrading.Repository
                 {
                     var vendor = Context.Vendor.Find(purchase.VendorId);
                     vendor.Paid -= paidAmount;
+                    vendor.TotalAmount -= purchase.PurchaseTotalPrice;
+                    vendor.TotalDiscount -= purchase.PurchaseDiscountAmount;
                     Context.Vendor.Update(vendor);
                 }
 
@@ -438,6 +440,37 @@ namespace AhmedTrading.Repository
             catch (Exception e)
             {
                 return new DbResponse(false, e.Message);
+            }
+        }
+
+        public DbResponse<CustomerDateWiseSaleSummary> SaleSummaryDateWise(DateTime? fromDate, DateTime? toDate)
+        {
+            try
+            {
+                var sD = fromDate ?? new DateTime(1000, 1, 1);
+                var eD = toDate ?? new DateTime(3000, 12, 31);
+
+                var summary = Context.Selling
+                    .Include(s => s.SellingPaymentList)
+                    .ThenInclude(l => l.SellingPayment)
+                    .Where(s => s.SellingDate <= eD && s.SellingDate >= sD)
+                    .GroupBy(s => s)
+                    .Select(g => new CustomerDateWiseSaleSummary
+                    {
+                        SoldAmount = g.Sum(e => e.SellingTotalPrice),
+                        ReceivedAmount = g.Sum(e =>
+                            e.SellingPaymentList
+                                .Where(l => l.SellingPayment.PaidDate <= eD && l.SellingPayment.PaidDate >= sD)
+                                .Sum(l => l.SellingPaidAmount)),
+                        DiscountAmount = g.Sum(e => e.SellingTotalPrice),
+                        DueAmount = g.Sum(e => e.SellingDueAmount)
+                    }).FirstOrDefault();
+
+                return new DbResponse<CustomerDateWiseSaleSummary>(true, "Success", summary);
+            }
+            catch (Exception e)
+            {
+                return new DbResponse<CustomerDateWiseSaleSummary>(false, e.Message);
             }
         }
     }
