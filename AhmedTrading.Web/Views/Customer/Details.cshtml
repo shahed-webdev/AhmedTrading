@@ -149,6 +149,7 @@
         $(function() {
             $('.datepicker').pickadate();
 
+            //dataTable.filter = [{ Field: "CustomerId", Value: @Model.CustomerId, Operand: "==" }];
             dataTable.getData();
         });
 
@@ -227,13 +228,13 @@
             const inputFromDate = formPost.inputFromDate.value;
             const inputToDate = formPost.inputToDate.value;
          
-            @*dataTable.filter = [
-                { Field: "CustomerId", Value: @Model.CustomerId, Operand: "==" },
-                { Field: "SellingDate", Value: new Date(inputFromDate), Operand: ">=" },
-                { Field: "SellingDate", Value: new Date(inputToDate), Operand: "<=" }
+            dataTable.filter = [
+                //{ Field: "CustomerId", Value: @Model.CustomerId, Operand: "==" },
+                { Field: "SellingDate", Value: inputFromDate, Operand: ">=" },
+                { Field: "SellingDate", Value: inputToDate, Operand: "<=" }
             ];
 
-            dataTable.getData();*@
+            dataTable.getData();
 
             //for get and set total amount
             const setSold = document.getElementById('setSold');
@@ -248,20 +249,21 @@
                 toDate: inputToDate
             };
 
-            console.log(data)
-
             $.ajax({
                 type: "POST",
-                url: "/Customer/GetAmountByDate",
+                url,
                 data: data,
-                success: function(response) {
-                    console.log(response)
+                success: function (response) {
+                    if (!response.Data.IsSuccess) return;
+
+                    const sales = response.Data;
+
+                    setSold.textContent = sales.SoldAmount;
+                    setDiscount.textContent = sales.DiscountAmount;
+                    setPaid.textContent = sales.ReceivedAmount;
+                    setDue.textContent = sales.DueAmount;
                 }
             });
-
-            //$.post(url, data, function (response) {
-            //    console.log(response)
-            //})
         });
     </script>
 }
