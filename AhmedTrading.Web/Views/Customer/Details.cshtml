@@ -10,7 +10,7 @@
     <style>
         .list-group li strong { color: #777 }
         .list-group li span { margin-left: 8px; color: #000; }
-    </style>  
+    </style>
 }
 
 <div class="m-md-3">
@@ -44,7 +44,7 @@
                     <i class="far fa-money-bill-alt fa-lg blue z-depth-1 p-4 rounded-left text-white mr-3"></i>
                     <div class="media-body p-1">
                         <p class="text-uppercase text-muted mb-1"><small>sold</small></p>
-                        <h5 class="font-weight-bold mb-0">@Model.SoldAmount</h5>
+                        <h5 id="setSold" class="font-weight-bold mb-0">@Model.SoldAmount</h5>
                     </div>
                 </div>
             </div>
@@ -54,7 +54,7 @@
                     <i class="fas fa-chart-pie-alt fa-lg deep-purple z-depth-1 p-4 rounded-left text-white mr-3"></i>
                     <div class="media-body p-1">
                         <p class="text-uppercase text-muted mb-1"><small>discount</small></p>
-                        <h5 class="font-weight-bold mb-0">@Model.DiscountAmount</h5>
+                        <h5 id="setDiscount" class="font-weight-bold mb-0">@Model.DiscountAmount</h5>
                     </div>
                 </div>
             </div>
@@ -64,7 +64,7 @@
                     <i class="fas fa-chart-line fa-lg teal z-depth-1 p-4 rounded-left text-white mr-3"></i>
                     <div class="media-body p-1">
                         <p class="text-uppercase text-muted mb-1"><small>paid</small></p>
-                        <h5 class="font-weight-bold mb-0">@Model.ReceivedAmount</h5>
+                        <h5 id="setPaid" class="font-weight-bold mb-0">@Model.ReceivedAmount</h5>
                     </div>
                 </div>
             </div>
@@ -73,11 +73,8 @@
                 <div class="media white z-depth-1 rounded">
                     <i class="far fa-chart-line-down fa-lg pink z-depth-1 p-4 rounded-left text-white mr-3"></i>
                     <div class="media-body p-1">
-                        @{
-
-                        }
                         <p class="text-uppercase text-muted mb-1"><small>due <em class="red-text">@(Model.OpeningDue>0? $"Opening Due: {Model.OpeningDue}": "")</em></small></p>
-                        <h5 class="font-weight-bold mb-0">@Model.DueAmount</h5>
+                        <h5 id="setDue" class="font-weight-bold mb-0">@Model.DueAmount</h5>
                     </div>
                 </div>
             </div>
@@ -86,7 +83,25 @@
 
     <section>
         <div class="card card-body">
-            <table class="table table-hover">
+            <div class="mb-4">
+                <form id="formPost">
+                    <div class="d-flex align-items-center">
+                        <div class="md-form m-0 md-outline input-with-post-icon">
+                            <input type="text" id="inputFromDate" class="form-control datepicker m-0">
+                            <label for="example">From Date</label>
+                            <i class="fas fa-calendar input-prefix indigo-text"></i>
+                        </div>
+                        <div class="md-form m-0 md-outline input-with-post-icon ml-3">
+                            <input type="text" id="inputToDate" class="form-control datepicker m-0">
+                            <label for="example">To Date</label>
+                            <i class="fas fa-calendar input-prefix indigo-text"></i>
+                        </div>
+                        <button type="submit" class="btn btn-indigo py-2"><i class="fal fa-search"></i></button>
+                    </div>
+                </form>
+            </div>
+
+            <table id="invoice-table" class="table table-hover table-bordered table-sm">
                 <thead>
                 <tr>
                     <th><strong>#Bill No</strong></th>
@@ -97,32 +112,6 @@
                     <th><strong>Date</strong></th>
                 </tr>
                 </thead>
-                <tbody>
-                @foreach (var item in Model.SellingRecords)
-                {
-                    <tr>
-                        <td>
-                            <a class="blue-text" href="/Selling/SellingReceipt/@item.SellingId">@item.SellingSn</a>
-                        </td>
-                        <td>৳@item.SellingAmount</td>
-                        <td>৳@item.SellingDiscountAmount</td>
-                        <td>৳@item.SellingPaidAmount</td>
-                        <td>
-                            @if (item.SellingDueAmount > 0)
-                            {
-                                <a class="blue-text" href="/Selling/DueCollection/@item.SellingId">@item.SellingDueAmount <i class="fal fa-long-arrow-right"></i></a>
-                            }
-                            else
-                            {
-                                <span>
-                                    ৳@item.SellingDueAmount
-                                </span>
-                            }
-                        </td>
-                        <td>@item.SellingDate.ToString("d MMM yyyy")</td>
-                    </tr>
-                }
-                </tbody>
             </table>
         </div>
     </section>
@@ -148,9 +137,114 @@
                 });
             },
             updater: function(item) {
-                location.href=`/Customer/Details/${item.CustomerId}`
+                location.href = `/Customer/Details/${item.CustomerId}`
                 return item;
             }
         })
+
+        $(function() {
+            $('.datepicker').pickadate();
+
+            dataTable.getData();
+        });
+
+        //get data
+        var dataTable = {
+            table: null,
+            filter: null,
+            init: function() {
+                dataTable.table = $("#invoice-table").DataTable({
+                    processing: true,
+                    serverSide: true,
+                    dom: '<"row"<"col-sm-6"Bl><"col-sm-6"f>><"row"<"col-sm-12"<tr>>><"row"<"col-sm-5"i><"col-sm-7"p>>',
+                    buttons: dataTable.button,
+                    ajax: {
+                        url: "/Customer/GetCustomerInvoice",
+                        type: "POST",
+                        data: function(d) {
+                            d.filters = dataTable.filter;
+                        }
+                    },
+                    columns:
+                    [
+                        {
+                            data: "SellingSn", "render": function(data, type, row, meta) {
+                                return `<a class="blue-text" href="/Selling/SellingReceipt/${row.SellingId}">${data}</a>`;
+                            }
+                        },
+                        { data: "SellingAmount", "render": dataTable.addSign },
+                        { data: "SellingDiscountAmount", "render": dataTable.addSign },
+                        { data: "SellingPaidAmount", "render": dataTable.addSign },
+                        {
+                            data: "SellingDueAmount", "render": function(data, type, row, meta) {
+                                return data ? `<a class="blue-text" href="/Selling/DueCollection/${row.SellingId}">${data}/-</a>` : data;
+                            }
+                        },
+                        { data: "SellingDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } }
+                    ],
+                    columnDefs: [
+                        { 'searchable': false, 'targets': [1, 2, 3, 4] },
+                        { 'className': "text-center", "targets": [0, 5] },
+                        { 'className': "text-right", "targets": [1,2,3,4] }
+                    ]
+                });
+            },
+            getData: function() {
+                dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
+            },
+            addSign: function(data) { return `${data}/-` },
+            button: {
+                buttons: [{
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Print',
+                    title: '',
+                    exportOptions: {
+                        //columns: [0, 1, 3] //Column value those print
+                    },
+                    customize: function(win) {
+                        $(win.document.body).prepend(`<nav class="mb-3 navbar blue-bg">${$('#printBrand').html()}</nav><h3 class="h3-responsive">${$('h4').text()}</h3>`);
+                    },
+                    autoPrint: true
+                }],
+                dom: {
+                    button: {
+                        className: 'btn btn-dark btn-rounded btn-sm my-0'
+                    }
+                }
+            }
+        }
+
+        //selectors
+        const formPost = document.getElementById("formPost");
+
+        formPost.addEventListener('submit', function(evt) {
+            evt.preventDefault();
+
+            const inputFromDate = formPost.inputFromDate.value;
+            const inputToDate = formPost.inputToDate.value;
+
+            @*dataTable.filter = [
+                { Field: "CustomerId", Value: @Model.CustomerId, Operand: "==" },
+                { Field: "SellingDate", Value: new Date(inputFromDate), Operand: ">=" },
+                { Field: "SellingDate", Value: new Date(inputToDate), Operand: "<=" }
+            ];
+
+            dataTable.getData();*@
+
+            //for get and set total amount
+            const setSold = document.getElementById('setSold');
+            const setDiscount = document.getElementById('setDiscount');
+            const setPaid = document.getElementById('setPaid');
+            const setDue = document.getElementById('setDue');
+
+            $.ajax({
+                method: "Get",
+                url: "/Customer/GetAmountByDate",
+                data: { customerId: @Model.CustomerId, from: new Date(inputFromDate), to: new Date(inputToDate) },
+                success: function(response) {
+                    console.log(response)
+                }
+            });
+        });
     </script>
 }

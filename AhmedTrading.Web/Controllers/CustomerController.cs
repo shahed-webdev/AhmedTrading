@@ -1,4 +1,5 @@
-﻿using AhmedTrading.Repository;
+﻿using System;
+using AhmedTrading.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
@@ -97,6 +98,21 @@ namespace AhmedTrading.Web.Controllers
 
             return View(model);
         }
+
+        //GET:// invoice data-table
+        public IActionResult GetCustomerInvoice(DataRequest request)
+        {
+            var model = _db.Customers.SaleRecords(request);
+            return Json(model);
+        }
+
+        //GET:// GetAmountByDate(ajax)
+        public IActionResult GetAmountByDate(int customerId, DateTime? from, DateTime? to)
+        {
+            var model = _db.Customers.SaleDateWise(customerId,from, to);
+            return Json(model);
+        }
+
 
         protected override void Dispose(bool disposing)
         {
