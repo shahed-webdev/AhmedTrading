@@ -107,9 +107,9 @@ namespace AhmedTrading.Web.Controllers
         }
 
         //GET:// GetAmountByDate(ajax)
-        public IActionResult GetAmountByDate(int customerId, DateTime? from, DateTime? to)
+        public IActionResult GetAmountByDate(int customerId, DateTime fromDate, DateTime toDate)
         {
-            var model = _db.Customers.SaleDateWise(customerId,from, to);
+            var model = _db.Customers.SaleDateWise(customerId, fromDate, toDate);
             return Json(model);
         }
 

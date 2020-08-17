@@ -14,26 +14,48 @@
 }
 
 <div class="m-md-3">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h4 class="page-header m-0">@Model.CustomerName</h4>
-            <h6 class="mb-0 mt-2">
-                @if (Model.CustomerAddress != null)
-                {
-                    <span>@Model.CustomerAddress,</span>
-                }
+    <div class="card card-body mb-4">
+        <div class="row">
+            <div class="col-lg-3">
+                <h4 class="page-header m-0">@Model.CustomerName</h4>
+                <h6 class="mb-0 mt-2">
+                    @if (Model.CustomerAddress != null)
+                    {
+                        <span>@Model.CustomerAddress,</span>
+                    }
 
-                @foreach (var item in Model.PhoneNumbers)
-                {
-                    <span class="mr-1 badge-pill badge-primary">@item.Phone</span>
-                }
-            </h6>
-        </div>
+                    @foreach (var item in Model.PhoneNumbers)
+                    {
+                        <span class="mr-1 badge-pill badge-primary">@item.Phone</span>
+                    }
+                </h6>
+            </div>
 
-        <div class="md-form input-with-post-icon m-0">
-            <input id="inputCustomer" type="text" class="form-control" autocomplete="off" />
-            <i class="far fa-search input-prefix"></i>
-            <label for="inputCustomer">Find Customer</label>
+            <div class="col-lg-6">
+                <form id="formPost">
+                    <div class="d-flex align-items-center">
+                        <div class="md-form m-0 md-outline input-with-post-icon">
+                            <input type="text" id="inputFromDate" class="form-control datepicker m-0">
+                            <label for="example">From Date</label>
+                            <i class="fas fa-calendar input-prefix indigo-text"></i>
+                        </div>
+                        <div class="md-form m-0 md-outline input-with-post-icon ml-3">
+                            <input type="text" id="inputToDate" class="form-control datepicker m-0">
+                            <label for="example">To Date</label>
+                            <i class="fas fa-calendar input-prefix indigo-text"></i>
+                        </div>
+                        <button type="submit" class="btn btn-indigo py-2"><i class="fal fa-search"></i></button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="md-form input-with-post-icon m-0">
+                    <input id="inputCustomer" type="text" class="form-control" autocomplete="off" />
+                    <i class="far fa-search input-prefix"></i>
+                    <label for="inputCustomer">Find Customer</label>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -73,7 +95,7 @@
                 <div class="media white z-depth-1 rounded">
                     <i class="far fa-chart-line-down fa-lg pink z-depth-1 p-4 rounded-left text-white mr-3"></i>
                     <div class="media-body p-1">
-                        <p class="text-uppercase text-muted mb-1"><small>due <em class="red-text">@(Model.OpeningDue>0? $"Opening Due: {Model.OpeningDue}": "")</em></small></p>
+                        <p class="text-uppercase text-muted mb-1"><small>due <em class="red-text">@(Model.OpeningDue > 0 ? $"Opening Due: {Model.OpeningDue}" : "")</em></small></p>
                         <h5 id="setDue" class="font-weight-bold mb-0">@Model.DueAmount</h5>
                     </div>
                 </div>
@@ -83,24 +105,6 @@
 
     <section>
         <div class="card card-body">
-            <div class="mb-4">
-                <form id="formPost">
-                    <div class="d-flex align-items-center">
-                        <div class="md-form m-0 md-outline input-with-post-icon">
-                            <input type="text" id="inputFromDate" class="form-control datepicker m-0">
-                            <label for="example">From Date</label>
-                            <i class="fas fa-calendar input-prefix indigo-text"></i>
-                        </div>
-                        <div class="md-form m-0 md-outline input-with-post-icon ml-3">
-                            <input type="text" id="inputToDate" class="form-control datepicker m-0">
-                            <label for="example">To Date</label>
-                            <i class="fas fa-calendar input-prefix indigo-text"></i>
-                        </div>
-                        <button type="submit" class="btn btn-indigo py-2"><i class="fal fa-search"></i></button>
-                    </div>
-                </form>
-            </div>
-
             <table id="invoice-table" class="table table-hover table-bordered table-sm">
                 <thead>
                 <tr>
@@ -185,7 +189,7 @@
                     columnDefs: [
                         { 'searchable': false, 'targets': [1, 2, 3, 4] },
                         { 'className': "text-center", "targets": [0, 5] },
-                        { 'className': "text-right", "targets": [1,2,3,4] }
+                        { 'className': "text-right", "targets": [1, 2, 3, 4] }
                     ]
                 });
             },
@@ -200,7 +204,7 @@
                     title: '',
                     exportOptions: {
                         //columns: [0, 1, 3] //Column value those print
-                    },
+                                                            },
                     customize: function(win) {
                         $(win.document.body).prepend(`<nav class="mb-3 navbar blue-bg">${$('#printBrand').html()}</nav><h3 class="h3-responsive">${$('h4').text()}</h3>`);
                     },
@@ -222,7 +226,7 @@
 
             const inputFromDate = formPost.inputFromDate.value;
             const inputToDate = formPost.inputToDate.value;
-
+         
             @*dataTable.filter = [
                 { Field: "CustomerId", Value: @Model.CustomerId, Operand: "==" },
                 { Field: "SellingDate", Value: new Date(inputFromDate), Operand: ">=" },
@@ -237,14 +241,27 @@
             const setPaid = document.getElementById('setPaid');
             const setDue = document.getElementById('setDue');
 
+            const url = "/Customer/GetAmountByDate";
+            const data = {
+                customerId: @Model.CustomerId,
+                fromDate: inputFromDate,
+                toDate: inputToDate
+            };
+
+            console.log(data)
+
             $.ajax({
-                method: "Get",
+                type: "POST",
                 url: "/Customer/GetAmountByDate",
-                data: { customerId: @Model.CustomerId, from: new Date(inputFromDate), to: new Date(inputToDate) },
+                data: data,
                 success: function(response) {
                     console.log(response)
                 }
             });
+
+            //$.post(url, data, function (response) {
+            //    console.log(response)
+            //})
         });
     </script>
 }

@@ -29,7 +29,6 @@ namespace AhmedTrading.Repository
         {
             var response = new DbResponse<int>();
 
-
             var newSellingSn = await GetNewSnAsync().ConfigureAwait(false);
             var newSellingPaymentSn = await db.SellingPayments.GetNewSnAsync().ConfigureAwait(false);
 
@@ -58,7 +57,6 @@ namespace AhmedTrading.Repository
                             SellingPaidAmount = model.SellingPaidAmount,
                             SellingPayment = new SellingPayment
                             {
-                                SellingPaymentId = 0,
                                 RegistrationId = model.RegistrationId,
                                 CustomerId  = model.CustomerId,
                                 ReceiptSn = newSellingPaymentSn,
@@ -83,7 +81,6 @@ namespace AhmedTrading.Repository
             }
             try
             {
-
                 await Context.SaveChangesAsync().ConfigureAwait(false);
 
                 response.IsSuccess = true;

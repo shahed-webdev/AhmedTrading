@@ -320,6 +320,12 @@ const validation = function () {
         return false;
     }
 
+    const totalAmount = +totalPrice.textContent;
+    if (!totalAmount) {
+        customerError.innerText = 'Add product to sell!'
+        return false;
+    }
+
     if (!hiddenCustomerId.value) {
         customerError.innerText = 'Select or add customer!'
         return false;
@@ -354,6 +360,8 @@ const onSellSubmitClicked = function(evt) {
         SellingDate: new Date(inputSellingDate.value),
         ProductList: cartProducts
     }
+
+    if (!body.SellingTotalPrice) return;
 
     const url = '/Selling/Selling'
     const options = {

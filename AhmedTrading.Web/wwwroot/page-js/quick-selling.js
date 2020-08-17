@@ -287,6 +287,12 @@ const validation = function () {
         return false;
     }
 
+    const totalAmount = +totalPrice.textContent;
+    if (!totalAmount ) {
+        customerError.innerText = 'Add product to sell!'
+        return false;
+    }
+
     return true;
 }
 
@@ -299,7 +305,7 @@ const onCheckFormValid = function (evt) {
 const onSellSubmitClicked = function(evt) {
     evt.preventDefault()
 
-    const valid = validation()
+    const valid = validation();
     if (!valid) return;
 
     //disable button on submit
