@@ -274,11 +274,13 @@ namespace AhmedTrading.Repository
 
                     Context.Product.Update(product);
                 }
-                //Vendor balance Update
+                //Customer balance Update
                 if (paidAmount > 0 && selling.CustomerId != null)
                 {
                     var customer = Context.Customer.Find(selling.CustomerId);
                     customer.Paid -= paidAmount;
+                    customer.TotalAmount -= selling.SellingTotalPrice;
+                    customer.TotalDiscount -= selling.SellingDiscountAmount;
                     Context.Customer.Update(customer);
                 }
 
