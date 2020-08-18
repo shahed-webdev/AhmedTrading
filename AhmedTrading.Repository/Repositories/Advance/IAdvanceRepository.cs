@@ -1,5 +1,6 @@
 ﻿using AhmedTrading.Data;
 using JqueryDataTables.LoopsIT;
+using System;
 
 namespace AhmedTrading.Repository
 {
@@ -12,6 +13,7 @@ namespace AhmedTrading.Repository
         DbResponse<AdvanceViewModel> Details(int id);
         DbResponse Delete(int id);
         double TotalAdvance();
+        double DateWiseAdvance(DateTime? fromDate, DateTime? toDate);
     }
 
 

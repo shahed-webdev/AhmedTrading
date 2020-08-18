@@ -1,5 +1,6 @@
 ﻿using AhmedTrading.Data;
 using JqueryDataTables.LoopsIT;
+using System;
 using System.Collections.Generic;
 
 namespace AhmedTrading.Repository
@@ -24,5 +25,7 @@ namespace AhmedTrading.Repository
         DataResult<BankWithdrewViewModel> WithdrewListDataTable(DataRequest request);
         double TotalDeposit();
         double TotalWithdrew();
+        double DateWiseWithdrew(DateTime? fromDate, DateTime? toDate);
+        double DateWiseDeposit(DateTime? fromDate, DateTime? toDate);
     }
 }

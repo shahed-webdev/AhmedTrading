@@ -200,6 +200,38 @@ namespace AhmedTrading.Repository
         {
             return Context.Purchase?.Sum(p => p.PurchaseTotalPrice - p.PurchaseDiscountAmount) ?? 0;
         }
+
+        public double DateWisePurchase(DateTime? fromDate, DateTime? toDate)
+        {
+            var fD = fromDate ?? new DateTime(1000, 1, 1);
+            var tD = toDate ?? new DateTime(3000, 12, 31);
+
+            return Context.Purchase
+                       .Where(p => p.PurchaseDate <= tD && p.PurchaseDate >= fD)?
+                       .Sum(p => p.PurchaseTotalPrice) ?? 0;
+
+        }
+
+        public double DateWisePurchaseDue(DateTime? fromDate, DateTime? toDate)
+        {
+            var fD = fromDate ?? new DateTime(1000, 1, 1);
+            var tD = toDate ?? new DateTime(3000, 12, 31);
+
+            return Context.Purchase
+                       .Where(p => p.PurchaseDate <= tD && p.PurchaseDate >= fD)?
+                       .Sum(p => p.PurchaseDueAmount) ?? 0;
+        }
+
+        public double DateWisePurchaseDiscount(DateTime? fromDate, DateTime? toDate)
+        {
+            var fD = fromDate ?? new DateTime(1000, 1, 1);
+            var tD = toDate ?? new DateTime(3000, 12, 31);
+
+            return Context.Purchase
+                       .Where(p => p.PurchaseDate <= tD && p.PurchaseDate >= fD)?
+                       .Sum(p => p.PurchaseDiscountAmount) ?? 0;
+        }
+
         public double DailyPurchaseAmount(DateTime? date)
         {
             var saleDate = date ?? DateTime.Now;

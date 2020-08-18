@@ -161,6 +161,7 @@ namespace AhmedTrading.Repository
             customer.Paid = obj.Paid;
 
             Update(customer);
+            Context.SaveChanges();
         }
 
         public async Task<ICollection<CustomerListViewModel>> SearchAsync(string key)
@@ -244,7 +245,6 @@ namespace AhmedTrading.Repository
             }
         }
 
-
         public void AddCustom(CustomerAddUpdateViewModel model)
         {
             var customer = new Customer
@@ -260,5 +260,7 @@ namespace AhmedTrading.Repository
             };
             Add(customer);
         }
+
+
     }
 }

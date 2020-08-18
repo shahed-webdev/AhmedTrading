@@ -33,7 +33,6 @@ namespace AhmedTrading.Web.Controllers
 
             if (!response.IsSuccess) return UnprocessableEntity(response);
             _db.Customers.UpdatePaidDue(model.CustomerId);
-            await _db.SaveChangesAsync();
 
             return Ok(response);
         }
@@ -100,7 +99,7 @@ namespace AhmedTrading.Web.Controllers
         //delete receipt with payment
         public IActionResult ForceDeleteReceipt(int id)
         {
-            var model = _db.Selling.DeleteReceipt(id);
+            var model = _db.Selling.DeleteReceipt(id, _db);
             return Json(model);
         }
 

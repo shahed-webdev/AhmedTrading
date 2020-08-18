@@ -14,12 +14,17 @@ namespace AhmedTrading.Repository
         DataResult<SellingRecordViewModel> Records(DataRequest request);
         ICollection<int> Years();
         double TotalDue();
+        double DateWiseSale(DateTime? fromDate, DateTime? toDate);
+        double DateWiseDue(DateTime? fromDate, DateTime? toDate);
+        double DateWiseDiscount(DateTime? fromDate, DateTime? toDate);
+
         double TotalSale();
         double DailySaleAmount(DateTime? day);
         ICollection<MonthlyAmount> MonthlyAmounts(int year);
 
         DbResponse ReceiptPaymentIsExist(int id);
-        DbResponse DeleteReceipt(int id);
+        DbResponse DeleteReceipt(int id, IUnitOfWork db);
+        DbResponse<CustomerDateWiseSaleSummary> DateWiseSellingSummary(DateTime? fromDate, DateTime? toDate);
 
     }
 }

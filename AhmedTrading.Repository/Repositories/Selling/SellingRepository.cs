@@ -186,6 +186,37 @@ namespace AhmedTrading.Repository
             return Context.Selling?.Sum(s => s.SellingDueAmount) ?? 0;
         }
 
+        public double DateWiseSale(DateTime? fromDate, DateTime? toDate)
+        {
+            var fD = fromDate ?? new DateTime(1000, 1, 1);
+            var tD = toDate ?? new DateTime(3000, 12, 31);
+
+            return Context.Selling
+                       .Where(s => s.SellingDate <= tD && s.SellingDate >= fD)?
+                       .Sum(s => s.SellingTotalPrice) ?? 0;
+
+        }
+
+        public double DateWiseDue(DateTime? fromDate, DateTime? toDate)
+        {
+            var fD = fromDate ?? new DateTime(1000, 1, 1);
+            var tD = toDate ?? new DateTime(3000, 12, 31);
+
+            return Context.Selling
+                       .Where(s => s.SellingDate <= tD && s.SellingDate >= fD)?
+                       .Sum(s => s.SellingDueAmount) ?? 0;
+        }
+
+        public double DateWiseDiscount(DateTime? fromDate, DateTime? toDate)
+        {
+            var fD = fromDate ?? new DateTime(1000, 1, 1);
+            var tD = toDate ?? new DateTime(3000, 12, 31);
+
+            return Context.Selling
+                       .Where(s => s.SellingDate <= tD && s.SellingDate >= fD)?
+                       .Sum(s => s.SellingDiscountAmount) ?? 0;
+        }
+
         public double TotalSale()
         {
             return Context.Selling?.Sum(s => s.SellingTotalPrice - s.SellingDiscountAmount) ?? 0;
@@ -232,7 +263,7 @@ namespace AhmedTrading.Repository
             }
         }
 
-        public DbResponse DeleteReceipt(int id)
+        public DbResponse DeleteReceipt(int id, IUnitOfWork db)
         {
             try
             {
@@ -271,26 +302,51 @@ namespace AhmedTrading.Repository
 
                     Context.Product.Update(product);
                 }
-                //Customer balance Update
-                if (paidAmount > 0 && selling.CustomerId != null)
-                {
-                    var customer = Context.Customer.Find(selling.CustomerId);
-                    customer.Paid -= paidAmount;
-                    customer.TotalAmount -= selling.SellingTotalPrice;
-                    customer.TotalDiscount -= selling.SellingDiscountAmount;
-                    Context.Customer.Update(customer);
-                }
+
 
                 Context.Selling.Remove(selling);
                 Context.SaveChanges();
 
-
+                //Customer balance Update
+                if (paidAmount > 0 && selling.CustomerId != null)
+                {
+                    db.Customers.UpdatePaidDue(selling.CustomerId);
+                }
 
                 return new DbResponse(true, "Success");
             }
             catch (Exception e)
             {
                 return new DbResponse(false, e.Message);
+            }
+        }
+
+        public DbResponse<CustomerDateWiseSaleSummary> DateWiseSellingSummary(DateTime? fromDate, DateTime? toDate)
+        {
+            try
+            {
+                var sD = fromDate ?? new DateTime(1000, 1, 1);
+                var eD = toDate ?? new DateTime(3000, 12, 31);
+
+                var summary = Context.Selling
+                                  .Where(s => s.SellingDate <= eD && s.SellingDate >= sD)
+                                  .GroupBy(s => s)
+                                  .Select(g => new CustomerDateWiseSaleSummary
+                                  {
+                                      SoldAmount = g.Sum(e => e.SellingTotalPrice),
+                                      DiscountAmount = g.Sum(e => e.SellingDiscountAmount),
+                                      DueAmount = g.Sum(e => e.SellingDueAmount)
+                                  }).FirstOrDefault() ?? new CustomerDateWiseSaleSummary();
+
+                summary.ReceivedAmount = Context.SellingPaymentList
+                    .Where(l => l.SellingPayment.PaidDate <= eD && l.SellingPayment.PaidDate >= sD)
+                    .Sum(l => l.SellingPaidAmount);
+
+                return new DbResponse<CustomerDateWiseSaleSummary>(true, "Success", summary);
+            }
+            catch (Exception e)
+            {
+                return new DbResponse<CustomerDateWiseSaleSummary>(false, e.Message);
             }
         }
     }

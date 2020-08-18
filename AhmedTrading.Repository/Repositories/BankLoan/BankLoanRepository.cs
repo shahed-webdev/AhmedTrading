@@ -181,5 +181,15 @@ namespace AhmedTrading.Repository
         {
             return Context.BankLoan?.Sum(b => b.LoanAmount) ?? 0;
         }
+
+        public double DateWiseLoan(DateTime? fromDate, DateTime? toDate)
+        {
+            var fD = fromDate ?? new DateTime(1000, 1, 1);
+            var tD = toDate ?? new DateTime(3000, 12, 31);
+
+            return Context.BankLoan
+                       .Where(s => s.LoanDate <= tD && s.LoanDate >= fD)?
+                       .Sum(s => s.LoanAmount) ?? 0;
+        }
     }
 }
