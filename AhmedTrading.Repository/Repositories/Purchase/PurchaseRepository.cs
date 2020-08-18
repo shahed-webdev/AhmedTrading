@@ -486,7 +486,7 @@ namespace AhmedTrading.Repository
                     .Include(s => s.PurchasePaymentList)
                     .ThenInclude(l => l.PurchasePayment)
                     .Where(s => s.PurchaseDate <= eD && s.PurchaseDate >= sD)
-                    .GroupBy(s => s)
+                    .GroupBy(s => true)
                     .Select(g => new PurchaseSummary
                     {
                         PurchaseAmount = g.Sum(e => e.PurchaseTotalPrice),
