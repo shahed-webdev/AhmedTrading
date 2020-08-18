@@ -4,43 +4,54 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-    <div class="m-3">
-        <div class="row">
-            <div class="col justify-content-center align-self-center">
-                <h4 class="page-header mb-0">Expense</h4>
-            </div>
-            <div class="col text-right">
-                <a id="CreateClick" data-url="/Expenses/Create" class="btn-floating blue-bg-btn" title="Add New" data-toggle="modal">
-                    <i class="fa fa-plus" aria-hidden="true"></i>
-                </a>
-            </div>
+<div class="m-3">
+    <div class="row">
+        <div class="col justify-content-center align-self-center">
+            <h4 class="page-header mb-0">Expense</h4>
         </div>
-
-        <div class="card card-body">
-            <div class="table-responsive">
-                <table id="data-table" class="table table-sm table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Amount</th>
-                            <th>Expense&nbsp;For</th>
-                            <th>Payment&nbsp;Method</th>
-                            <th>Expense&nbsp;Date</th>
-                            <th style="width:30px">Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-body">
-                        <tr><td colspan='5'>Loading...</td></tr>
-                    </tbody>
-                </table>
-            </div>
+        <div class="col text-right">
+            <a id="CreateClick" data-url="/Expenses/Create" class="btn-floating blue-bg-btn" title="Add New" data-toggle="modal">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+            </a>
         </div>
-    </div>  
+    </div>
 
-        <!-- Insert Modal -->
-        <div class="modal fade" id="InsertModal" tabindex="-1" role="dialog" aria-hidden="true"></div>
+    <div class="card card-body">
+        <form id="formPost">
+            <div class="d-flex align-items-center mb-4">
+                <div class="md-form m-0 md-outline input-with-post-icon">
+                    <input type="text" id="inputFromDate" class="form-control datepicker m-0">
+                    <label for="example">From Date</label>
+                    <i class="fas fa-calendar input-prefix indigo-text"></i>
+                </div>
+                <div class="md-form m-0 md-outline input-with-post-icon ml-3">
+                    <input type="text" id="inputToDate" class="form-control datepicker m-0">
+                    <label for="example">To Date</label>
+                    <i class="fas fa-calendar input-prefix indigo-text"></i>
+                </div>
+                <button type="submit" class="btn btn-indigo py-2"><i class="fal fa-search"></i></button>
+            </div>
+        </form>
+
+        <table id="data-table" class="table table-sm table-bordered">
+            <thead>
+                <tr>
+                    <th>Amount</th>
+                    <th>Expense&nbsp;For</th>
+                    <th>Payment&nbsp;Method</th>
+                    <th>Expense&nbsp;Date</th>
+                    <th style="width: 30px">Delete</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<!-- Insert Modal -->
+<div class="modal fade" id="InsertModal" tabindex="-1" role="dialog" aria-hidden="true"></div>
 
 
-        @section Scripts {
-            <partial name="_UnobtrusiveAjaxPartial" />
-            <script src="~/page-js/expense.js?v=1"></script>
-        }
+@section Scripts {
+    <partial name="_UnobtrusiveAjaxPartial" />
+    <script src="~/page-js/expense.js?v=.3"></script>
+}

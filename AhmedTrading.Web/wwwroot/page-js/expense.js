@@ -1,113 +1,131 @@
 ﻿
+$(function () {
+    $('.datepicker').pickadate();
+    dataTable.getData();
+});
+
 //selectors
-const tableBody = document.getElementById('table-body');
 const btnCreate = document.getElementById('CreateClick');
+const formPost = document.getElementById("formPost");
 const insertModal = $('#InsertModal');
 
-
-//functions
-const createLink = function (item) {
-    const link = document.createElement("a");
-
-    link.href = `/Expenses/Delete/${item.ExpenseId}`;
-    link.classList.add('delete', 'fas', 'fa-trash-alt');
-
-    return link;
-}
-
-const createTableRow = function (item) {
-    const tr = document.createElement("tr");
-
-    //column 1
-    const td1 = tr.insertCell(0);
-    const textNode1 = document.createTextNode(item.ExpenseAmount);
-    td1.appendChild(textNode1);
-    //column 2
-    const td2 = tr.insertCell(1);
-    const textNode2 = document.createTextNode(item.ExpenseFor? item.ExpenseFor: '');
-    td2.appendChild(textNode2);
-    //column 3
-    const td3 = tr.insertCell(2);
-    const textNode3 = document.createTextNode(item.ExpensePaymentMethod);
-    td3.appendChild(textNode3);
-    //column 4
-    const td4 = tr.insertCell(3);
-    const textNode4 = document.createTextNode(moment(item.ExpenseDate).format('DD MMM YYYY'));
-    td4.appendChild(textNode4);
-    //column 5
-    const td5 = tr.insertCell(4);
-    td5.appendChild(createLink(item));
-
-    return tr;
-}
-
-const displayExpense = function (data) {
-    console.log(data)
-    if (!data.length)
-        tableBody.innerHTML = "<tr><td colspan='5'>No record found!</td></tr>";
-    else
-        tableBody.innerHTML = '';
-
-    const fragment = document.createDocumentFragment();
-
-    data.forEach(item => {
-        const tr = createTableRow(item);
-        fragment.appendChild(tr);
-    });
-
-    tableBody.appendChild(fragment);
-}
-
-const getData = function () {
-    const url = '/Expenses/IndexData';
-    const request = axios.get(url);
-
-    request.then(response => displayExpense(response.data));
-}
-
-const onDeleteClicked = function (evt) {
-    evt.preventDefault();
-
-    const target = evt.target;
-    const deleteClicked = target.classList.contains('delete');
-
-    if (!deleteClicked) return;
- 
-    const element = target.parentElement.parentElement;
-    const url = target.getAttribute("href");
-    if (!url) return;
-
-    const isConfirm = confirm("Are you sure you want to delete?");
-    if (!isConfirm) return;
-
-    axios.get(url).then(res => {
-        if (res.data === -1) {
-            target.removeAttribute("href");
-            element.insertAdjacentHTML('afterend', `<em class="used-error">"${element.innerText}" already used!</em>`);
-            return;
-        }
-        element.remove();
-    }).catch(err => console.log(err));
-}
-
-const onCreateClicked = function (evt) {
+//event listeners
+// add expense
+btnCreate.addEventListener('click', function (evt) {
     const url = evt.target.getAttribute("data-url");
     axios.get(url).then(res => {
         insertModal.html(res.data).modal('show');
     });
-}
+});
 
+//filter by date
+formPost.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+
+    const inputFromDate = formPost.inputFromDate.value;
+    const inputToDate = formPost.inputToDate.value;
+
+    dataTable.filter = [];
+
+    if (inputFromDate)
+        dataTable.filter.push({ Field: "ExpenseDate", Value: inputFromDate, Operand: dataTable.operand.GreaterThanOrEqual });
+
+    if (inputToDate)
+        dataTable.filter.push({ Field: "ExpenseDate", Value: inputToDate, Operand: dataTable.operand.LessThanOrEqual });
+
+    dataTable.getData();
+});
+
+//functions
+//create success
 function onCreateSuccess(data) {
     if (data !== 'success') return;
     insertModal.modal('hide');
-    getData();
+    dataTable.getData();
 }
 
 
+//get data
+var dataTable = {
+    table: null,
+    filter: null,
+    init: function () {
+        dataTable.table = $("#data-table").DataTable({
+            processing: true,
+            serverSide: true,
+            dom: '<"row"<"col-sm-6"Bl><"col-sm-6"f>><"row"<"col-sm-12"<tr>>><"row"<"col-sm-5"i><"col-sm-7"p>>',
+            buttons: dataTable.button,
+            ajax: {
+                url: "/Expenses/IndexData",
+                type: "POST",
+                data: function (d) {
+                    d.filters = dataTable.filter;
+                }
+            },
+            columns:
+                [
+                    { data: "ExpenseAmount", "render": dataTable.addSign },
+                    { data: "ExpenseFor" },
+                    { data: "ExpensePaymentMethod" },
+                    { data: "ExpenseDate", "render": function (data) { return moment(data).format('DD MMM YYYY') } },
+                    { data: "ExpenseId", "render": function (data, type, row, meta) { return `<a class="red-text delete fas fa-trash-alt" href="/Expenses/Delete/${data}"></a>` } }
+                ],
+            columnDefs: [
+                { 'searchable': false, 'targets': [4] },
+                { 'sortable': false, 'targets': [4] },
+                { 'className': "text-right", "targets": [0] },
+                { 'className': "text-left", "targets": [1] }
+            ]
+        });
+    },
+    operand: {
+        Equal: 0,
+        NotEqual: 1,
+        GreaterThan: 2,
+        LessThan: 3,
+        GreaterThanOrEqual: 4,
+        LessThanOrEqual: 5,
+        Contains: 6,
+        StartsWith: 7,
+        EndsWith: 8
+    },
+    getData: function () {
+        dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
+    },
+    addSign: function (data) { return `${data}/-` },
+    button: {
+        buttons: [{
+            extend: 'print',
+            text: '<i class="fa fa-print"></i> Print',
+            title: '',
+            exportOptions: {
+                //columns: [0,1] //Column value those print
+            },
+            customize: function (win) {
+                $(win.document.body).prepend(`<nav class="mb-3 navbar blue-bg">${$('#printBrand').html()}</nav><h3 class="h3-responsive">${$('h4').text()}</h3>`);
+            },
+            autoPrint: true
+        }],
+        dom: {
+            button: {
+                className: 'btn btn-dark btn-rounded btn-sm my-0'
+            }
+        }
+    }
+}
 
-//event listeners
-tableBody.addEventListener("click", onDeleteClicked);
-btnCreate.addEventListener('click', onCreateClicked);
+//Delete click
+$('#data-table').on("click", ".delete", function (evt) {
+    evt.preventDefault();
 
-//call function
-getData();
+    var row = $(this).closest("tr");
+    const url = $(this).attr('href');
+
+    if (!url) return;
+
+    if (confirm("Are you sure you want to delete?")) {
+        $.post(url, function (response) {
+            row.hide();
+        });
+    }
+});

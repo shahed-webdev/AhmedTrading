@@ -5,6 +5,14 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+<select class="mdb-select md-form" searchable="Search here..">
+    <option value="" disabled selected>Choose your country</option>
+    <option value="1">USA</option>
+    <option value="2">Germany</option>
+    <option value="3">France</option>
+    <option value="3">Poland</option>
+    <option value="3">Japan</option>
+</select>
 
     <div class="container-fluid">
         <section class="mt-4">
@@ -119,5 +127,10 @@
     </div>  
 
 @section Scripts {
-    
+    <script>
+        // Material Select Initialization
+        $(document).ready(function() {
+            $('.mdb-select').materialSelect();
+        });
+    </script>
 }

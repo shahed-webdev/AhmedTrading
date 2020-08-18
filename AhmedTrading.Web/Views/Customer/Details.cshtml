@@ -8,15 +8,9 @@
 
 @section Styles{
     <style>
-        .list-group li strong {
-            color: #777
-        }
-
-        .list-group li span {
-            margin-left: 8px;
-            color: #000;
-        }
-    </style>
+        .list-group li strong { color: #777 }
+        .list-group li span { margin-left: 8px; color: #000; }
+    </style>  
 }
 
 <div class="m-md-3">
@@ -114,6 +108,7 @@
             <table id="invoice-table" class="table table-hover table-bordered table-sm">
                 <thead>
                     <tr>
+                        <th><strong>SN</strong></th>
                         <th><strong>#Bill No</strong></th>
                         <th><strong>Amount</strong></th>
                         <th><strong>Discount</strong></th>
@@ -155,7 +150,7 @@
         $(function() {
             $('.datepicker').pickadate();
 
-            //dataTable.filter = [{ Field: "CustomerId", Value: @Model.CustomerId, Operand: "==" }];
+            dataTable.filter = [{ Field: "CustomerId", Value: @Model.CustomerId, Operand: dataTable.operand.equal }];
             dataTable.getData();
         });
 
@@ -179,6 +174,9 @@
                     columns:
                     [
                         {
+                            data: "SellingSn", "render": function(data, type, row, meta) {return meta.row+1;}
+                        },
+                        {
                             data: "SellingSn", "render": function(data, type, row, meta) {
                                 return `<a class="blue-text" href="/Selling/SellingReceipt/${row.SellingId}">${data}</a>`;
                             }
@@ -194,11 +192,23 @@
                         { data: "SellingDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } }
                     ],
                     columnDefs: [
-                        { 'searchable': false, 'targets': [1, 2, 3, 4] },
-                        { 'className': "text-center", "targets": [0, 5] },
-                        { 'className': "text-right", "targets": [1, 2, 3, 4] }
+                        { 'searchable': false, 'targets': [0,2,3,4,5,6] },
+                        { 'sortable': false, 'targets': [0] },
+                        { 'className': "text-center", "targets": [0,1,6] },
+                        { 'className': "text-right", "targets": [2,3,4,5] }
                     ]
                 });
+            },
+            operand: {
+                Equal: 0,
+                NotEqual: 1,
+                GreaterThan: 2,
+                LessThan: 3,
+                GreaterThanOrEqual: 4,
+                LessThanOrEqual: 5,
+                Contains: 6,
+                StartsWith: 7,
+                EndsWith: 8
             },
             getData: function() {
                 dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
@@ -211,7 +221,7 @@
                     title: '',
                     exportOptions: {
                         //columns: [0, 1, 3] //Column value those print
-                                                            },
+                                                                                                                                            },
                     customize: function(win) {
                         $(win.document.body).prepend(`<nav class="mb-3 navbar blue-bg">${$('#printBrand').html()}</nav><h3 class="h3-responsive">${$('h4').text()}</h3>`);
                     },
@@ -234,11 +244,13 @@
             const inputFromDate = formPost.inputFromDate.value;
             const inputToDate = formPost.inputToDate.value;
 
-            dataTable.filter = [
-                { Field: "CustomerId", Value: @Model.CustomerId, Operand: 0 },
-                { Field: "SellingDate", Value: inputFromDate, Operand: 4 },
-                { Field: "SellingDate", Value: inputToDate, Operand: 5 }
-            ];
+            dataTable.filter = [{ Field: "CustomerId", Value: @Model.CustomerId, Operand: dataTable.operand.equal }];
+     
+            if (inputFromDate)
+                dataTable.filter.push({ Field: "SellingDate", Value: inputFromDate, Operand: dataTable.operand.GreaterThanOrEqual });
+
+            if (inputToDate)
+                dataTable.filter.push({ Field: "SellingDate", Value: inputToDate, Operand: dataTable.operand.LessThanOrEqual });
 
             dataTable.getData();
 
@@ -260,14 +272,11 @@
                 url,
                 data: data,
                 success: function (response) {
-                    if (!response.Data.IsSuccess) return;
-
                     const sales = response.Data;
-
-                    setSold.textContent = sales.SoldAmount;
-                    setDiscount.textContent = sales.DiscountAmount;
-                    setPaid.textContent = sales.ReceivedAmount;
-                    setDue.textContent = sales.DueAmount;
+                    setSold.innerText = sales.SoldAmount;
+                    setDiscount.innerText = sales.DiscountAmount;
+                    setPaid.innerText = sales.ReceivedAmount;
+                    setDue.innerText = sales.DueAmount;
                 }
             });
         });

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Threading.Tasks;
+using JqueryDataTables.LoopsIT;
 
 namespace AhmedTrading.Web.Controllers
 {
@@ -22,9 +23,10 @@ namespace AhmedTrading.Web.Controllers
             return View();
         }
 
-        public IActionResult IndexData()
+        //for data-table
+        public IActionResult IndexData(DataRequest request)
         {
-            var data = _db.Expenses.ToListCustom();
+            var data = _db.Expenses.ListDataTable(request);
             return Json(data);
         }
 
