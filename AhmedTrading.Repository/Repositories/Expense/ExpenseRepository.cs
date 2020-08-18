@@ -144,6 +144,16 @@ namespace AhmedTrading.Repository
             return months;
         }
 
+        public double DateWiseExpense(DateTime? fromDate, DateTime? toDate)
+        {
+            var fD = fromDate ?? new DateTime(1000, 1, 1);
+            var tD = toDate ?? new DateTime(3000, 12, 31);
+
+            return Context.Expense
+                       .Where(s => s.ExpenseDate <= tD && s.ExpenseDate >= fD)?
+                       .Sum(s => s.ExpenseAmount) ?? 0;
+        }
+
         public ICollection<ExpenseViewModel> DateToDate(DateTime? sDateTime, DateTime? eDateTime)
         {
             var sD = sDateTime ?? new DateTime(1000, 1, 1);

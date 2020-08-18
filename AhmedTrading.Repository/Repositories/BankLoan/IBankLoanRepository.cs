@@ -1,5 +1,6 @@
 ﻿using AhmedTrading.Data;
 using JqueryDataTables.LoopsIT;
+using System;
 
 namespace AhmedTrading.Repository
 {
@@ -15,5 +16,6 @@ namespace AhmedTrading.Repository
         DbResponse LoanReturn(BankLoanReturnModel model);
         DbResponse DeleteLoanReturn(int id);
         double TotalLoan();
+        double DateWiseLoan(DateTime? fromDate, DateTime? toDate);
     }
 }

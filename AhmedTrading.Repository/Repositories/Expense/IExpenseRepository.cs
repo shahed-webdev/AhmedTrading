@@ -19,6 +19,8 @@ namespace AhmedTrading.Repository
         double TotalExpense();
         ICollection<MonthlyAmount> MonthlyAmounts(int year);
 
+        double DateWiseExpense(DateTime? fromDate, DateTime? toDate);
+
         ICollection<ExpenseViewModel> DateToDate(DateTime? sDateTime, DateTime? eDateTime);
 
         ICollection<ExpenseCategoryWise> CategoryWistDateToDate(DateTime? sDateTime, DateTime? eDateTime);

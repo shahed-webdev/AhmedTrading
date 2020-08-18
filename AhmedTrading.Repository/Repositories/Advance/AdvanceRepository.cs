@@ -108,5 +108,15 @@ namespace AhmedTrading.Repository
         {
             return Context.Advance?.Sum(a => a.AdvanceAmount) ?? 0;
         }
+
+        public double DateWiseAdvance(DateTime? fromDate, DateTime? toDate)
+        {
+            var fD = fromDate ?? new DateTime(1000, 1, 1);
+            var tD = toDate ?? new DateTime(3000, 12, 31);
+
+            return Context.Advance
+                       .Where(s => s.AdvanceDate <= tD && s.AdvanceDate >= fD)?
+                       .Sum(s => s.AdvanceAmount) ?? 0;
+        }
     }
 }

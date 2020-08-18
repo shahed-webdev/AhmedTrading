@@ -15,6 +15,9 @@ namespace AhmedTrading.Repository
         ICollection<int> Years();
         double TotalDue();
         double TotalPurchase();
+        double DateWisePurchase(DateTime? fromDate, DateTime? toDate);
+        double DateWisePurchaseDue(DateTime? fromDate, DateTime? toDate);
+        double DateWisePurchaseDiscount(DateTime? fromDate, DateTime? toDate);
         double DailyPurchaseAmount(DateTime? date);
         ICollection<MonthlyAmount> MonthlyAmounts(int year);
 

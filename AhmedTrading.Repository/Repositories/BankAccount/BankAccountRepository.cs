@@ -291,5 +291,25 @@ namespace AhmedTrading.Repository
         {
             return Context.BankWithdrew?.Sum(s => s.Amount) ?? 0;
         }
+
+        public double DateWiseWithdrew(DateTime? fromDate, DateTime? toDate)
+        {
+            var fD = fromDate ?? new DateTime(1000, 1, 1);
+            var tD = toDate ?? new DateTime(3000, 12, 31);
+
+            return Context.BankWithdrew
+                       .Where(s => s.ActivityDate <= tD && s.ActivityDate >= fD)?
+                       .Sum(s => s.Amount) ?? 0;
+        }
+
+        public double DateWiseDeposit(DateTime? fromDate, DateTime? toDate)
+        {
+            var fD = fromDate ?? new DateTime(1000, 1, 1);
+            var tD = toDate ?? new DateTime(3000, 12, 31);
+
+            return Context.BankDeposit
+                       .Where(s => s.ActivityDate <= tD && s.ActivityDate >= fD)?
+                       .Sum(s => s.Amount) ?? 0;
+        }
     }
 }

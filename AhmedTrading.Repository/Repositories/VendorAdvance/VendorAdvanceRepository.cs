@@ -1,6 +1,7 @@
 ﻿using AhmedTrading.Data;
 using JqueryDataTables.LoopsIT;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -73,6 +74,16 @@ namespace AhmedTrading.Repository
             Context.VendorAdvance.Remove(advance);
             Context.Vendor.Update(vendor);
 
+        }
+
+        public double DateWiseVendorAdvance(DateTime? fromDate, DateTime? toDate)
+        {
+            var fD = fromDate ?? new DateTime(1000, 1, 1);
+            var tD = toDate ?? new DateTime(3000, 12, 31);
+
+            return Context.VendorAdvance
+                       .Where(p => p.AdvanceDate <= tD && p.AdvanceDate >= fD)?
+                       .Sum(p => p.Advance) ?? 0;
         }
     }
 }

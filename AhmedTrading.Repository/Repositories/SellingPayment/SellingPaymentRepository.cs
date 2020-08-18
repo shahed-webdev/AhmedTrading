@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AhmedTrading.Repository
@@ -84,6 +85,16 @@ namespace AhmedTrading.Repository
                 response.IsSuccess = false;
                 return response;
             }
+        }
+
+        public double DateWiseSalePayment(DateTime? fromDate, DateTime? toDate)
+        {
+            var fD = fromDate ?? new DateTime(1000, 1, 1);
+            var tD = toDate ?? new DateTime(3000, 12, 31);
+
+            return Context.SellingPayment
+                       .Where(p => p.PaidDate <= tD && p.PaidDate >= fD)?
+                       .Sum(p => p.PaidAmount) ?? 0;
         }
     }
 }

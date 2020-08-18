@@ -1,5 +1,6 @@
 ﻿using AhmedTrading.Data;
 using JqueryDataTables.LoopsIT;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -10,5 +11,6 @@ namespace AhmedTrading.Repository
         Task<List<VendorAdvanceRecordViewModel>> VendorWiseRecords(int vendorId);
         DataResult<VendorAdvanceRecordViewModel> VendorWiseRecordsDataTable(DataRequest request);
         void RemoveCustom(int id);
+        double DateWiseVendorAdvance(DateTime? fromDate, DateTime? toDate);
     }
 }

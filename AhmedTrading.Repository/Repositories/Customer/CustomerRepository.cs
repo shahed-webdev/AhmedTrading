@@ -245,7 +245,6 @@ namespace AhmedTrading.Repository
             }
         }
 
-
         public void AddCustom(CustomerAddUpdateViewModel model)
         {
             var customer = new Customer
@@ -261,5 +260,7 @@ namespace AhmedTrading.Repository
             };
             Add(customer);
         }
+
+
     }
 }
