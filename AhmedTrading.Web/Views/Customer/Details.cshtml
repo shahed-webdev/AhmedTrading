@@ -8,8 +8,14 @@
 
 @section Styles{
     <style>
-        .list-group li strong { color: #777 }
-        .list-group li span { margin-left: 8px; color: #000; }
+        .list-group li strong {
+            color: #777
+        }
+
+        .list-group li span {
+            margin-left: 8px;
+            color: #000;
+        }
     </style>
 }
 
@@ -107,14 +113,14 @@
         <div class="card card-body">
             <table id="invoice-table" class="table table-hover table-bordered table-sm">
                 <thead>
-                <tr>
-                    <th><strong>#Bill No</strong></th>
-                    <th><strong>Amount</strong></th>
-                    <th><strong>Discount</strong></th>
-                    <th><strong>Paid</strong></th>
-                    <th><strong>Due</strong></th>
-                    <th><strong>Date</strong></th>
-                </tr>
+                    <tr>
+                        <th><strong>#Bill No</strong></th>
+                        <th><strong>Amount</strong></th>
+                        <th><strong>Discount</strong></th>
+                        <th><strong>Paid</strong></th>
+                        <th><strong>Due</strong></th>
+                        <th><strong>Date</strong></th>
+                    </tr>
                 </thead>
             </table>
         </div>
@@ -227,11 +233,11 @@
 
             const inputFromDate = formPost.inputFromDate.value;
             const inputToDate = formPost.inputToDate.value;
-         
+
             dataTable.filter = [
-                //{ Field: "CustomerId", Value: @Model.CustomerId, Operand: "==" },
-                { Field: "SellingDate", Value: inputFromDate, Operand: ">=" },
-                { Field: "SellingDate", Value: inputToDate, Operand: "<=" }
+                { Field: "CustomerId", Value: @Model.CustomerId, Operand: 0 },
+                { Field: "SellingDate", Value: inputFromDate, Operand: 4 },
+                { Field: "SellingDate", Value: inputToDate, Operand: 5 }
             ];
 
             dataTable.getData();

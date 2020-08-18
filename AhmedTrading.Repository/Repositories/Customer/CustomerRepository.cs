@@ -48,7 +48,9 @@ namespace AhmedTrading.Repository
         {
             var records = Context.Selling.Select(s => new CustomerSellingViewModel
             {
+
                 SellingId = s.SellingId,
+                CustomerId = s.CustomerId.GetValueOrDefault(),
                 SellingSn = s.SellingSn,
                 SellingAmount = s.SellingTotalPrice,
                 SellingPaidAmount = s.SellingPaidAmount,
