@@ -19,7 +19,7 @@ namespace AhmedTrading.Repository
         ICollection<MonthlyAmount> MonthlyAmounts(int year);
 
         DbResponse ReceiptPaymentIsExist(int id);
-        DbResponse DeleteReceipt(int id);
+        DbResponse DeleteReceipt(int id, IUnitOfWork db);
 
     }
 }

@@ -161,6 +161,7 @@ namespace AhmedTrading.Repository
             customer.Paid = obj.Paid;
 
             Update(customer);
+            Context.SaveChanges();
         }
 
         public async Task<ICollection<CustomerListViewModel>> SearchAsync(string key)

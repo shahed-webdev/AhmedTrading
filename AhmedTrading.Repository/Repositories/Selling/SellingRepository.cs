@@ -232,7 +232,7 @@ namespace AhmedTrading.Repository
             }
         }
 
-        public DbResponse DeleteReceipt(int id)
+        public DbResponse DeleteReceipt(int id, IUnitOfWork db)
         {
             try
             {
@@ -271,20 +271,16 @@ namespace AhmedTrading.Repository
 
                     Context.Product.Update(product);
                 }
-                //Customer balance Update
-                if (paidAmount > 0 && selling.CustomerId != null)
-                {
-                    var customer = Context.Customer.Find(selling.CustomerId);
-                    customer.Paid -= paidAmount;
-                    customer.TotalAmount -= selling.SellingTotalPrice;
-                    customer.TotalDiscount -= selling.SellingDiscountAmount;
-                    Context.Customer.Update(customer);
-                }
+
 
                 Context.Selling.Remove(selling);
                 Context.SaveChanges();
 
-
+                //Customer balance Update
+                if (paidAmount > 0 && selling.CustomerId != null)
+                {
+                    db.Customers.UpdatePaidDue(selling.CustomerId);
+                }
 
                 return new DbResponse(true, "Success");
             }
