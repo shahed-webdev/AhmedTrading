@@ -76,4 +76,12 @@ namespace AhmedTrading.Repository
         public DateTime PaidDate { get; set; }
         public ICollection<ProductPurchaseViewModel> Products { get; set; }
     }
+
+    public class PurchaseSummary
+    {
+        public double PurchaseAmount { get; set; }
+        public double PaidAmount { get; set; }
+        public double DiscountAmount { get; set; }
+        public double DueAmount { get; set; }
+    }
 }

@@ -330,7 +330,7 @@ namespace AhmedTrading.Repository
 
                 var summary = Context.Selling
                                   .Where(s => s.SellingDate <= eD && s.SellingDate >= sD)
-                                  .GroupBy(s => s)
+                                  .GroupBy(s => true)
                                   .Select(g => new CustomerDateWiseSaleSummary
                                   {
                                       SoldAmount = g.Sum(e => e.SellingTotalPrice),

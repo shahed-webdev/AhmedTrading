@@ -26,7 +26,7 @@ namespace AhmedTrading.Repository
         DbResponse DeleteReceipt(int id);
         DbResponse<PurchaseReceiptViewModel> FindReceipt(int id, IUnitOfWork db);
         Task<DbResponse> ChangeReceiptAsync(PurchaseReceiptChangeModel model, IUnitOfWork db);
-        DbResponse<CustomerDateWiseSaleSummary> SaleSummaryDateWise(DateTime? fromDate, DateTime? toDate);
+        DbResponse<PurchaseSummary> DateWisePurchaseSummary(DateTime? fromDate, DateTime? toDate);
     }
 
 
