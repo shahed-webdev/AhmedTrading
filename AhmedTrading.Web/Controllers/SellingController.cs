@@ -1,4 +1,5 @@
-﻿using AhmedTrading.Repository;
+﻿using System;
+using AhmedTrading.Repository;
 using JqueryDataTables.LoopsIT;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -87,6 +88,13 @@ namespace AhmedTrading.Web.Controllers
         {
             var data = _db.Selling.Records(request);
             return Json(data);
+        }
+
+        //GET:// GetAmountByDate(ajax)
+        public IActionResult GetAmountByDate(DateTime fromDate, DateTime toDate)
+        {
+            var model = _db.Selling.DateWiseSellingSummary(fromDate, toDate);
+            return Json(model);
         }
 
         //delete receipt if not payment
