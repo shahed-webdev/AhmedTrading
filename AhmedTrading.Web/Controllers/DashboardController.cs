@@ -1,4 +1,5 @@
-﻿using AhmedTrading.Repository;
+﻿using System;
+using AhmedTrading.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -19,6 +20,15 @@ namespace AhmedTrading.Web.Controllers
         {
             var dashboard = new DashboardRepository(_db);
             return View(dashboard.Summary());
+        }
+
+        //GET:// GetAmountByDate(ajax)
+        public IActionResult GetAmountByDate(DateTime fromDate, DateTime toDate)
+        {
+            var dashboard = new DashboardRepository(_db);
+            var model = dashboard.DateWiseSummary(fromDate, toDate);
+
+            return Json(model);
         }
 
         //GET: Profile

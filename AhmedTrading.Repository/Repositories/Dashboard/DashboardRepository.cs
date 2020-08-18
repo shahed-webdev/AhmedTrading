@@ -39,7 +39,7 @@ namespace AhmedTrading.Repository
                 Expense = _db.Expenses.DateWiseExpense(fromDate, toDate),
                 Withdrew = _db.BankAccounts.DateWiseWithdrew(fromDate, toDate),
                 Deposit = _db.BankAccounts.DateWiseDeposit(fromDate, toDate),
-                SaleDue = _db.Selling.DateWiseSale(fromDate, toDate),
+                SaleDue = _db.Selling.DateWiseDue(fromDate, toDate),
                 PurchaseDue = _db.Purchases.DateWisePurchaseDue(fromDate, toDate),
                 Loan = _db.BankLoans.DateWiseLoan(fromDate, toDate),
                 Advance = _db.Advance.DateWiseAdvance(fromDate, toDate) + _db.VendorAdvances.DateWiseVendorAdvance(fromDate, toDate),
