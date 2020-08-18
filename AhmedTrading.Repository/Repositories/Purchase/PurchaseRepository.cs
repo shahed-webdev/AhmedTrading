@@ -475,34 +475,34 @@ namespace AhmedTrading.Repository
             }
         }
 
-        public DbResponse<CustomerDateWiseSaleSummary> SaleSummaryDateWise(DateTime? fromDate, DateTime? toDate)
+        public DbResponse<PurchaseSummary> DateWisePurchaseSummary(DateTime? fromDate, DateTime? toDate)
         {
             try
             {
                 var sD = fromDate ?? new DateTime(1000, 1, 1);
                 var eD = toDate ?? new DateTime(3000, 12, 31);
 
-                var summary = Context.Selling
-                    .Include(s => s.SellingPaymentList)
-                    .ThenInclude(l => l.SellingPayment)
-                    .Where(s => s.SellingDate <= eD && s.SellingDate >= sD)
+                var summary = Context.Purchase
+                    .Include(s => s.PurchasePaymentList)
+                    .ThenInclude(l => l.PurchasePayment)
+                    .Where(s => s.PurchaseDate <= eD && s.PurchaseDate >= sD)
                     .GroupBy(s => s)
-                    .Select(g => new CustomerDateWiseSaleSummary
+                    .Select(g => new PurchaseSummary
                     {
-                        SoldAmount = g.Sum(e => e.SellingTotalPrice),
-                        ReceivedAmount = g.Sum(e =>
-                            e.SellingPaymentList
-                                .Where(l => l.SellingPayment.PaidDate <= eD && l.SellingPayment.PaidDate >= sD)
-                                .Sum(l => l.SellingPaidAmount)),
-                        DiscountAmount = g.Sum(e => e.SellingTotalPrice),
-                        DueAmount = g.Sum(e => e.SellingDueAmount)
+                        PurchaseAmount = g.Sum(e => e.PurchaseTotalPrice),
+                        PaidAmount = g.Sum(e =>
+                            e.PurchasePaymentList
+                                .Where(l => l.PurchasePayment.PaidDate <= eD && l.PurchasePayment.PaidDate >= sD)
+                                .Sum(l => l.PurchasePaidAmount)),
+                        DiscountAmount = g.Sum(e => e.PurchaseTotalPrice),
+                        DueAmount = g.Sum(e => e.PurchaseDueAmount)
                     }).FirstOrDefault();
 
-                return new DbResponse<CustomerDateWiseSaleSummary>(true, "Success", summary);
+                return new DbResponse<PurchaseSummary>(true, "Success", summary);
             }
             catch (Exception e)
             {
-                return new DbResponse<CustomerDateWiseSaleSummary>(false, e.Message);
+                return new DbResponse<PurchaseSummary>(false, e.Message);
             }
         }
     }
