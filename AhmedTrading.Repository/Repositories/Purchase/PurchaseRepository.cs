@@ -490,14 +490,13 @@ namespace AhmedTrading.Repository
                     .Select(g => new PurchaseSummary
                     {
                         PurchaseAmount = g.Sum(e => e.PurchaseTotalPrice),
-                        PaidAmount = g.Sum(e =>
-                            e.PurchasePaymentList
-                                .Where(l => l.PurchasePayment.PaidDate <= eD && l.PurchasePayment.PaidDate >= sD)
-                                .Sum(l => l.PurchasePaidAmount)),
                         DiscountAmount = g.Sum(e => e.PurchaseTotalPrice),
                         DueAmount = g.Sum(e => e.PurchaseDueAmount)
                     }).FirstOrDefault();
 
+                summary.PaidAmount = Context.PurchasePaymentList
+                    .Where(l => l.PurchasePayment.PaidDate <= eD && l.PurchasePayment.PaidDate >= sD)
+                    .Sum(l => l.PurchasePaidAmount);
                 return new DbResponse<PurchaseSummary>(true, "Success", summary);
             }
             catch (Exception e)
