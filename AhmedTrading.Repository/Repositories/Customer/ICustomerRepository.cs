@@ -20,6 +20,7 @@ namespace AhmedTrading.Repository
         double TotalDue();
         ICollection<CustomerDueViewModel> TopDue(int totalCustomer);
         DbResponse<CustomerDateWiseSaleSummary> SaleDateWise(int customerId, DateTime? fromDate, DateTime? toDate);
+        DbResponse Delete(int id);
 
     }
 }

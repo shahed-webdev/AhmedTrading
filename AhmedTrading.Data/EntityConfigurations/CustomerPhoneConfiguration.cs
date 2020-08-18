@@ -20,6 +20,7 @@ namespace AhmedTrading.Data
             builder.HasOne(d => d.Customer)
                 .WithMany(p => p.CustomerPhone)
                 .HasForeignKey(d => d.CustomerId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_CustomerPhone_Customer");
         }
     }

@@ -223,6 +223,27 @@ namespace AhmedTrading.Repository
             }
         }
 
+        public DbResponse Delete(int id)
+        {
+            try
+            {
+                var customer = Context.Customer.Include(c => c.CustomerPhone).FirstOrDefault(c => c.CustomerId == id);
+
+                if (customer == null) return new DbResponse(false, "No Data Found");
+
+                if (Context.Selling.Any(s => s.CustomerId == customer.CustomerId)) return new DbResponse(false, "Selling Record Exists");
+
+                Context.Customer.Remove(customer);
+                Context.SaveChanges();
+
+                return new DbResponse(true, "Success");
+            }
+            catch (Exception e)
+            {
+                return new DbResponse(false, e.Message);
+            }
+        }
+
 
         public void AddCustom(CustomerAddUpdateViewModel model)
         {
