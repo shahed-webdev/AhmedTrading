@@ -16,14 +16,13 @@ namespace AhmedTrading.Web.Controllers
             _db = db;
         }
 
-        public IActionResult Index(int? year)
+        public IActionResult Index()
         {
-            var dashboard = new DashboardRepository(_db);
-            return View(dashboard.Summary());
+            return View();
         }
 
         //GET:// GetAmountByDate(ajax)
-        public IActionResult GetAmountByDate(DateTime fromDate, DateTime toDate)
+        public IActionResult GetAmountByDate(DateTime? fromDate, DateTime? toDate)
         {
             var dashboard = new DashboardRepository(_db);
             var model = dashboard.DateWiseSummary(fromDate, toDate);

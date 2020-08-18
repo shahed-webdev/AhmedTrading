@@ -1,4 +1,5 @@
-﻿using AhmedTrading.Repository;
+﻿using System;
+using AhmedTrading.Repository;
 using JqueryDataTables.LoopsIT;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -38,7 +39,6 @@ namespace AhmedTrading.Web.Controllers
             return Ok(response);
         }
 
-
         public async Task<IActionResult> PurchaseReceipt(int? id)
         {
             if (id == null) return RedirectToAction("Purchase");
@@ -60,6 +60,13 @@ namespace AhmedTrading.Web.Controllers
         {
             var data = _db.Purchases.Records(request);
             return Json(data);
+        }
+
+        //GET:// GetAmountByDate(ajax)
+        public IActionResult GetAmountByDate(DateTime? fromDate, DateTime? toDate)
+        {
+            var model = _db.Purchases.DateWisePurchaseSummary(fromDate, toDate);
+            return Json(model);
         }
 
         public IActionResult PurchaseReturn(int? id)
