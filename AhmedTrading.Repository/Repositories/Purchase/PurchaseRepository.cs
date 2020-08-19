@@ -490,7 +490,7 @@ namespace AhmedTrading.Repository
                     .Select(g => new PurchaseSummary
                     {
                         PurchaseAmount = g.Sum(e => e.PurchaseTotalPrice),
-                        DiscountAmount = g.Sum(e => e.PurchaseTotalPrice),
+                        DiscountAmount = g.Sum(e => e.PurchaseDiscountAmount),
                         DueAmount = g.Sum(e => e.PurchaseDueAmount)
                     }).FirstOrDefault();
 

@@ -73,4 +73,15 @@ namespace AhmedTrading.Repository
         public double SellingDueAmount { get; set; }
         public DateTime SellingDate { get; set; }
     }
+
+
+    public class SellingProductReportModel
+    {
+        public int ProductId { get; set; }
+        public string ProductName { get; set; }
+        public string BrandName { get; set; }
+        public double SellingQuantity { get; set; }
+        public double SellingPrice { get; set; }
+    }
+
 }
