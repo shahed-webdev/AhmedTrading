@@ -349,5 +349,37 @@ namespace AhmedTrading.Repository
                 return new DbResponse<CustomerDateWiseSaleSummary>(false, e.Message);
             }
         }
+
+        public DbResponse<List<SellingProductReportModel>> DateWiseProductSellingSummary(DateTime? fromDate, DateTime? toDate)
+        {
+            try
+            {
+                var sD = fromDate ?? new DateTime(1000, 1, 1);
+                var eD = toDate ?? new DateTime(3000, 12, 31);
+
+                var summary = Context.SellingList
+                                  .Where(s => s.Selling.SellingDate <= eD && s.Selling.SellingDate >= sD)
+                                  .GroupBy(s => new
+                                  {
+                                      s.ProductId,
+                                      s.Product.ProductName,
+                                      s.Product.ProductBrand.BrandName
+                                  })
+                                  .Select(g => new SellingProductReportModel
+                                  {
+                                      ProductId = g.Key.ProductId,
+                                      ProductName = g.Key.ProductName,
+                                      BrandName = g.Key.BrandName,
+                                      SellingQuantity = g.Sum(s => s.SellingQuantity),
+                                      SellingPrice = g.Sum(s => s.SellingPrice)
+                                  }).ToList() ?? new List<SellingProductReportModel>();
+
+                return new DbResponse<List<SellingProductReportModel>>(true, "Success", summary);
+            }
+            catch (Exception e)
+            {
+                return new DbResponse<List<SellingProductReportModel>>(false, e.Message);
+            }
+        }
     }
 }

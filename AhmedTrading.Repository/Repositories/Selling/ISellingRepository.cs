@@ -25,6 +25,7 @@ namespace AhmedTrading.Repository
         DbResponse ReceiptPaymentIsExist(int id);
         DbResponse DeleteReceipt(int id, IUnitOfWork db);
         DbResponse<CustomerDateWiseSaleSummary> DateWiseSellingSummary(DateTime? fromDate, DateTime? toDate);
+        DbResponse<List<SellingProductReportModel>> DateWiseProductSellingSummary(DateTime? fromDate, DateTime? toDate);
 
     }
 }
