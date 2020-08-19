@@ -308,7 +308,7 @@ namespace AhmedTrading.Repository
                 Context.SaveChanges();
 
                 //Customer balance Update
-                if (paidAmount > 0 && selling.CustomerId != null)
+                if (selling.CustomerId != null)
                 {
                     db.Customers.UpdatePaidDue(selling.CustomerId);
                 }
