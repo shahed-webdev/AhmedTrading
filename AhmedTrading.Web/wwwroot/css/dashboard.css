@@ -1,0 +1,9 @@
+﻿
+body { background-color: #fff; }
+#dateContainer { display: none }
+/*@page { margin: 0}*/
+@media print {
+    .card { box-shadow: 0 2px 5px 0 rgba(0,0,0,.16),0 2px 10px 0 rgba(0,0,0,.12) !important; }
+    .card-body { padding: 1.25rem !important }
+    #dateContainer { display:block}
+}

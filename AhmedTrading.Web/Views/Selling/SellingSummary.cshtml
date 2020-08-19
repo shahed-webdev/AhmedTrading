@@ -1,0 +1,86 @@
+﻿
+@{
+    ViewData["Title"] = "Product Selling Summary";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="m-md-3">
+    <h4 class="mb-3 page-header">Product Selling Summary</h4>
+   
+    <div class="card card-body">
+        <form id="formPost">
+            <div class="d-flex align-items-center mb-4">
+                <div class="md-form m-0 md-outline input-with-post-icon">
+                    <input type="text" id="inputFromDate" placeholder="from date" class="form-control datepicker m-0">
+                    <label for="inputFromDate">From Date</label>
+                    <i class="fas fa-calendar input-prefix indigo-text"></i>
+                </div>
+                <div class="md-form m-0 md-outline input-with-post-icon ml-3">
+                    <input type="text" id="inputToDate" placeholder="to date" class="form-control datepicker m-0">
+                    <label for="inputToDate">To Date</label>
+                    <i class="fas fa-calendar input-prefix indigo-text"></i>
+                </div>
+                <button type="submit" class="btn btn-indigo py-2"><i class="fal fa-search"></i></button>
+            </div>
+        </form>
+        
+
+        <table id="data-table" class="table table-sm table-bordered">
+            <thead>
+            <tr>
+                <th class="text-left">Product</th>
+                <th>Quantity</th>
+                <th class="text-right">Selling Price</th>
+            </tr>
+            </thead>
+            <tbody id="tBody"></tbody>
+        </table>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        $(function() {
+            $('.datepicker').pickadate().val(moment(new Date()).format('DD MMMM, YYYY'));
+            getAmountSummery();
+        });
+
+        //selectors
+        const formPost = document.getElementById("formPost");
+
+        formPost.addEventListener('submit', function(evt) {
+            evt.preventDefault();
+
+            getAmountSummery();
+        });
+
+        function getAmountSummery() {
+            const url = "/Selling/GetProductSellingSummary";
+            const data = {
+                fromDate: formPost.inputFromDate.value,
+                toDate: formPost.inputToDate.value
+            };
+
+            $.ajax({
+                type: "POST",
+                url,
+                data,
+                success: function(response) {
+                    const tBody = document.getElementById('tBody');
+                    let tr = "";
+
+                    response.Data.forEach(item => {
+                        tr += `<tr>
+                        <td class="text-left"><strong class="d-block">${item.ProductName}</strong><em class="text-muted">${item.BrandName}</em></td>
+                        <td>${item.SellingQuantity}</td>
+                        <td class="text-right">৳${item.SellingPrice}</td>
+                        </tr>`
+                    });
+                    tBody.innerHTML = tr;
+                }
+            });
+        }
+    </script>
+}
+
+

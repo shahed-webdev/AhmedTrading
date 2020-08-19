@@ -3,8 +3,12 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+@section Styles{
+    <link href="~/css/dashboard.css?v=1" rel="stylesheet" />
+}
+
 <div class="container-fluid">
-    <section class="card card-body">
+    <section class="z-depth-1 p-2 d-print-none justify-content-between d-flex">
         <form id="formPost">
             <div class="d-flex align-items-center">
                 <div class="md-form m-0 md-outline input-with-post-icon">
@@ -20,14 +24,93 @@
                 <button type="submit" class="btn btn-indigo py-2"><i class="fal fa-search"></i></button>
             </div>
         </form>
+        <button onclick="window.print()" class="btn btn-deep-purple btn-sm">Print</button>
     </section>
 
+    <h4 id="dateContainer">
+        <span id="showFromDate"></span>
+        <span id="showToDate"></span>
+    </h4>
+
+    <div class="row my-4">
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card mb-md-0 mb-4">
+                <div class="card-header lime darken-2 white-text">
+                    <h5 class="font-weight-500 my-1">
+                        <i class="fas fa-exchange-alt"></i>
+                        Deposit & Withdraw
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <h4 class="text-center font-weight-bold">
+                        <span class="badge badge-success mb-1">
+                            <i class="fas fa-arrow-down"></i>
+                            D: ৳<span id="setDeposit">0</span>
+                        </span>
+                        <span class="badge badge-danger">
+                            <i class="fas fa-arrow-up"></i>
+                            W: ৳<span id="setWithdrew">0</span>
+                        </span>
+                    </h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card mb-md-0 mb-4">
+                <div class="card-header orange white-text">
+                    <h5 class="font-weight-500 my-1">
+                        <i class="fas fa-landmark"></i>
+                        Loan
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <h4 class="text-center font-weight-bold orange-text">
+                        ৳<span id="setLoan">0</span>
+                    </h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card mb-md-0 mb-4">
+                <div class="card-header info-color white-text">
+                    <h5 class="font-weight-500 my-1">
+                        <i class="fas fa-industry-alt"></i>
+                        Advance
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <h4 class="text-center font-weight-bold light-blue-text">
+                        ৳<span id="setAdvance">0</span>
+                    </h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card mb-md-0 mb-4">
+                <div class="card-header danger-color-dark white-text">
+                    <h5 class="font-weight-500 my-1">
+                        <i class="far fa-credit-card"></i>
+                        Expense
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <h4 class="text-center font-weight-bold red-text">
+                        ৳<span id="setExpense">0</span>
+                    </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <section class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-6 col-md-6">
             <div class="my-4 card card-body">
                 <h4 class="font-weight-bold mb-3">Sales Report</h4>
                 <div class="row">
-                    <div class="col-lg-6 mb-4">
+                    <div class="col-xl-6 mb-4">
                         <div class="media white z-depth-1 rounded">
                             <i class="far fa-money-bill-alt fa-2x success-color z-depth-1 p-4 rounded-left text-white mr-3"></i>
                             <div class="media-body mt-3">
@@ -36,9 +119,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6 mb-4">
+                    <div class="col-xl-6 mb-4">
                         <div class="media white z-depth-1 rounded">
-                            <i class="fas fa-chart-line fa-2x warning-color-dark z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                            <i class="far fa-money-bill-alt fa-2x warning-color-dark z-depth-1 p-4 rounded-left text-white mr-3"></i>
                             <div class="media-body mt-3">
                                 <p class="mb-0">Discount</p>
                                 <h5 id="setDiscount" class="font-weight-bold mb-0">0</h5>
@@ -48,18 +131,18 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-6 mb-4">
+                    <div class="col-xl-6 mb-4">
                         <div class="media white z-depth-1 rounded">
-                            <i class="fas fa-chart-bar fa-2x teal darken-4 z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                            <i class="far fa-money-bill-alt fa-2x teal darken-4 z-depth-1 p-4 rounded-left text-white mr-3"></i>
                             <div class="media-body mt-3">
                                 <p class="mb-0">Due Sale</p>
                                 <h5 id="setSaleDue" class="font-weight-bold mb-0">0</h5>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6 mb-4">
+                    <div class="col-xl-6 mb-4">
                         <div class="media white z-depth-1 rounded">
-                            <i class="fas fa-chart-pie fa-2x pink p-4 rounded-left text-white mr-3"></i>
+                            <i class="far fa-money-bill-alt fa-2x pink p-4 rounded-left text-white mr-3"></i>
                             <div class="media-body mt-3">
                                 <p class="mb-0">Cash Sale</p>
                                 <h5 id="setSalePayment" class="font-weight-bold mb-0">0</h5>
@@ -69,11 +152,11 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-6 col-md-6">
             <div class="my-4 card card-body">
                 <h4 class="font-weight-bold mb-3">Purchase Report</h4>
                 <div class="row">
-                    <div class="col-lg-6 mb-4">
+                    <div class="col-xl-6 mb-4">
                         <div class="media white z-depth-1 rounded">
                             <i class="far fa-money-bill-alt fa-2x primary-color z-depth-1 p-4 rounded-left text-white mr-3"></i>
                             <div class="media-body mt-3">
@@ -82,9 +165,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6 mb-4">
+                    <div class="col-xl-6 mb-4">
                         <div class="media white z-depth-1 rounded">
-                            <i class="fas fa-chart-line fa-2x red darken-4 z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                            <i class="far fa-money-bill-alt fa-2x red darken-4 z-depth-1 p-4 rounded-left text-white mr-3"></i>
                             <div class="media-body mt-3">
                                 <p class="mb-0">Discount</p>
                                 <h5 id="setPurchaseDiscount" class="font-weight-bold mb-0">0</h5>
@@ -93,18 +176,18 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-6 mb-4">
+                    <div class="col-xl-6 mb-4">
                         <div class="media white z-depth-1 rounded">
-                            <i class="fas fa-chart-bar fa-2x deep-purple darken-3 z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                            <i class="far fa-money-bill-alt fa-2x deep-purple darken-3 z-depth-1 p-4 rounded-left text-white mr-3"></i>
                             <div class="media-body mt-3">
                                 <p class="mb-0">Purchase Due</p>
                                 <h5 id="setPurchaseDue" class="font-weight-bold mb-0">0</h5>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6 mb-4">
+                    <div class="col-xl-6 mb-4">
                         <div class="media white z-depth-1 rounded">
-                            <i class="fas fa-chart-pie fa-2x teal z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                            <i class="far fa-money-bill-alt fa-2x teal z-depth-1 p-4 rounded-left text-white mr-3"></i>
                             <div class="media-body mt-3">
                                 <p class="mb-0">Purchase Paid</p>
                                 <h5 id="setPurchasePayment" class="font-weight-bold mb-0">0</h5>
@@ -114,41 +197,18 @@
                 </div>
             </div>
         </div>
-    </section>    
-
-    <div class="list-group list-group-flush z-depth-1 rounded my-4">
-        <h5 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-            Expense
-            <span id="setExpense" class="badge badge-danger badge-pill">0</span>
-        </h5>
-        <h5 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-            Advance
-            <span id="setAdvance" class="badge badge-success badge-pill">0</span>
-        </h5>
-        <h5 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-            Loan
-            <span id="setLoan" class="badge badge-secondary badge-pill">0</span>
-        </h5>
-        <h5 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-            Deposit
-            <span id="setDeposit" class="badge badge-primary badge-pill">0</span>
-        </h5>
-        <h5 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-            Withdrew
-            <span id="setWithdrew" class="badge badge-default badge-pill">0</span>
-        </h5>
-    </div>
+    </section>
 </div>
 
 @section Scripts {
     <script>
-        $(function () {
+        $(function() {
             $('.datepicker').pickadate();
 
             getAmountSummery();
         });
 
-        formPost.addEventListener('submit', function (evt) {
+        formPost.addEventListener('submit', function(evt) {
             evt.preventDefault();
 
             const inputFromDate = formPost.inputFromDate.value;
@@ -160,6 +220,12 @@
             }
 
             getAmountSummery(data);
+
+            const showFromDate = document.getElementById("showFromDate");
+            const showToDate = document.getElementById("showToDate");
+
+            showFromDate.textContent = inputFromDate;
+            showToDate.textContent = inputToDate? ` - ${inputToDate}`:"";
         });
 
         function getAmountSummery(data) {
@@ -174,7 +240,6 @@
             const setPurchaseDue = document.getElementById('setPurchaseDue');
             const setPurchasePayment = document.getElementById('setPurchasePayment');
 
-
             const setExpense = document.getElementById('setExpense');
             const setAdvance = document.getElementById('setAdvance');
             const setLoan = document.getElementById('setLoan');
@@ -186,7 +251,7 @@
                 type: "POST",
                 url,
                 data,
-                success: function (response) {
+                success: function(response) {
                     console.log(response)
 
                     setSale.innerText = response.Sale;

@@ -134,6 +134,18 @@ namespace AhmedTrading.Web.Controllers
             return BadRequest(dbResponse.Message);
         }
 
+        //Product Selling Summary
+        public IActionResult SellingSummary()
+        {
+            return View();
+        }
+
+        //GET:// Get product Selling Report(ajax)
+        public IActionResult GetProductSellingSummary(DateTime? fromDate, DateTime? toDate)
+        {
+            var model = _db.Selling.DateWiseProductSellingSummary(fromDate, toDate);
+            return Json(model);
+        }
 
         protected override void Dispose(bool disposing)
         {
