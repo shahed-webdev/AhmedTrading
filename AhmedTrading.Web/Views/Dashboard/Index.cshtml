@@ -1,124 +1,212 @@
-﻿@using AhmedTrading.Repository
-@model DashboardSummaryViewModel
-@{
+﻿@{
     ViewData["Title"] = "Dashboard";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-    <div class="container-fluid">
-        <section class="mt-4">
-            <div class="row">
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="card">
-                        <div class="row mt-4 mb-3">
-                            <div class="col-md-3 col-3 text-left pl-4">
-                                <div class="p-2 m-2 fa-lg">
-                                    <i class="far fa-business-time fa-2x text-success"></i>
-                                </div>
-                            </div>
-                            <div class="col-md-9 col-9 text-right pr-5">
-                                <p class="text-dark mb-2">Sales</p>
-                                <h4 class="ml-4 font-weight-bold h4-responsive">৳@Model.Sale</h4>
+<div class="container-fluid">
+    <section class="card card-body">
+        <form id="formPost">
+            <div class="d-flex align-items-center">
+                <div class="md-form m-0 md-outline input-with-post-icon">
+                    <input type="text" id="inputFromDate" class="form-control datepicker m-0">
+                    <label for="example">From Date</label>
+                    <i class="fas fa-calendar input-prefix indigo-text"></i>
+                </div>
+                <div class="md-form m-0 md-outline input-with-post-icon ml-3">
+                    <input type="text" id="inputToDate" class="form-control datepicker m-0">
+                    <label for="example">To Date</label>
+                    <i class="fas fa-calendar input-prefix indigo-text"></i>
+                </div>
+                <button type="submit" class="btn btn-indigo py-2"><i class="fal fa-search"></i></button>
+            </div>
+        </form>
+    </section>
+
+    <section class="row">
+        <div class="col-lg-6">
+            <div class="my-4 card card-body">
+                <h4 class="font-weight-bold mb-3">Sales Report</h4>
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
+                        <div class="media white z-depth-1 rounded">
+                            <i class="far fa-money-bill-alt fa-2x success-color z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                            <div class="media-body mt-3">
+                                <p class="mb-0">Sale</p>
+                                <h5 id="setSale" class="font-weight-bold mb-0">0</h5>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="card">
-                        <div class="row mt-4 mb-3">
-                            <div class="col-md-3 col-3 text-left pl-4">
-                                <div class="p-2 m-2 fa-lg">
-                                    <i class="fas fa-analytics fa-2x blue-text"></i>
-                                </div>
-                            </div>
-                            <div class="col-md-9 col-9 text-right pr-5">
-                                <p class="text-dark mb-2">Purchase</p>
-                                <h4 class="ml-4 font-weight-bold h4-responsive">৳@Model.Purchase</h4>
+                    <div class="col-lg-6 mb-4">
+                        <div class="media white z-depth-1 rounded">
+                            <i class="fas fa-chart-line fa-2x warning-color-dark z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                            <div class="media-body mt-3">
+                                <p class="mb-0">Discount</p>
+                                <h5 id="setDiscount" class="font-weight-bold mb-0">0</h5>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="card">
-                        <div class="row mt-4 mb-3">
-                            <div class="col-md-3 col-3 text-left pl-4">
-                                <div class="p-2 m-2 fa-lg">
-                                    <i class="far fa-user-chart fa-2x red-text"></i>
-                                </div>
-                            </div>
-                            <div class="col-md-9 col-9 text-right pr-5">
-                                <p class="text-dark mb-2">Customer Due</p>
-                                <h4 class="ml-4 font-weight-bold h4-responsive">৳@Model.SaleDue</h4>
+                <div class="row">
+                    <div class="col-6 mb-4">
+                        <div class="media white z-depth-1 rounded">
+                            <i class="fas fa-chart-bar fa-2x teal darken-4 z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                            <div class="media-body mt-3">
+                                <p class="mb-0">Due</p>
+                                <h5 id="setSaleDue" class="font-weight-bold mb-0">0</h5>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="card">
-                        <div class="row mt-4 mb-3">
-                            <div class="col-md-3 col-3 text-left pl-4">
-                                <div class="p-2 m-2 fa-lg">
-                                    <i class="far fa-shopping-bag fa-2x orange-text"></i>
-                                </div>
-                            </div>
-                            <div class="col-md-9 col-9 text-right pr-5">
-                                <p class="text-dark mb-2">Expense</p>
-                                <h4 class="ml-4 font-weight-bold h4-responsive">৳@Model.Expense</h4>
+                    <div class="col-lg-6 mb-4">
+                        <div class="media white z-depth-1 rounded">
+                            <i class="fas fa-chart-pie fa-2x pink p-4 rounded-left text-white mr-3"></i>
+                            <div class="media-body mt-3">
+                                <p class="mb-0">Paid</p>
+                                <h5 id="setSalePayment" class="font-weight-bold mb-0">0</h5>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
 
-
-        <section class="mb-5 mt-2">
-            <div class="row">
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="media white z-depth-1 rounded">
-                        <i class="far fa-money-bill-alt fa-2x primary-color-dark z-depth-1 p-4 rounded-left text-white mr-3"></i>
-                        <div class="media-body mt-3">
-                            <p class="mb-0">Advance</p>
-                            <h5 class="font-weight-bold mb-0">৳@Model.Advance</h5>
+            <div class="card card-body">
+                <h4 class="font-weight-bold mb-3">Purchase Report</h4>
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
+                        <div class="media white z-depth-1 rounded">
+                            <i class="far fa-money-bill-alt fa-2x primary-color z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                            <div class="media-body mt-3">
+                                <p class="mb-0">Purchase</p>
+                                <h5 id="setPurchase" class="font-weight-bold mb-0">0</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="media white z-depth-1 rounded">
+                            <i class="fas fa-chart-line fa-2x pink z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                            <div class="media-body mt-3">
+                                <p class="mb-0">Discount</p>
+                                <h5 id="setPurchaseDiscount" class="font-weight-bold mb-0">0</h5>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="media white z-depth-1 rounded">
-                        <i class="fas fa-chart-line fa-2x success-color-dark z-depth-1 p-4 rounded-left text-white mr-3"></i>
-                        <div class="media-body mt-3">
-                            <p class="mb-0">Commission</p>
-                            <h5 class="font-weight-bold mb-0">৳@Model.Commission</h5>
+                <div class="row">
+                    <div class="col-6 mb-4">
+                        <div class="media white z-depth-1 rounded">
+                            <i class="fas fa-chart-bar fa-2x deep-purple darken-3 z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                            <div class="media-body mt-3">
+                                <p class="mb-0">Due</p>
+                                <h5 id="setPurchaseDue" class="font-weight-bold mb-0">0</h5>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="media white z-depth-1 rounded">
-                        <i class="fas fa-chart-bar fa-2x lime darken-3 z-depth-1 p-4 rounded-left text-white mr-3"></i>
-                        <div class="media-body mt-3">
-                            <p class="mb-0">Loan</p>
-                            <h5 class="font-weight-bold mb-0">৳@Model.Loan</h5>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="media white z-depth-1 rounded">
-                        <i class="fas fa-chart-pie fa-2x pink z-depth-1 p-4 rounded-left text-white mr-3"></i>
-                        <div class="media-body mt-3">
-                            <p class="mb-0">Vendor Due</p>
-                            <h5 class="font-weight-bold mb-0">৳@Model.PurchaseDue</h5>
+                    <div class="col-lg-6 mb-4">
+                        <div class="media white z-depth-1 rounded">
+                            <i class="fas fa-chart-pie fa-2x teal z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                            <div class="media-body mt-3">
+                                <p class="mb-0">Paid</p>
+                                <h5 id="setPurchasePayment" class="font-weight-bold mb-0">0</h5>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
-    </div>  
+        </div>
+
+        <div class="col-lg-6">
+            <div class="list-group list-group-flush z-depth-1 rounded my-4">
+                <h5 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    Expense
+                    <span id="setExpense" class="badge badge-danger badge-pill">0</span>
+                </h5>
+                <h5 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    Advance
+                    <span id="setAdvance" class="badge badge-success badge-pill">0</span>
+                </h5>
+                <h5 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    Loan
+                    <span id="setLoan" class="badge badge-secondary badge-pill">0</span>
+                </h5>
+                <h5 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    Deposit
+                    <span id="setDeposit" class="badge badge-primary badge-pill">0</span>
+                </h5>
+                <h5 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    Withdrew
+                    <span id="setWithdrew" class="badge badge-default badge-pill">0</span>
+                </h5>
+            </div>
+        </div>
+    </section>
+</div>
 
 @section Scripts {
     <script>
-    
+        $(function () {
+            $('.datepicker').pickadate();
+
+            getAmountSummery();
+        });
+
+        formPost.addEventListener('submit', function (evt) {
+            evt.preventDefault();
+
+            const inputFromDate = formPost.inputFromDate.value;
+            const inputToDate = formPost.inputToDate.value;
+
+            const data = {
+                fromDate: inputFromDate,
+                toDate: inputToDate
+            }
+
+            getAmountSummery(data);
+        });
+
+        function getAmountSummery(data) {
+            //for get and set total amount
+            const setSale = document.getElementById('setSale');
+            const setSaleDiscount = document.getElementById('setDiscount');
+            const setSaleDue = document.getElementById('setSaleDue');
+            const setSalePayment = document.getElementById('setSalePayment');
+
+            const setPurchase = document.getElementById('setPurchase');
+            const setPurchaseDiscount = document.getElementById('setPurchaseDiscount');
+            const setPurchaseDue = document.getElementById('setPurchaseDue');
+            const setPurchasePayment = document.getElementById('setPurchasePayment');
+
+
+            const setExpense = document.getElementById('setExpense');
+            const setAdvance = document.getElementById('setAdvance');
+            const setLoan = document.getElementById('setLoan');
+            const setDeposit = document.getElementById('setDeposit');
+            const setWithdrew = document.getElementById('setWithdrew');
+
+            const url = "/Dashboard/GetAmountByDate";
+            $.ajax({
+                type: "POST",
+                url,
+                data,
+                success: function (response) {
+                    console.log(response)
+
+                    setSale.innerText = response.Sale;
+                    setSaleDiscount.innerText = response.SaleDiscount;
+                    setSaleDue.innerText = response.SaleDue;
+                    setSalePayment.innerText = response.SalePayment;
+
+                    setPurchase.innerText = response.Purchase;
+                    setPurchaseDiscount.innerText = response.PurchaseDiscount;
+                    setPurchaseDue.innerText = response.PurchaseDue;
+                    setPurchasePayment.innerText = response.PurchasePayment;
+
+                    setExpense.innerText = response.Expense;
+                    setAdvance.innerText = response.Advance;
+                    setLoan.innerText = response.Loan;
+                    setDeposit.innerText = response.Deposit;
+                    setWithdrew.innerText = response.Withdrew;
+                }
+            });
+        }
     </script>
 }
