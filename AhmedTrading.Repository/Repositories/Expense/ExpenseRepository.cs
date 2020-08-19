@@ -74,7 +74,7 @@ namespace AhmedTrading.Repository
                 ExpenseAmount = model.ExpenseAmount,
                 ExpenseFor = model.ExpenseFor,
                 ExpensePaymentMethod = model.ExpensePaymentMethod,
-                ExpenseDate = model.ExpenseDate
+                ExpenseDate = model.ExpenseDate.ToLocalTime()
             });
 
             var eCategory = Context.ExpenseCategory.Find(model.ExpenseCategoryId);

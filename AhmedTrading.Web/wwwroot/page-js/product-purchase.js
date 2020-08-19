@@ -436,8 +436,8 @@ const onPurchaseSubmitClicked = function(evt) {
     const body = {
         VendorId: +hiddenVendorId.value,
         PurchaseTotalPrice: +totalPrice.textContent,
-        PurchaseDiscountAmount: +inputDiscount.value | 0,
-        PurchasePaidAmount: +inputPaid.value | 0,
+        PurchaseDiscountAmount: +inputDiscount.value || 0,
+        PurchasePaidAmount: +inputPaid.value || 0,
         PaymentMethod: inputPaid.value ? selectPaymentMethod.value : '',
         MemoNumber: inputMemoNumber.value,
         PurchaseDate: inputPurchaseDate.value,

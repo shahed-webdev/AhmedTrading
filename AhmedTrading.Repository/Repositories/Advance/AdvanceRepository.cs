@@ -24,7 +24,7 @@ namespace AhmedTrading.Repository
                     AdvanceFor = model.AdvanceFor,
                     AdvanceAmount = model.AdvanceAmount,
                     TimePeriod = model.TimePeriod,
-                    AdvanceDate = model.AdvanceDate
+                    AdvanceDate = model.AdvanceDate.ToLocalTime()
                 };
 
                 Context.Advance.Add(advance);

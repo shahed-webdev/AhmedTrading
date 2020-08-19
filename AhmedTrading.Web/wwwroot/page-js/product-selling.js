@@ -354,8 +354,8 @@ const onSellSubmitClicked = function(evt) {
     const body = {
         CustomerId: +hiddenCustomerId.value,
         SellingTotalPrice: +totalPrice.textContent,
-        SellingDiscountAmount: +inputDiscount.value | 0,
-        SellingPaidAmount: +inputPaid.value | 0,
+        SellingDiscountAmount: +inputDiscount.value || 0,
+        SellingPaidAmount: +inputPaid.value || 0,
         PaymentMethod: inputPaid.value ? selectPaymentMethod.value : '',
         SellingDate: new Date(inputSellingDate.value),
         ProductList: cartProducts

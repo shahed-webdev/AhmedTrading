@@ -153,7 +153,7 @@ namespace AhmedTrading.Repository
                     BankAccountId = model.BankAccountId,
                     Amount = model.Amount,
                     Details = model.Details,
-                    ActivityDate = model.ActivityDate
+                    ActivityDate = model.ActivityDate.ToLocalTime()
                 };
 
                 Context.BankDeposit.Add(bankDeposit);
@@ -225,7 +225,7 @@ namespace AhmedTrading.Repository
                     BankAccountId = model.BankAccountId,
                     Amount = model.Amount,
                     Details = model.Details,
-                    ActivityDate = model.ActivityDate
+                    ActivityDate = model.ActivityDate.ToLocalTime()
                 };
 
                 Context.BankWithdrew.Add(bankWithdrew);
