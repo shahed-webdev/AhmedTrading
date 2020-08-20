@@ -96,5 +96,15 @@ namespace AhmedTrading.Repository
                        .Where(p => p.PaidDate <= tD && p.PaidDate >= fD)?
                        .Sum(p => p.PaidAmount) ?? 0;
         }
+
+        public double DateWiseCashSale(DateTime? fromDate, DateTime? toDate)
+        {
+            var fD = fromDate ?? new DateTime(1000, 1, 1);
+            var tD = toDate ?? new DateTime(3000, 12, 31);
+
+            return Context.SellingPaymentList
+                       .Where(p => p.Selling.SellingDate <= tD && p.Selling.SellingDate >= fD)?
+                       .Sum(p => p.SellingPaidAmount) ?? 0;
+        }
     }
 }

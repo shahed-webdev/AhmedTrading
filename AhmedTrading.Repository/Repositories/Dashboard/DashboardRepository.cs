@@ -46,7 +46,8 @@ namespace AhmedTrading.Repository
                 PurchaseDiscount = _db.Purchases.DateWisePurchaseDiscount(fromDate, toDate),
                 PurchasePayment = _db.PurchasePayments.DateWisePurchasePayment(fromDate, toDate),
                 SaleDiscount = _db.Selling.DateWiseDiscount(fromDate, toDate),
-                SalePayment = _db.SellingPayments.DateWiseSalePayment(fromDate, toDate)
+                SalePayment = _db.SellingPayments.DateWiseSalePayment(fromDate, toDate),
+                CashSale = _db.SellingPayments.DateWiseCashSale(fromDate, toDate)
             };
             return summary;
         }

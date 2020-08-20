@@ -9,6 +9,7 @@
     {
         public double Sale { get; set; }
         public double SalePayment { set; get; }
+        public double CashSale { set; get; }
         public double SaleDue { get; set; }
         public double SaleDiscount { get; set; }
         public double Purchase { get; set; }
