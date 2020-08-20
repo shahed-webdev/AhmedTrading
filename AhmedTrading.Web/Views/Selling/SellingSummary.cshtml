@@ -4,12 +4,16 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="m-md-3">
-    <h4 class="mb-3 page-header">Product Selling Summary</h4>
-   
-    <div class="card card-body">
+@section Styles{
+    <link href="~/css/selling-summery.css?v=1" rel="stylesheet" />
+}
+
+<div class="container-fluid">
+    <h4 class="page-header">Product Selling Summary</h4>
+
+    <div class="z-depth-1 p-2 d-print-none justify-content-between d-flex mb-4 mt-3">
         <form id="formPost">
-            <div class="d-flex align-items-center mb-4">
+            <div class="d-flex align-items-center">
                 <div class="md-form m-0 md-outline input-with-post-icon">
                     <input type="text" id="inputFromDate" placeholder="from date" class="form-control datepicker m-0">
                     <label for="inputFromDate">From Date</label>
@@ -23,15 +27,22 @@
                 <button type="submit" class="btn btn-indigo py-2"><i class="fal fa-search"></i></button>
             </div>
         </form>
-        
+        <button onclick="window.print()" class="btn btn-deep-purple btn-sm">Print</button>
+    </div>
 
+    <h5 id="dateContainer" class="mb-3">
+        <span id="showFromDate"></span>
+        <span id="showToDate"></span>
+    </h5>
+
+    <div class="card card-body">
         <table id="data-table" class="table table-sm table-bordered">
             <thead>
-            <tr>
-                <th class="text-left">Product</th>
-                <th>Quantity</th>
-                <th class="text-right">Selling Price</th>
-            </tr>
+                <tr>
+                    <th class="text-left">Product</th>
+                    <th>Quantity</th>
+                    <th class="text-right">Selling Price</th>
+                </tr>
             </thead>
             <tbody id="tBody"></tbody>
         </table>
@@ -40,7 +51,7 @@
 
 @section scripts{
     <script>
-        $(function() {
+        $(function () {
             $('.datepicker').pickadate().val(moment(new Date()).format('DD MMMM, YYYY'));
             getAmountSummery();
         });
@@ -48,7 +59,7 @@
         //selectors
         const formPost = document.getElementById("formPost");
 
-        formPost.addEventListener('submit', function(evt) {
+        formPost.addEventListener('submit', function (evt) {
             evt.preventDefault();
 
             getAmountSummery();
@@ -65,20 +76,28 @@
                 type: "POST",
                 url,
                 data,
-                success: function(response) {
+                success: function (response) {
                     const tBody = document.getElementById('tBody');
                     let tr = "";
 
                     response.Data.forEach(item => {
                         tr += `<tr>
-                        <td class="text-left"><strong class="d-block">${item.ProductName}</strong><em class="text-muted">${item.BrandName}</em></td>
-                        <td>${item.SellingQuantity}</td>
-                        <td class="text-right">৳${item.SellingPrice}</td>
-                        </tr>`
+                            <td class="text-left"><strong class="d-block">${item.ProductName}</strong><em class="text-muted">${item.BrandName}</em></td>
+                            <td>${item.SellingQuantity}</td>
+                            <td class="text-right">৳${item.SellingPrice}</td>
+                            </tr>`
                     });
                     tBody.innerHTML = tr;
                 }
             });
+
+            const showFromDate = document.getElementById("showFromDate");
+            const showToDate = document.getElementById("showToDate");
+
+            showFromDate.textContent = formPost.inputFromDate.value;
+
+            if (formPost.inputToDate.value !== formPost.inputFromDate.value)
+            showToDate.textContent = formPost.inputToDate.value ? ` - ${formPost.inputToDate.value}` : "";
         }
     </script>
 }

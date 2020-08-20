@@ -108,14 +108,37 @@
     <section class="row">
         <div class="col-lg-6 col-md-6">
             <div class="my-4 card card-body">
-                <h4 class="font-weight-bold mb-3">Sales Report</h4>
+                <h4 class="font-weight-bold mb-0">Sales: <em class="text-muted" id="setSale">0</em></h4>
+                <p class="mb-3 text-primary"><strong>Prev. Due Paid: <span id="setPrevDuePaid">0</span></strong></p>
+               
                 <div class="row">
                     <div class="col-xl-6 mb-4">
                         <div class="media white z-depth-1 rounded">
                             <i class="far fa-money-bill-alt fa-2x success-color z-depth-1 p-4 rounded-left text-white mr-3"></i>
                             <div class="media-body mt-3">
-                                <p class="mb-0">Sale</p>
-                                <h5 id="setSale" class="font-weight-bold mb-0">0</h5>
+                                <p class="mb-0">Sale Payment</p>
+                                <h5 id="setSalePayment" class="font-weight-bold mb-0">0</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 mb-4">
+                        <div class="media white z-depth-1 rounded">
+                            <i class="far fa-money-bill-alt fa-2x teal darken-4 p-4 rounded-left text-white mr-3"></i>
+                            <div class="media-body mt-3">
+                                <p class="mb-0">Cash Sale</p>
+                                <h5 id="setCashSale" class="font-weight-bold mb-0">0</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xl-6 mb-4">
+                        <div class="media white z-depth-1 rounded">
+                            <i class="far fa-money-bill-alt fa-2x pink z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                            <div class="media-body mt-3">
+                                <p class="mb-0">Due Sale</p>
+                                <h5 id="setSaleDue" class="font-weight-bold mb-0">0</h5>
                             </div>
                         </div>
                     </div>
@@ -129,32 +152,11 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="row">
-                    <div class="col-xl-6 mb-4">
-                        <div class="media white z-depth-1 rounded">
-                            <i class="far fa-money-bill-alt fa-2x teal darken-4 z-depth-1 p-4 rounded-left text-white mr-3"></i>
-                            <div class="media-body mt-3">
-                                <p class="mb-0">Due Sale</p>
-                                <h5 id="setSaleDue" class="font-weight-bold mb-0">0</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-6 mb-4">
-                        <div class="media white z-depth-1 rounded">
-                            <i class="far fa-money-bill-alt fa-2x pink p-4 rounded-left text-white mr-3"></i>
-                            <div class="media-body mt-3">
-                                <p class="mb-0">Cash Sale</p>
-                                <h5 id="setSalePayment" class="font-weight-bold mb-0">0</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
         <div class="col-lg-6 col-md-6">
             <div class="my-4 card card-body">
-                <h4 class="font-weight-bold mb-3">Purchase Report</h4>
+                <h4 class="font-weight-bold mb-3">Purchase</h4>
                 <div class="row">
                     <div class="col-xl-6 mb-4">
                         <div class="media white z-depth-1 rounded">
@@ -233,7 +235,9 @@
             const setSale = document.getElementById('setSale');
             const setSaleDiscount = document.getElementById('setDiscount');
             const setSaleDue = document.getElementById('setSaleDue');
+            const setCashSale = document.getElementById('setCashSale');
             const setSalePayment = document.getElementById('setSalePayment');
+            const setPrevDuePaid = document.getElementById('setPrevDuePaid');
 
             const setPurchase = document.getElementById('setPurchase');
             const setPurchaseDiscount = document.getElementById('setPurchaseDiscount');
@@ -258,6 +262,8 @@
                     setSaleDiscount.innerText = response.SaleDiscount;
                     setSaleDue.innerText = response.SaleDue;
                     setSalePayment.innerText = response.SalePayment;
+                    setCashSale.innerText = response.CashSale;
+                    setPrevDuePaid.innerText = (response.SalePayment- response.CashSale);
 
                     setPurchase.innerText = response.Purchase;
                     setPurchaseDiscount.innerText = response.PurchaseDiscount;

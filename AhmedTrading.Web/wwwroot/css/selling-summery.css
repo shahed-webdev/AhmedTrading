@@ -1,0 +1,7 @@
+﻿
+body { background-color: #fff; }
+#dateContainer { display: none }
+/*@page { margin: 0}*/
+@media print {
+    #dateContainer { display:block}
+}
