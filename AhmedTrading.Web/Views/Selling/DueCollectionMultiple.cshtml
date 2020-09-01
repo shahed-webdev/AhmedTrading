@@ -55,13 +55,13 @@
         <form id="formPaid">
             <div class="form-inline">
                 <div class="md-form">
-                    <input id="inputPaid" required type="number" class="form-control" placeholder="Total paid amount" />
+                    <input id="inputPaid" required type="number" class="form-control" placeholder="Total Paid Amount" />
                 </div>
                 <div class="md-form mx-3">
                     <input id="inputDate" placeholder="Paid Date" type="text" class="form-control datepicker" />
                 </div>
                 <div class="md-form">
-                    <select id="selectPaymentMethod" class="mdb-select mb-0 mt-1 mr-2">
+                    <select id="selectPaymentMethod" required class="mdb-select mb-0 mt-1 mr-2">
                         <option>Cash</option>
                         <option>Bank</option>
                         <option>Cheque</option>
@@ -83,12 +83,13 @@
             $(".datepicker").pickadate().val(moment(new Date()).format("DD MMMM, YYYY"));
         });
 
-        //paid area
+        //selectors
         const formPaid = document.getElementById("formPaid");
         const inputTotalPaid = formPaid.inputPaid;
         const inputDate = formPaid.inputDate;
         const selectPaymentMethod = formPaid.selectPaymentMethod;
 
+        //events
         inputTotalPaid.addEventListener("input", function(e) {
             const totalDue = parseNumber(dueContent.textContent);
             var totalPaid = parseNumber(e.target.value);
@@ -112,6 +113,5 @@
                 return;
             }
         })
-
     </script>
 }

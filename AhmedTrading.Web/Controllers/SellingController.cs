@@ -134,6 +134,7 @@ namespace AhmedTrading.Web.Controllers
             return BadRequest(dbResponse.Message);
         }
 
+
         //GET: multiple due collections
         public IActionResult DueCollectionMultiple(int? id)
         {
