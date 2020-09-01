@@ -33,14 +33,14 @@
 
 @section scripts{
     <script>
-        $(function () {
+        $(function() {
             dataTable.getData();
         });
 
         //get data
         var dataTable = {
             table: null,
-            init: function () {
+            init: function() {
                 dataTable.table = $("#data-table").DataTable({
                     processing: true,
                     serverSide: true,
@@ -51,37 +51,40 @@
                         type: "POST"
                     },
                     columns:
-                        [
-                            {
-                                data: "CustomerName", "render": function (data, type, row, meta) {
-                                    return `<a class="blue-text" href="/Customer/Details/${row.CustomerId}">${row.CustomerName}</a>`;
-                                }
-                            },
-                            { data: "PhonePrimary" },
-                            { data: "CustomerAddress" },
-                            { data: "Due", "render": dataTable.addSign },
-                            { data: "CustomerId", "render": function (data, type, row, meta) { return `<a class="fas fa-edit" href="/Customer/Update/${row.CustomerId}"></a>` } }
-                        ],
+                    [
+                        {
+                            data: "CustomerName", "render": function(data, type, row, meta) {
+                                return `<a class="blue-text" href="/Customer/Details/${row.CustomerId}">${data}</a>`;
+                            }
+                        },
+                        { data: "PhonePrimary" },
+                        { data: "CustomerAddress" },
+                        { data: "Due", "render": function(data, type, row, meta) {
+                                return data ? `<a class="blue-text" href="/Selling/DueCollectionMultiple/${row.CustomerId}">${data}/-</a>` : data;
+                            }
+                        },
+                        { data: "CustomerId", "render": function(data, type, row, meta) { return `<a class="fas fa-edit" href="/Customer/Update/${row.CustomerId}"></a>` } }
+                    ],
                     columnDefs: [
                         { 'searchable': false, 'targets': [3] },
-                        { 'className': "text-left", "targets": [0,2] },
+                        { 'className': "text-left", "targets": [0, 2] },
                         { 'className': "text-right", "targets": [3] }
                     ]
                 });
             },
-            getData: function () {
+            getData: function() {
                 dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
             },
-            addSign: function (data) { return `${data}/-` },
+            addSign: function(data) { return `${data}/-` },
             button: {
                 buttons: [{
                     extend: 'print',
                     text: '<i class="fa fa-print"></i> Print',
                     title: '',
                     exportOptions: {
-                        columns: [0,1,3] //Column value those print
+                        columns: [0, 1, 3] //Column value those print
                     },
-                    customize: function (win) {
+                    customize: function(win) {
                         $(win.document.body).prepend(`<nav class="mb-3 navbar blue-bg">${$('#printBrand').html()}</nav><h3 class="h3-responsive">${$('h4').text()}</h3>`);
                     },
                     autoPrint: true

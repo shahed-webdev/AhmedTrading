@@ -9,7 +9,7 @@
 
 }
 
-<div class="container" id="receipt">
+<div class="container">
     <div class="card card-body">
         <section class="my-4 d-print-none">
             <div class="d-flex justify-content-between align-items-center">
@@ -32,28 +32,86 @@
             </tr>
             </thead>
             <tbody>
-                @{
-                    var index = 1;
-                    foreach (var item in Model.SellingRecords)
-                    {
-                        <tr>
-                            <td class="text-center">@index</td>
-                            <td class="text-center">@item.SellingSn</td>
-                            <td class="text-center">@item.SellingAmount</td>
-                            <td class="text-right">@item.TransportationCost/-</td>
-                            <td class="text-right">@item.SellingDiscountAmount/-</td>
-                            <td class="text-right">@item.SellingPaidAmount/-</td>
-                            <td class="text-right">@item.SellingDueAmount/-</td>
-                            <td class="text-right">@item.SellingDate.ToString("d MMM yyyy")</td>
-                        </tr>
-                        index++;
-                    }
+            @{
+                var index = 1;
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-center">@index</td>
+                        <td class="text-center">@item.SellingSn</td>
+                        <td class="text-center">@item.SellingAmount</td>
+                        <td class="text-right">@item.TransportationCost/-</td>
+                        <td class="text-right">@item.SellingDiscountAmount/-</td>
+                        <td class="text-right">@item.SellingPaidAmount/-</td>
+                        <td class="text-right">@item.SellingDueAmount/-</td>
+                        <td class="text-right">@item.SellingDate.ToString("d MMM yyyy")</td>
+                    </tr>
+                    index++;
                 }
+            }
             </tbody>
         </table>
+        
+        <form id="formPaid">
+            <div class="form-inline">
+                <div class="md-form">
+                    <input id="inputPaid" required type="number" class="form-control" placeholder="Total paid amount" />
+                </div>
+                <div class="md-form mx-3">
+                    <input id="inputDate" placeholder="Paid Date" type="text" class="form-control datepicker" />
+                </div>
+                <div class="md-form">
+                    <select id="selectPaymentMethod" class="mdb-select mb-0 mt-1 mr-2">
+                        <option>Cash</option>
+                        <option>Bank</option>
+                        <option>Cheque</option>
+                        <option>bkash</option>
+                    </select>
+                </div>
+                <div class="md-form">
+                    <input id="submitPaid" type="submit" class="btn btn-blue" value="Paid" />
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 
 @section scripts{
+    <script>
+        $(function () {
+            $(".mdb-select").materialSelect();
+            $(".datepicker").pickadate().val(moment(new Date()).format("DD MMMM, YYYY"));
+        });
 
+        //paid area
+        const formPaid = document.getElementById("formPaid");
+        const inputTotalPaid = formPaid.inputPaid;
+        const inputDate = formPaid.inputDate;
+        const selectPaymentMethod = formPaid.selectPaymentMethod;
+
+        inputTotalPaid.addEventListener("input", function(e) {
+            const totalDue = parseNumber(dueContent.textContent);
+            var totalPaid = parseNumber(e.target.value);
+            this.setAttribute("max", totalDue);
+
+            for (var i = 1, row; (row = table.rows[i]); i++) {
+                const due = row.cells[5].innerHTML;
+
+                if (totalPaid < due && totalPaid > 0) {
+                    row.cells[6].innerHTML = totalPaid;
+                } else if (totalPaid >= due) {
+                    row.cells[6].innerHTML = due;
+                } else {
+                    row.cells[6].innerHTML = 0;
+                }
+                totalPaid -= due;
+            }
+
+            if (totalDue < totalPaid) {
+                this.value = totalDue;
+                return;
+            }
+        })
+
+    </script>
 }
