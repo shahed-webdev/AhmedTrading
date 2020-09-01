@@ -1,8 +1,8 @@
-﻿using System;
-using AhmedTrading.Repository;
+﻿using AhmedTrading.Repository;
 using JqueryDataTables.LoopsIT;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace AhmedTrading.Web.Controllers
@@ -139,7 +139,7 @@ namespace AhmedTrading.Web.Controllers
         {
             if (id == null) return RedirectToAction("List", "Customer");
 
-            var model =_db.Customers.SaleDueRecords(id.GetValueOrDefault());
+            var model = _db.Customers.SaleDueRecords(id.GetValueOrDefault());
             if (model == null) return RedirectToAction("List", "Customer");
 
             return View(model);
@@ -147,12 +147,12 @@ namespace AhmedTrading.Web.Controllers
 
         //POST: multiple due collections
         [HttpPost]
-        public async Task<IActionResult> DueCollectionMultiple([FromBody] SellingDuePaySingleModel model)
+        public async Task<IActionResult> DueCollectionMultiple([FromBody] SellingDuePayMultipleModel model)
         {
             model.RegistrationId = _db.Registrations.GetRegID_ByUserName(User.Identity.Name);
-            var dbResponse = await _db.SellingPayments.DuePaySingleAsync(model, _db).ConfigureAwait(false);
+            var dbResponse = await _db.SellingPayments.DuePayMultipleAsync(model, _db).ConfigureAwait(false);
 
-            if (dbResponse.IsSuccess) return Ok();
+            if (dbResponse.IsSuccess) return Ok(dbResponse.Data);
 
             return BadRequest(dbResponse.Message);
         }
