@@ -48,17 +48,36 @@ namespace AhmedTrading.Repository
         {
             var records = Context.Selling.Select(s => new CustomerSellingViewModel
             {
-
                 SellingId = s.SellingId,
                 CustomerId = s.CustomerId.GetValueOrDefault(),
                 SellingSn = s.SellingSn,
                 SellingAmount = s.SellingTotalPrice,
+                TransportationCost = s.TransportationCost,
                 SellingPaidAmount = s.SellingPaidAmount,
                 SellingDiscountAmount = s.SellingDiscountAmount,
                 SellingDueAmount = s.SellingDueAmount,
                 SellingDate = s.SellingDate
             });
             return records.ToDataResult(request);
+        }
+
+        public ICollection<CustomerSellingViewModel> SaleDueRecords(int id)
+        {
+            var records = Context
+                .Selling.Where(s => s.CustomerId == id && s.SellingDueAmount > 0)
+                .Select(s => new CustomerSellingViewModel
+                {
+                    SellingId = s.SellingId,
+                    CustomerId = s.CustomerId.GetValueOrDefault(),
+                    SellingSn = s.SellingSn,
+                    SellingAmount = s.SellingTotalPrice,
+                    TransportationCost = s.TransportationCost,
+                    SellingPaidAmount = s.SellingPaidAmount,
+                    SellingDiscountAmount = s.SellingDiscountAmount,
+                    SellingDueAmount = s.SellingDueAmount,
+                    SellingDate = s.SellingDate
+                });
+            return records.ToList();
         }
 
         public async Task<bool> IsPhoneNumberExistAsync(string number, int id = 0)

@@ -1,6 +1,6 @@
 ﻿
 $(function() {
-//date picker
+    //date picker
     $('.datepicker').pickadate().val(moment(new Date()).format('DD MMMM, YYYY'));
 
     // material select initialization
@@ -20,10 +20,11 @@ $(function() {
 //payment selectors
  const formPayment = document.getElementById('formPayment');
  const totalPrice = formPayment.querySelector('#totalPrice');
+ const inputTransportCost = formPayment.inputTransportCost;
  const inputDiscount = formPayment.inputDiscount;
  const totalPayable = formPayment.querySelector('#totalPayable');
  const selectPaymentMethod = formPayment.selectPaymentMethod;
-const inputSellingDate = formPayment.inputSellingDate
+ const inputSellingDate = formPayment.inputSellingDate
 
 //customer
  const hiddenCustomerId = formPayment.hiddenCustomerId;
@@ -269,9 +270,20 @@ const validInput = function (total, inputted) {
     return (total < inputted) ? false : true;
 }
 
+//input Transport Cost
+const onInputTransportCost = function () {
+    const total = +totalPrice.textContent;
+    const cost = +this.value;
+
+    totalPayable.innerText = total + cost;
+}
+
 //input discount amount
 const onInputDiscount = function () {
-    const total = +totalPrice.textContent;
+    const price = +totalPrice.textContent;
+    const cost = +inputTransportCost.value || 0;
+    const total = price + cost;
+
     const discount = +this.value;
     const isValid = validInput(total, discount);
     const grandTotal = (total - discount);
@@ -319,6 +331,7 @@ const onSellSubmitClicked = function(evt) {
     const body = {
         CustomerId: null,
         SellingTotalPrice: +totalPrice.textContent,
+        TransportationCost: +inputTransportCost.value || 0,
         SellingDiscountAmount: +inputDiscount.value || 0,
         SellingPaidAmount: +totalPayable.innerText || 0,
         PaymentMethod: selectPaymentMethod.value,
@@ -354,6 +367,7 @@ const onSellSubmitClicked = function(evt) {
 //event listener
  formPayment.addEventListener('submit', onCheckFormValid);
  tableForm.addEventListener('submit', onSellSubmitClicked);
+ inputTransportCost.addEventListener('input', onInputTransportCost);
  inputDiscount.addEventListener('input', onInputDiscount);
 
 

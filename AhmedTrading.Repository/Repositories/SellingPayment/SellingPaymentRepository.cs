@@ -52,7 +52,7 @@ namespace AhmedTrading.Repository
                         ReceiptSn = Sn,
                         PaidAmount = model.PaidAmount,
                         PaymentMethod = model.PaymentMethod,
-                        PaidDate = model.PaidDate,
+                        PaidDate = model.PaidDate.ToLocalTime(),
 
                         SellingPaymentList = new List<SellingPaymentList>
                         {

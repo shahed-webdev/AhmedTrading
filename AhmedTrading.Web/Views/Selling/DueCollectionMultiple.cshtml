@@ -1,0 +1,59 @@
+﻿@using AhmedTrading.Repository
+@model IEnumerable<CustomerSellingViewModel>
+@{
+    ViewData["Title"] = "Multiple Due Collection";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section Styles{
+
+}
+
+<div class="container" id="receipt">
+    <div class="card card-body">
+        <section class="my-4 d-print-none">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="page-header"></h4>
+                <h4 class="page-header">Total Due</h4>
+            </div>
+        </section>
+
+        <table class="product-tb table table-sm table-bordered mt-5">
+            <thead>
+            <tr>
+                <th><strong>SN</strong></th>
+                <th><strong>#Bill No</strong></th>
+                <th><strong>Amount</strong></th>
+                <th><strong>Transport Cost</strong></th>
+                <th><strong>Discount</strong></th>
+                <th><strong>Paid</strong></th>
+                <th><strong>Due</strong></th>
+                <th><strong>Date</strong></th>
+            </tr>
+            </thead>
+            <tbody>
+                @{
+                    var index = 1;
+                    foreach (var item in Model.SellingRecords)
+                    {
+                        <tr>
+                            <td class="text-center">@index</td>
+                            <td class="text-center">@item.SellingSn</td>
+                            <td class="text-center">@item.SellingAmount</td>
+                            <td class="text-right">@item.TransportationCost/-</td>
+                            <td class="text-right">@item.SellingDiscountAmount/-</td>
+                            <td class="text-right">@item.SellingPaidAmount/-</td>
+                            <td class="text-right">@item.SellingDueAmount/-</td>
+                            <td class="text-right">@item.SellingDate.ToString("d MMM yyyy")</td>
+                        </tr>
+                        index++;
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section scripts{
+
+}

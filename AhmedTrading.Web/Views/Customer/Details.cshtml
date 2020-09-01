@@ -111,6 +111,7 @@
                         <th><strong>SN</strong></th>
                         <th><strong>#Bill No</strong></th>
                         <th><strong>Amount</strong></th>
+                        <th><strong>Transport Cost</strong></th>
                         <th><strong>Discount</strong></th>
                         <th><strong>Paid</strong></th>
                         <th><strong>Due</strong></th>
@@ -182,6 +183,7 @@
                             }
                         },
                         { data: "SellingAmount", "render": dataTable.addSign },
+                        { data: "TransportationCost", "render": dataTable.addSign },
                         { data: "SellingDiscountAmount", "render": dataTable.addSign },
                         { data: "SellingPaidAmount", "render": dataTable.addSign },
                         {
