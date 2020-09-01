@@ -14,6 +14,7 @@ namespace AhmedTrading.Repository
         public int? CustomerId { get; set; }
         public double SellingTotalPrice { get; set; }
         public double SellingDiscountAmount { get; set; }
+        public double TransportationCost { get; set; }
         public double SellingPaidAmount { get; set; }
         public string PaymentMethod { get; set; }
         public DateTime SellingDate { get; set; }
@@ -50,6 +51,7 @@ namespace AhmedTrading.Repository
         public int SellingId { get; set; }
         public double SellingTotalPrice { get; set; }
         public double SellingDiscountAmount { get; set; }
+        public double TransportationCost { get; set; }
         public double SellingPaidAmount { get; set; }
         public double SellingDueAmount { get; set; }
         public DateTime SellingDate { get; set; }
@@ -70,6 +72,7 @@ namespace AhmedTrading.Repository
         public double SellingAmount { get; set; }
         public double SellingPaidAmount { get; set; }
         public double SellingDiscountAmount { get; set; }
+        public double TransportationCost { get; set; }
         public double SellingDueAmount { get; set; }
         public DateTime SellingDate { get; set; }
     }

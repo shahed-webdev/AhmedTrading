@@ -39,7 +39,7 @@ namespace AhmedTrading.Repository
                 SellingSn = newSellingSn,
                 SellingTotalPrice = model.SellingTotalPrice,
                 SellingDiscountAmount = model.SellingDiscountAmount,
-                SellingDiscountPercentage = model.SellingDiscountAmount,
+                TransportationCost = model.TransportationCost,
                 SellingPaidAmount = model.SellingPaidAmount,
                 SellingDate = model.SellingDate.ToLocalTime(),
                 SellingList = model.ProductList.Select(l => new SellingList
@@ -113,6 +113,7 @@ namespace AhmedTrading.Repository
                   SellingId = s.SellingId,
                   SellingTotalPrice = s.SellingTotalPrice,
                   SellingDiscountAmount = s.SellingDiscountAmount,
+                  TransportationCost = s.TransportationCost,
                   SellingPaidAmount = s.SellingPaidAmount,
                   SellingDueAmount = s.SellingDueAmount,
                   SellingDate = s.SellingDate,
@@ -157,6 +158,7 @@ namespace AhmedTrading.Repository
                 SellingAmount = s.SellingTotalPrice,
                 SellingPaidAmount = s.SellingPaidAmount,
                 SellingDiscountAmount = s.SellingDiscountAmount,
+                TransportationCost = s.TransportationCost,
                 SellingDueAmount = s.SellingDueAmount,
                 SellingDate = s.SellingDate
             });

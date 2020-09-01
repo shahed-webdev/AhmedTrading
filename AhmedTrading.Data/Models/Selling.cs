@@ -17,6 +17,7 @@ namespace AhmedTrading.Data
         public int SellingSn { get; set; }
         public double SellingTotalPrice { get; set; }
         public double SellingDiscountAmount { get; set; }
+        public double TransportationCost { get; set; }
         public double SellingDiscountPercentage { get; set; }
         public double SellingPaidAmount { get; set; }
         public double SellingReturnAmount { get; set; }

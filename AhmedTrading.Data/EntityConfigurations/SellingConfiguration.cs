@@ -21,13 +21,13 @@ namespace AhmedTrading.Data
 
             builder.Property(e => e.SellingDiscountPercentage).HasComputedColumnSql("(case when [SellingTotalPrice]=(0) then (0) else round(([SellingDiscountAmount]*(100))/[SellingTotalPrice],(2)) end)");
 
-            builder.Property(e => e.SellingDueAmount).HasComputedColumnSql("(round(([SellingTotalPrice]+[SellingReturnAmount])-([SellingDiscountAmount]+[SellingPaidAmount]),(2)))");
+            builder.Property(e => e.SellingDueAmount).HasComputedColumnSql("(round(([SellingTotalPrice]+[SellingReturnAmount]+[TransportationCost])-([SellingDiscountAmount]+[SellingPaidAmount]),(2)))");
 
             builder.Property(e => e.SellingPaymentStatus)
                 .IsRequired()
                 .HasMaxLength(4)
                 .IsUnicode(false)
-                .HasComputedColumnSql("(case when (([SellingTotalPrice]+[SellingReturnAmount])-([SellingDiscountAmount]+[SellingPaidAmount]))<=(0) then 'Paid' else 'Due' end)");
+                .HasComputedColumnSql("(case when (([SellingTotalPrice]+[SellingReturnAmount]+[TransportationCost])-([SellingDiscountAmount]+[SellingPaidAmount]))<=(0) then 'Paid' else 'Due' end)");
 
             builder.Property(e => e.SellingSn).HasColumnName("SellingSN");
 
