@@ -89,4 +89,18 @@ namespace AhmedTrading.Repository
         public double DiscountAmount { get; set; }
         public double DueAmount { get; set; }
     }
+
+    public class CustomerMultipleDueCollectionModel
+    {
+        public CustomerMultipleDueCollectionModel()
+        {
+            SellingRecords = new HashSet<CustomerSellingViewModel>();
+        }
+        public int CustomerId { get; set; }
+        public string CustomerName { get; set; }
+        public string CustomerAddress { get; set; }
+        public double DueAmount { get; set; }
+        public ICollection<CustomerSellingViewModel> SellingRecords { get; set; }
+    }
+
 }

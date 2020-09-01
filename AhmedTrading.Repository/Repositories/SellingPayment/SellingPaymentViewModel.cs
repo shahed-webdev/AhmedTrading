@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AhmedTrading.Repository
 {
@@ -17,5 +18,26 @@ namespace AhmedTrading.Repository
         public double PaidAmount { get; set; }
         public double SellingDiscountAmount { get; set; }
         public DateTime PaidDate { get; set; }
+    }
+
+
+    public class SellingDuePayMultipleModel
+    {
+        public SellingDuePayMultipleModel()
+        {
+            Bills = new HashSet<SellingDuePayMultipleBill>();
+        }
+        public int CustomerId { get; set; }
+        public int RegistrationId { get; set; }
+        public double PaidAmount { get; set; }
+        public string PaymentMethod { get; set; }
+        public DateTime PaidDate { get; set; }
+        public ICollection<SellingDuePayMultipleBill> Bills { get; set; }
+    }
+
+    public class SellingDuePayMultipleBill
+    {
+        public int SellingId { get; set; }
+        public double SellingPaidAmount { get; set; }
     }
 }

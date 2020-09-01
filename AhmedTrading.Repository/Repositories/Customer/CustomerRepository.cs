@@ -61,23 +61,28 @@ namespace AhmedTrading.Repository
             return records.ToDataResult(request);
         }
 
-        public ICollection<CustomerSellingViewModel> SaleDueRecords(int id)
+        public CustomerMultipleDueCollectionModel SaleDueRecords(int id)
         {
-            var records = Context
-                .Selling.Where(s => s.CustomerId == id && s.SellingDueAmount > 0)
-                .Select(s => new CustomerSellingViewModel
+            var customer = Context.Customer
+                .Include(c => c.Selling)
+                .Select(c => new CustomerMultipleDueCollectionModel
                 {
-                    SellingId = s.SellingId,
-                    CustomerId = s.CustomerId.GetValueOrDefault(),
-                    SellingSn = s.SellingSn,
-                    SellingAmount = s.SellingTotalPrice,
-                    TransportationCost = s.TransportationCost,
-                    SellingPaidAmount = s.SellingPaidAmount,
-                    SellingDiscountAmount = s.SellingDiscountAmount,
-                    SellingDueAmount = s.SellingDueAmount,
-                    SellingDate = s.SellingDate
+                    CustomerId = c.CustomerId,
+                    CustomerName = c.CustomerName,
+                    CustomerAddress = c.CustomerAddress,
+                    SellingRecords = c.Selling.Select(s => new CustomerSellingViewModel
+                    {
+                        SellingId = s.SellingId,
+                        SellingSn = s.SellingSn,
+                        SellingAmount = s.SellingTotalPrice,
+                        SellingPaidAmount = s.SellingPaidAmount,
+                        SellingDiscountAmount = s.SellingDiscountAmount,
+                        SellingDueAmount = s.SellingDueAmount,
+                        SellingDate = s.SellingDate
+                    }).ToList(),
+                    DueAmount = c.Due
                 });
-            return records.ToList();
+            return customer.FirstOrDefault(c => c.CustomerId == id);
         }
 
         public async Task<bool> IsPhoneNumberExistAsync(string number, int id = 0)

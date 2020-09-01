@@ -8,6 +8,7 @@ namespace AhmedTrading.Repository
     {
         Task<int> GetNewSnAsync();
         Task<DbResponse> DuePaySingleAsync(SellingDuePaySingleModel model, IUnitOfWork db);
+        Task<DbResponse<int>> DuePayMultipleAsync(SellingDuePayMultipleModel model, IUnitOfWork db);
         double DateWiseSalePayment(DateTime? fromDate, DateTime? toDate);
         double DateWiseCashSale(DateTime? fromDate, DateTime? toDate);
     }
