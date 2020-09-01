@@ -1,9 +1,11 @@
 ﻿
+$(function() {
 //date picker
-$('.datepicker').pickadate().val(moment(new Date()).format('DD MMMM, YYYY'));
+    $('.datepicker').pickadate().val(moment(new Date()).format('DD MMMM, YYYY'));
 
- // material select initialization
- $('.mdb-select').materialSelect();
+    // material select initialization
+    $('.mdb-select').materialSelect();
+});
 
 // global storage
  let cartProducts = [];
@@ -38,15 +40,16 @@ const localCart = {
         localStorage.setItem('quick-cart-storage', JSON.stringify(cartProducts));
     },
     addToTable: function (product) {
-        error.textContent = "";
-
-        const found = cartProducts.some(item => item.ProductId === product.ProductId);
-        if (found) {
-            error.textContent = `This product already added!`
-            return;
-        }
+        //error.textContent = "";
+        //const found = cartProducts.some(item => item.ProductId === product.ProductId);
+        //if (found) {
+        //    error.textContent = `This product already added!`
+        //    return;
+        //}
 
         product.SellingQuantity = 0;
+        product.Id = Date.now();
+
         cartProducts.push(product);
         this.set();
 
@@ -99,7 +102,7 @@ const localCart = {
 //create table rows
 const createTableRow = function (item) {
     const tr = document.createElement("tr");
-    tr.setAttribute("data-id", item.ProductId);
+    tr.setAttribute("data-id", item.Id);
 
     //column 1
     const td1 = tr.insertCell(0);
@@ -160,7 +163,7 @@ const createTableRow = function (item) {
     //column 6
     const td6 = tr.insertCell(5);
     const removeIcon = document.createElement('i');
-    removeIcon.id = item.ProductId;
+    removeIcon.id = item.Id;
     removeIcon.classList.add('fal', 'fa-trash-alt', 'remove');
     td6.appendChild(removeIcon);
     td6.classList.add('text-center');
@@ -184,9 +187,9 @@ const displayTableData = function () {
 }
 
 //update product price
-const updateProduct = function (productId, field, value) {
+const updateProduct = function (id, field, value) {
     cartProducts.forEach((item, index) => {
-        if (item.ProductId === productId) {
+        if (item.Id === id) {
             cartProducts[index][field] = value;
             return;
         }
@@ -206,7 +209,7 @@ tbody.addEventListener('click', function (evt) {
 
     if (onRemove) {
         const id = +element.id;
-        cartProducts = cartProducts.filter(item => item.ProductId !== id);
+        cartProducts = cartProducts.filter(item => item.Id !== id);
         localCart.set();
 
         element.parentElement.parentElement.remove();
@@ -220,7 +223,7 @@ tbody.addEventListener('click', function (evt) {
 tbody.addEventListener('input', function (evt) {
     const element = evt.target;
     const row = element.parentElement.parentElement;
-    const productId = +element.parentElement.parentElement.getAttribute('data-id');
+    const Id = +element.parentElement.parentElement.getAttribute('data-id');
 
     const onQuantity = element.classList.contains('inputQuantity');
     const onSellingUnitPrice = element.classList.contains('inputSellingUnitPrice');
@@ -233,7 +236,7 @@ tbody.addEventListener('input', function (evt) {
         totalPrice.textContent = (quantity * unitPrice).toFixed(2);
 
         //update value
-        updateProduct(productId, "SellingUnitPrice", +element.value);
+        updateProduct(Id, "SellingUnitPrice", +element.value);
     }
 
     if (onQuantity) {
@@ -250,7 +253,7 @@ tbody.addEventListener('input', function (evt) {
         totalPrice.textContent = (quantity * sellingUnitPrice).toFixed(2);
 
         //update value
-        updateProduct(productId, "SellingQuantity", +element.value);
+        updateProduct(Id, "SellingQuantity", +element.value);
     }
 });
 
