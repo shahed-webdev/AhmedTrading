@@ -11,6 +11,7 @@ namespace AhmedTrading.Repository
         ICollection<CustomerListViewModel> ListCustom();
         DataResult<CustomerListViewModel> ListDataTable(DataRequest request);
         DataResult<CustomerSellingViewModel> SaleRecords(DataRequest request);
+        ICollection<CustomerSellingViewModel> SaleDueRecords(int id);
         Task<bool> IsPhoneNumberExistAsync(string number, int id = 0);
         CustomerAddUpdateViewModel FindCustom(int id);
         CustomerProfileViewModel ProfileDetails(int id);
@@ -21,6 +22,5 @@ namespace AhmedTrading.Repository
         ICollection<CustomerDueViewModel> TopDue(int totalCustomer);
         DbResponse<CustomerDateWiseSaleSummary> SaleDateWise(int customerId, DateTime? fromDate, DateTime? toDate);
         DbResponse Delete(int id);
-
     }
 }

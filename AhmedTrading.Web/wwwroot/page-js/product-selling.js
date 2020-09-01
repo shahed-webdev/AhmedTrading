@@ -21,6 +21,7 @@ let cartProducts = []
 //payment selectors
 const formPayment = document.getElementById('formPayment')
 const totalPrice = formPayment.querySelector('#totalPrice')
+const inputTransportCost = formPayment.inputTransportCost;
 const inputDiscount = formPayment.inputDiscount
 const totalPayable = formPayment.querySelector('#totalPayable')
 const inputPaid = formPayment.inputPaid
@@ -281,6 +282,14 @@ const validInput = function (total, inputted) {
     return (total < inputted) ? false : true;
 }
 
+//input Transport Cost
+const onInputTransportCost = function () {
+    const total = +totalPrice.textContent;
+    const cost = +this.value;
+
+    totalPayable.innerText = total + cost;
+}
+
 //input discount amount
 const onInputDiscount = function () {
     const total = +totalPrice.textContent;
@@ -357,6 +366,7 @@ const onSellSubmitClicked = function(evt) {
     const body = {
         CustomerId: +hiddenCustomerId.value,
         SellingTotalPrice: +totalPrice.textContent,
+        TransportationCost: +inputTransportCost.value || 0,
         SellingDiscountAmount: +inputDiscount.value || 0,
         SellingPaidAmount: +inputPaid.value || 0,
         PaymentMethod: inputPaid.value ? selectPaymentMethod.value : '',
@@ -394,6 +404,7 @@ const onSellSubmitClicked = function(evt) {
 //event listener
 formPayment.addEventListener('submit', onCheckFormValid)
 tableForm.addEventListener('submit', onSellSubmitClicked)
+inputTransportCost.addEventListener('input', onInputTransportCost);
 inputDiscount.addEventListener('input', onInputDiscount)
 inputPaid.addEventListener('input', onInputPaid)
 

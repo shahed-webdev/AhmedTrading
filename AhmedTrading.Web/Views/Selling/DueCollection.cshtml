@@ -140,7 +140,9 @@
                             <option>bkash</option>
                         </select>
                     </div>
-
+                    <div class="md-form">
+                        <input id="inputDate" type="text" class="form-control datepicker" required />
+                    </div>
                     <input type="submit" value="pay due" class="btn btn-blue-grey" @(Model.SellingDueAmount > 0? "":"disabled")>
                 </form>
             </div>
@@ -155,8 +157,11 @@
         const totalDues = document.getElementById('totalDues');
         const payableContainer = document.getElementById('payable-container');
         const remainDue = document.getElementById('remainDue');
+
         const inputPaid = formPayment.inputPaid;
         const inputDiscount = formPayment.inputDiscount;
+        const selectPaymentMethod = formPayment.selectPaymentMethod;
+        const inputDate = formPayment.inputDate;
 
         //input discount amount
         const onInputDiscount = function() {
@@ -202,10 +207,10 @@
                 PaidAmount: +inputPaid.value,
                 PaymentMethod: inputPaid.value ? selectPaymentMethod.value : '',
                 SellingDiscountAmount: +inputDiscount.value,
-                PaidDate: new Date()
-            }
+                PaidDate: new Date(inputDate.value)
+        }
 
-            const url = '/Selling/DueCollection'
+            const url = '/Selling/DueCollection';
             const options = {
                 method: 'POST',
                 url: url,
@@ -219,6 +224,9 @@
 
         $(function() {
             $("#amount-word").text(`Taka( in word): ${number2text(@Model.SellingTotalPrice).toLowerCase()}`);
+
+            //date picker
+            $('.datepicker').pickadate().val(moment(new Date()).format('DD MMMM, YYYY'));
 
             // material select initialization
             $('.mdb-select').materialSelect();

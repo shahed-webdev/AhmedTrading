@@ -68,6 +68,7 @@ namespace AhmedTrading.Repository
         public int SellingId { get; set; }
         public int SellingSn { get; set; }
         public double SellingAmount { get; set; }
+        public double TransportationCost { get; set; }
         public double SellingPaidAmount { get; set; }
         public double SellingDiscountAmount { get; set; }
         public double SellingDueAmount { get; set; }

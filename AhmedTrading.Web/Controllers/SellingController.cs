@@ -134,6 +134,30 @@ namespace AhmedTrading.Web.Controllers
             return BadRequest(dbResponse.Message);
         }
 
+        //GET: multiple due collections
+        public IActionResult DueCollectionMultiple(int? id)
+        {
+            if (id == null) return RedirectToAction("List", "Customer");
+
+            var model =_db.Customers.SaleDueRecords(id.GetValueOrDefault());
+            if (model == null) return RedirectToAction("List", "Customer");
+
+            return View(model);
+        }
+
+        //POST: multiple due collections
+        [HttpPost]
+        public async Task<IActionResult> DueCollectionMultiple([FromBody] SellingDuePaySingleModel model)
+        {
+            model.RegistrationId = _db.Registrations.GetRegID_ByUserName(User.Identity.Name);
+            var dbResponse = await _db.SellingPayments.DuePaySingleAsync(model, _db).ConfigureAwait(false);
+
+            if (dbResponse.IsSuccess) return Ok();
+
+            return BadRequest(dbResponse.Message);
+        }
+
+
         //Product Selling Summary
         public IActionResult SellingSummary()
         {
