@@ -148,7 +148,7 @@ namespace AhmedTrading.Web.Controllers
 
         //POST: multiple due collections
         [HttpPost]
-        public async Task<IActionResult> DueCollectionMultiple([FromBody] SellingDuePayMultipleModel model)
+        public async Task<IActionResult> DueCollectionMultiple(SellingDuePayMultipleModel model)
         {
             model.RegistrationId = _db.Registrations.GetRegID_ByUserName(User.Identity.Name);
             var dbResponse = await _db.SellingPayments.DuePayMultipleAsync(model, _db).ConfigureAwait(false);

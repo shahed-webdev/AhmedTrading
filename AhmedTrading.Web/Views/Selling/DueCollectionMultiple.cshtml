@@ -1,5 +1,5 @@
 ﻿@using AhmedTrading.Repository
-@model IEnumerable<CustomerSellingViewModel>
+@model CustomerMultipleDueCollectionModel
 @{
     ViewData["Title"] = "Multiple Due Collection";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -13,37 +13,40 @@
     <div class="card card-body">
         <section class="my-4 d-print-none">
             <div class="d-flex justify-content-between align-items-center">
-                <h4 class="page-header"></h4>
-                <h4 class="page-header">Total Due</h4>
+                <h4 class="page-header">
+                    @Model.CustomerName
+                    <small class="font-small">@Model.CustomerAddress</small>
+                </h4>
+                <h4 class="page-header">Total Due: ৳@Model.DueAmount</h4>
             </div>
         </section>
 
-        <table class="product-tb table table-sm table-bordered mt-5">
-            <thead>
+        <table id="tableReceipt" class="table table-sm table-bordered table-hover">
+            <thead class="text-center">
             <tr>
                 <th><strong>SN</strong></th>
                 <th><strong>#Bill No</strong></th>
                 <th><strong>Amount</strong></th>
                 <th><strong>Transport Cost</strong></th>
                 <th><strong>Discount</strong></th>
-                <th><strong>Paid</strong></th>
                 <th><strong>Due</strong></th>
+                <th><strong>Paid</strong></th>
                 <th><strong>Date</strong></th>
             </tr>
             </thead>
             <tbody>
             @{
                 var index = 1;
-                foreach (var item in Model)
+                foreach (var item in Model.SellingRecords)
                 {
                     <tr>
                         <td class="text-center">@index</td>
                         <td class="text-center">@item.SellingSn</td>
                         <td class="text-center">@item.SellingAmount</td>
-                        <td class="text-right">@item.TransportationCost/-</td>
-                        <td class="text-right">@item.SellingDiscountAmount/-</td>
-                        <td class="text-right">@item.SellingPaidAmount/-</td>
-                        <td class="text-right">@item.SellingDueAmount/-</td>
+                        <td class="text-right">@item.TransportationCost</td>
+                        <td class="text-right">@item.SellingDiscountAmount</td>
+                        <td class="text-right">@item.SellingDueAmount</td>
+                        <td data-id="@item.SellingId" data-paid="@item.SellingPaidAmount" class="text-right font-weight-bold">@item.SellingPaidAmount</td>
                         <td class="text-right">@item.SellingDate.ToString("d MMM yyyy")</td>
                     </tr>
                     index++;
@@ -55,13 +58,14 @@
         <form id="formPaid">
             <div class="form-inline">
                 <div class="md-form">
-                    <input id="inputPaid" required type="number" class="form-control" placeholder="Total Paid Amount" />
+                    <input id="inputPaid" min="0" max="@Model.DueAmount" required type="number" class="form-control" placeholder="Total Paid Amount" />
                 </div>
                 <div class="md-form mx-3">
                     <input id="inputDate" placeholder="Paid Date" type="text" class="form-control datepicker" />
                 </div>
                 <div class="md-form">
                     <select id="selectPaymentMethod" required class="mdb-select mb-0 mt-1 mr-2">
+                        <option value="">[ Payment Method ]</option>
                         <option>Cash</option>
                         <option>Bank</option>
                         <option>Cheque</option>
@@ -78,33 +82,36 @@
 
 @section scripts{
     <script>
-        $(function () {
+        $(function() {
             $(".mdb-select").materialSelect();
             $(".datepicker").pickadate().val(moment(new Date()).format("DD MMMM, YYYY"));
         });
 
         //selectors
+        const table = document.getElementById("tableReceipt");
         const formPaid = document.getElementById("formPaid");
         const inputTotalPaid = formPaid.inputPaid;
         const inputDate = formPaid.inputDate;
         const selectPaymentMethod = formPaid.selectPaymentMethod;
 
         //events
-        inputTotalPaid.addEventListener("input", function(e) {
-            const totalDue = parseNumber(dueContent.textContent);
-            var totalPaid = parseNumber(e.target.value);
-            this.setAttribute("max", totalDue);
+        inputTotalPaid.addEventListener("input", function() {
+            const totalDue = @Model.DueAmount;
+            let totalPaid = +this.value;
 
-            for (var i = 1, row; (row = table.rows[i]); i++) {
-                const due = row.cells[5].innerHTML;
+            for (let i = 1, row; (row = table.rows[i]); i++) {
+                const due = row.cells[5].textContent;
+                const prevPaid = row.cells[6].getAttribute('data-paid');
+                console.log(prevPaid)
 
                 if (totalPaid < due && totalPaid > 0) {
-                    row.cells[6].innerHTML = totalPaid;
+                    row.cells[6].textContent = totalPaid;
                 } else if (totalPaid >= due) {
-                    row.cells[6].innerHTML = due;
+                    row.cells[6].textContent = due;
                 } else {
-                    row.cells[6].innerHTML = 0;
+                    row.cells[6].textContent = 0;
                 }
+
                 totalPaid -= due;
             }
 
@@ -113,5 +120,34 @@
                 return;
             }
         })
-    </script>
+
+        formPaid.addEventListener('submit', function(evt) {
+            evt.preventDefault();
+
+            const body = {
+                CustomerId:@Model.CustomerId,
+                PaidAmount: +inputTotalPaid.value,
+                PaymentMethod: selectPaymentMethod.value,
+                PaidDate: inputDate.value,
+                Bills:[]
+            }
+
+            for (var i = 1, row; (row = table.rows[i]); i++) {
+                const paid = +row.cells[6].textContent;
+
+                if (paid > 0) {
+                    const invoice = { SellingId: +row.cells[6].getAttribute("data-id"), SellingPaidAmount: paid };
+                    body.Bills.push(invoice);
+                }
+            }
+
+            const url = "/Selling/DueCollectionMultiple";
+            $.post(url, { model: body }, function(response) {
+                console.log(response)
+                //if (response.IsSuccess) {
+                // location.href = `/Selling/SellingReceipt/${data.Data}`;
+                //}
+            })
+        });
+    </script>  
 }
