@@ -105,9 +105,15 @@
 
     <section>
         <div class="card card-body">
-            <h4 class="page-header mb-3">
-                Sales Due: <a href="/Selling/DueCollectionMultiple/@Model.CustomerId">৳@Model.DueAmount <i class="far fa-long-arrow-right"></i></a>
-            </h4>
+            <div class="d-flex">
+                <h4 class="page-header mb-3">Sales Due: ৳@Model.SaleDue</h4>
+                @if (Model.SaleDue > 0)
+                {
+                    <a class="ml-2" href="/Selling/DueCollectionMultiple/@Model.CustomerId">
+                        Pay Due <i class="far fa-long-arrow-right"></i>
+                    </a>
+                }
+            </div>
 
             <table id="invoice-table" class="table table-hover table-bordered table-sm">
                 <thead>
