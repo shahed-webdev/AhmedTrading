@@ -34,6 +34,7 @@ namespace AhmedTrading.Repository
         public string CustomerAddress { get; set; }
         public string PhonePrimary { get; set; }
         public double Due { get; set; }
+        public double SaleDue { get; set; }
         public DateTime SignUpDate { get; set; }
     }
     public class CustomerReceiptViewModel
@@ -60,6 +61,7 @@ namespace AhmedTrading.Repository
         public double ReceivedAmount { get; set; }
         public double DiscountAmount { get; set; }
         public double DueAmount { get; set; }
+        public double SaleDue { get; set; }
         public double OpeningDue { get; set; }
     }
     public class CustomerSellingViewModel
@@ -99,7 +101,7 @@ namespace AhmedTrading.Repository
         public int CustomerId { get; set; }
         public string CustomerName { get; set; }
         public string CustomerAddress { get; set; }
-        public double DueAmount { get; set; }
+        public double SaleDue { get; set; }
         public ICollection<CustomerSellingViewModel> SellingRecords { get; set; }
     }
 
