@@ -96,16 +96,7 @@
                     <i class="far fa-chart-line-down fa-lg pink z-depth-1 p-4 rounded-left text-white mr-3"></i>
                     <div class="media-body p-1">
                         <p class="text-uppercase text-muted mb-1"><small>due <em class="red-text">@(Model.OpeningDue > 0 ? $"Opening Due: {Model.OpeningDue}" : "")</em></small></p>
-                        <h5 class="font-weight-bold mb-0">
-                            @if (Model.DueAmount > 0)
-                            {
-                            <a href="/Selling/DueCollectionMultiple/@Model.CustomerId"><span id="setDue">@Model.DueAmount</span> <i class="far fa-long-arrow-right"></i></a>
-                            }
-                            else
-                            {
-                                <span id="setDue">@Model.DueAmount</span>
-                            }
-                        </h5>
+                        <h5 id="setDue" class="font-weight-bold mb-0">@Model.DueAmount</h5>
                     </div>
                 </div>
             </div>
@@ -114,18 +105,28 @@
 
     <section>
         <div class="card card-body">
+            <div class="d-flex">
+                <h4 class="page-header mb-3">Sales Due: ৳@Model.SaleDue</h4>
+                @if (Model.SaleDue > 0)
+                {
+                    <a class="ml-2" href="/Selling/DueCollectionMultiple/@Model.CustomerId">
+                        Pay Due <i class="far fa-long-arrow-right"></i>
+                    </a>
+                }
+            </div>
+
             <table id="invoice-table" class="table table-hover table-bordered table-sm">
                 <thead>
-                    <tr>
-                        <th><strong>SN</strong></th>
-                        <th><strong>#Bill No</strong></th>
-                        <th><strong>Amount</strong></th>
-                        <th><strong>Transport Cost</strong></th>
-                        <th><strong>Discount</strong></th>
-                        <th><strong>Paid</strong></th>
-                        <th><strong>Due</strong></th>
-                        <th><strong>Date</strong></th>
-                    </tr>
+                <tr>
+                    <th><strong>SN</strong></th>
+                    <th><strong>#Bill No</strong></th>
+                    <th><strong>Amount</strong></th>
+                    <th><strong>Transport Cost</strong></th>
+                    <th><strong>Discount</strong></th>
+                    <th><strong>Paid</strong></th>
+                    <th><strong>Due</strong></th>
+                    <th><strong>Date</strong></th>
+                </tr>
                 </thead>
             </table>
         </div>
