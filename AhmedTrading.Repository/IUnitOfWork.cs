@@ -12,6 +12,7 @@ namespace AhmedTrading.Repository
         IPageLinkRepository PageLinks { get; }
         IPageLinkCategoryRepository PageLinkCategories { get; }
         IPageLinkAssignRepository PageLinkAssigns { get; }
+        IPersonRepository Person { get; }
         IProductRepository Products { get; }
         IProductBrandRepository ProductBrands { get; }
         IPurchaseRepository Purchases { get; }

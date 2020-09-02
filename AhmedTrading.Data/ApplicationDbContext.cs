@@ -24,6 +24,9 @@ namespace AhmedTrading.Data
         public virtual DbSet<PageLink> PageLink { get; set; }
         public virtual DbSet<PageLinkAssign> PageLinkAssign { get; set; }
         public virtual DbSet<PageLinkCategory> PageLinkCategory { get; set; }
+        public virtual DbSet<Person> Person { get; set; }
+        public virtual DbSet<PersonalLoan> PersonalLoan { get; set; }
+        public virtual DbSet<PersonalLoanReturn> PersonalLoanReturn { get; set; }
         public virtual DbSet<Product> Product { get; set; }
         public virtual DbSet<ProductBrand> ProductBrand { get; set; }
         public virtual DbSet<Purchase> Purchase { get; set; }
@@ -57,6 +60,9 @@ namespace AhmedTrading.Data
             modelBuilder.ApplyConfiguration(new PageLinkConfiguration());
             modelBuilder.ApplyConfiguration(new PageLinkAssignConfiguration());
             modelBuilder.ApplyConfiguration(new PageLinkCategoryConfiguration());
+            modelBuilder.ApplyConfiguration(new PersonConfiguration());
+            modelBuilder.ApplyConfiguration(new PersonalLoanConfiguration());
+            modelBuilder.ApplyConfiguration(new PersonalLoanReturnConfiguration());
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
             modelBuilder.ApplyConfiguration(new ProductBrandConfiguration());
             modelBuilder.ApplyConfiguration(new PurchaseConfiguration());
