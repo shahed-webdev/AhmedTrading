@@ -40,6 +40,7 @@ namespace AhmedTrading.Data
         public virtual DbSet<SellingPaymentList> SellingPaymentList { get; set; }
         public virtual DbSet<Trader> Trader { get; set; }
         public virtual DbSet<TraderSharing> TraderSharing { get; set; }
+        public virtual DbSet<TraderSharingPayment> TraderSharingPayment { get; set; }
         public virtual DbSet<Vendor> Vendor { get; set; }
         public virtual DbSet<VendorAdvance> VendorAdvance { get; set; }
         public virtual DbSet<VendorCommission> VendorCommission { get; set; }
@@ -76,6 +77,7 @@ namespace AhmedTrading.Data
             modelBuilder.ApplyConfiguration(new SellingPaymentListConfiguration());
             modelBuilder.ApplyConfiguration(new TraderConfiguration());
             modelBuilder.ApplyConfiguration(new TraderSharingConfiguration());
+            modelBuilder.ApplyConfiguration(new TraderSharingPaymentConfiguration());
             modelBuilder.ApplyConfiguration(new VendorConfiguration());
             modelBuilder.ApplyConfiguration(new VendorAdvanceConfiguration());
             modelBuilder.ApplyConfiguration(new VendorCommissionConfiguration());

@@ -11,8 +11,8 @@ namespace AhmedTrading.Data
         public double UnitPrice { get; set; }
         public double SharePrice { get; set; }
         public bool IsGiven { get; set; }
+        public DateTime ShareDate { get; set; }
         public DateTime InsertDate { get; set; }
-
         public virtual Product Product { get; set; }
         public virtual Trader Trader { get; set; }
     }
