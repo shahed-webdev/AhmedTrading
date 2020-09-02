@@ -27,6 +27,7 @@ namespace AhmedTrading.Repository
         IVendorCommissionRepository VendorCommissions { get; }
         ISellingRepository Selling { get; }
         ISellingPaymentRepository SellingPayments { get; }
+        ITraderRepository Trader { get; }
         int SaveChanges();
         Task<int> SaveChangesAsync();
     }

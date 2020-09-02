@@ -90,10 +90,11 @@ namespace AhmedTrading.Repository
         {
             try
             {
-                var p = Context.Person.Find(id);
-                if (p == null) return new DbResponse(false, "No Data Found");
+                var person = Context.Person.Find(id);
+                if (person == null) return new DbResponse(false, "No Data Found");
+                if (Context.PersonalLoan.Any(p => p.PersonId == person.PersonId)) return new DbResponse(false, "Related Data Found");
 
-                Context.Person.Remove(p);
+                Context.Person.Remove(person);
                 Context.SaveChanges();
 
                 return new DbResponse(true, "Success");
