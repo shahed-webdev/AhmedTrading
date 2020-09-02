@@ -8,7 +8,16 @@ namespace AhmedTrading.Data
     {
         public void Configure(EntityTypeBuilder<PersonalLoanReturn> builder)
         {
-            throw new System.NotImplementedException();
+            builder.Property(p => p.ReturnDate)
+                .HasColumnType("date")
+                .IsRequired();
+            builder.Property(e => e.InsertDate)
+                .HasColumnType("datetime")
+                .HasDefaultValueSql("(getdate())");
+            builder.HasOne(r => r.PersonalLoan)
+                .WithMany(p => p.PersonalLoanReturn)
+                .HasForeignKey(r => r.PersonalLoanId)
+                .HasConstraintName("FK_PersonalLoanReturn_PersonalLoan");
         }
     }
 }

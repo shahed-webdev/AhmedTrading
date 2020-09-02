@@ -21,7 +21,15 @@ namespace AhmedTrading.Data
             builder.Property(e => e.RemainingAmount)
                 .HasComputedColumnSql("([LoanAmount]-[ReturnAmount])");
 
-
+            builder.HasOne(l => l.Person)
+                .WithMany(p => p.PersonalLoan)
+                .HasForeignKey(l => l.PersonId)
+                .HasConstraintName("FK_PersonalLoan_Person");
+            builder.HasOne(d => d.Registration)
+                .WithMany(p => p.PersonalLoan)
+                .HasForeignKey(d => d.RegistrationId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PersonalLoan_Registration");
 
         }
     }

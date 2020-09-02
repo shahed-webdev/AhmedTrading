@@ -9,5 +9,6 @@ namespace AhmedTrading.Data
         public double ReturnAmount { get; set; }
         public DateTime ReturnDate { get; set; }
         public DateTime InsertDate { get; set; }
+        public virtual PersonalLoan PersonalLoan { get; set; }
     }
 }

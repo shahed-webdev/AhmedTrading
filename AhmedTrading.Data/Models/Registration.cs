@@ -13,6 +13,7 @@ namespace AhmedTrading.Data
             PurchasePayment = new HashSet<PurchasePayment>();
             Selling = new HashSet<Selling>();
             SellingPayment = new HashSet<SellingPayment>();
+            PersonalLoan = new HashSet<PersonalLoan>();
         }
 
         public int RegistrationId { get; set; }
@@ -37,5 +38,8 @@ namespace AhmedTrading.Data
         public virtual ICollection<PurchasePayment> PurchasePayment { get; set; }
         public virtual ICollection<Selling> Selling { get; set; }
         public virtual ICollection<SellingPayment> SellingPayment { get; set; }
+        public virtual ICollection<PersonalLoan> PersonalLoan { get; set; }
+
+
     }
 }
