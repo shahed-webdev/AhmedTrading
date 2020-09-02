@@ -88,6 +88,7 @@ namespace AhmedTrading.Repository
                     },
                     Returns = p.PersonalLoanReturn.Select(l => new PersonalLoanReturnModel
                     {
+                        PersonalLoanReturnId = l.PersonalLoanReturnId,
                         PersonalLoanId = l.PersonalLoanId,
                         ReturnAmount = l.ReturnAmount,
                         ReturnDate = l.ReturnDate

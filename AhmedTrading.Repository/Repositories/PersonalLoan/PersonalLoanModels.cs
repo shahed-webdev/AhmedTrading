@@ -27,6 +27,7 @@ namespace AhmedTrading.Repository
 
     public class PersonalLoanReturnModel
     {
+        public int PersonalLoanReturnId { get; set; }
         public int PersonalLoanId { get; set; }
         public double ReturnAmount { get; set; }
         public DateTime ReturnDate { get; set; }
