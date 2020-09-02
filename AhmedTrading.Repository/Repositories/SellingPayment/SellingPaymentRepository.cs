@@ -1,4 +1,5 @@
 ﻿using AhmedTrading.Data;
+using JqueryDataTables.LoopsIT;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -142,6 +143,54 @@ namespace AhmedTrading.Repository
                 response.IsSuccess = false;
                 return response;
             }
+        }
+
+        public Task<PaymentReceiptModel> ReceiptAsync(int id, IUnitOfWork db)
+        {
+            var receipt = Context.SellingPayment
+                .Where(r => r.SellingPaymentId == id)
+                .Select(s => new PaymentReceiptModel
+                {
+                    Invoices = s.SellingPaymentList.Select(p => new PaidInvoiceModel
+                    {
+                        SellingId = p.SellingId,
+                        SellingSn = p.Selling.SellingSn,
+                        SellingAmount = p.Selling.SellingTotalPrice,
+                        SellingPaidAmount = p.SellingPaidAmount,
+                        SellingDate = p.Selling.SellingDate
+                    }).ToList(),
+
+                    CustomerInfo = new CustomerReceiptViewModel
+                    {
+                        CustomerId = s.Customer.CustomerId,
+                        CustomerName = s.Customer.CustomerName,
+                        CustomerAddress = s.Customer.CustomerAddress,
+                        CustomerPhone = s.Customer.CustomerPhone.FirstOrDefault().Phone
+                    },
+                    InstitutionInfo = db.Institutions.FindCustom(),
+                    SellingPaymentId = s.SellingPaymentId,
+                    PaidDate = s.PaidDate,
+                    ReceiptSn = s.ReceiptSn,
+                    PaidAmount = s.PaidAmount,
+                    PaymentMethod = s.PaymentMethod,
+                    CollectBy = s.Registration.Name
+                }).FirstOrDefaultAsync();
+
+            return receipt;
+        }
+
+        public DataResult<SellingPaymentModel> ReceiptDataTable(DataRequest request)
+        {
+            return Context.SellingPayment.Select(s => new SellingPaymentModel
+            {
+                SellingPaymentId = s.SellingPaymentId,
+                CustomerId = s.CustomerId,
+                CustomerName = string.IsNullOrEmpty(s.Customer.CustomerName) ? "CASH SALE" : s.Customer.CustomerName,
+                PaidDate = s.PaidDate,
+                ReceiptSn = s.ReceiptSn,
+                PaidAmount = s.PaidAmount,
+                PaymentMethod = s.PaymentMethod
+            }).ToDataResult(request);
         }
 
         public double DateWiseSalePayment(DateTime? fromDate, DateTime? toDate)

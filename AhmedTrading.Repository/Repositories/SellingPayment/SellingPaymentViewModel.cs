@@ -40,4 +40,43 @@ namespace AhmedTrading.Repository
         public int SellingId { get; set; }
         public double SellingPaidAmount { get; set; }
     }
+
+    public class PaymentReceiptModel
+    {
+        public PaymentReceiptModel()
+        {
+            this.Invoices = new HashSet<PaidInvoiceModel>();
+        }
+        public ICollection<PaidInvoiceModel> Invoices { get; set; }
+        public InstitutionVM InstitutionInfo { get; set; }
+        public CustomerReceiptViewModel CustomerInfo { get; set; }
+        public int SellingPaymentId { get; set; }
+        public DateTime PaidDate { get; set; }
+        public int ReceiptSn { get; set; }
+        public double PaidAmount { get; set; }
+        public string PaymentMethod { get; set; }
+        public string CollectBy { get; set; }
+
+
+    }
+    public class PaidInvoiceModel
+    {
+        public int SellingId { get; set; }
+        public int SellingSn { get; set; }
+        public double SellingAmount { get; set; }
+        public double SellingPaidAmount { get; set; }
+        public DateTime SellingDate { get; set; }
+    }
+
+    public class SellingPaymentModel
+    {
+        public int SellingPaymentId { get; set; }
+        public int? CustomerId { get; set; }
+        public string CustomerName { get; set; }
+        public DateTime PaidDate { get; set; }
+        public int ReceiptSn { get; set; }
+        public double PaidAmount { get; set; }
+        public string PaymentMethod { get; set; }
+
+    }
 }

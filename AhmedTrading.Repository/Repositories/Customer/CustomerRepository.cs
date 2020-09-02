@@ -23,6 +23,7 @@ namespace AhmedTrading.Repository
                 CustomerAddress = c.CustomerAddress,
                 PhonePrimary = c.CustomerPhone.FirstOrDefault(p => p.IsPrimary == true).Phone,
                 Due = c.Due,
+                SaleDue = c.Due - c.OpeningDue,
                 SignUpDate = c.InsertDate
             });
 
@@ -38,6 +39,7 @@ namespace AhmedTrading.Repository
                 CustomerAddress = c.CustomerAddress,
                 PhonePrimary = c.CustomerPhone.FirstOrDefault(p => p.IsPrimary == true).Phone,
                 Due = c.Due,
+                SaleDue = c.Due - c.OpeningDue,
                 SignUpDate = c.InsertDate
             });
 
@@ -80,7 +82,7 @@ namespace AhmedTrading.Repository
                         SellingDueAmount = s.SellingDueAmount,
                         SellingDate = s.SellingDate
                     }).ToList(),
-                    DueAmount = c.Due
+                    SaleDue = c.Due - c.OpeningDue
                 });
             return customer.FirstOrDefault(c => c.CustomerId == id);
         }
@@ -142,6 +144,7 @@ namespace AhmedTrading.Repository
                     SoldAmount = c.TotalAmount,
                     DiscountAmount = c.TotalDiscount,
                     DueAmount = c.Due,
+                    SaleDue = c.Due - c.OpeningDue,
                     ReceivedAmount = c.Paid,
                     OpeningDue = c.OpeningDue
                 });
