@@ -7,6 +7,9 @@ namespace AhmedTrading.Data
     {
         public void Configure(EntityTypeBuilder<TraderSharing> builder)
         {
+            builder.Property(e => e.ShareDate)
+                .HasColumnType("date")
+                .IsRequired();
             builder.Property(e => e.InsertDate)
                 .HasColumnType("datetime")
                 .HasDefaultValueSql("(getdate())");
