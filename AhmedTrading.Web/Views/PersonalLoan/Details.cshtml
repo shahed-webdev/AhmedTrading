@@ -1,13 +1,14 @@
-﻿
+﻿@using AhmedTrading.Repository
+@model PersonDetailsModel
 @{
-    ViewBag.Title = "Add Loan";
+    ViewBag.Title = "Details";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <div class="m-3">
     <div class="row">
         <div class="col justify-content-center align-self-center">
-            <h4 class="page-header mb-0">Loan Records</h4>
+            <h4 class="page-header mb-0">@Model.Name</h4>
         </div>
         <div class="col text-right">
             <a data-toggle="modal" data-target="#InsertModal" class="btn-floating blue-bg-btn" title="Add New">
@@ -16,18 +17,51 @@
         </div>
     </div>
 
+    <section class="mb-4">
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="media white z-depth-1 rounded">
+                    <i class="far fa-money-bill-alt fa-lg blue z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                    <div class="media-body p-1">
+                        <p class="text-uppercase text-muted mb-1"><small>Loan Amount</small></p>
+                        <h5 id="setSold" class="font-weight-bold mb-0">@Model.LoanAmount</h5>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="media white z-depth-1 rounded">
+                    <i class="fas fa-chart-pie-alt fa-lg deep-purple z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                    <div class="media-body p-1">
+                        <p class="text-uppercase text-muted mb-1"><small>Return Amount</small></p>
+                        <h5 id="setDiscount" class="font-weight-bold mb-0">@Model.ReturnAmount</h5>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="media white z-depth-1 rounded">
+                    <i class="fas fa-chart-line fa-lg teal z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                    <div class="media-body p-1">
+                        <p class="text-uppercase text-muted mb-1"><small>Remaining Amount</small></p>
+                        <h5 id="setPaid" class="font-weight-bold mb-0">@Model.RemainingAmount</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <div class="card card-body">
         <table id="data-table" class="table table-sm table-bordered">
             <thead>
-            <tr>
-                <th><strong>Person Name</strong></th>
-                <th><strong>Loan Name</strong></th>
-                <th><strong>Loan Amount</strong></th>
-                <th><strong>Return Amount</strong></th>
-                <th><strong>Remaining Amount</strong></th>
-                <th><strong>Loan Date</strong></th>
-                <th style="width: 30px"><strong>Delete</strong></th>
-            </tr>
+                <tr>
+                    <th><strong>Loan Name</strong></th>
+                    <th><strong>Loan Amount</strong></th>
+                    <th><strong>Return Amount</strong></th>
+                    <th><strong>Remaining Amount</strong></th>
+                    <th><strong>Loan Date</strong></th>
+                    <th style="width: 30px"><strong>Return</strong></th>
+                </tr>
             </thead>
         </table>
     </div>
@@ -46,12 +80,6 @@
 
             <div class="modal-body">
                 <form id="formAdd">
-                    <div class="md-form">
-                        <label for="inputPerson">Person</label>
-                        <input id="inputPerson" type="text" class="form-control" autocomplete="off" required />
-                        <input id="hiddenPersonId" type="hidden" />
-                    </div>
-
                     <div class="md-form">
                         <label for="inputLoanName">Loan Name</label>
                         <input id="inputLoanName" type="text" class="form-control" required />
@@ -79,15 +107,16 @@
 
 @section Scripts {
     <script>
-        $(function() {
-            //date picker
+        $(function () {
             $('.datepicker').pickadate().val(moment(new Date()).format('DD MMMM, YYYY'));
 
+            dataTable.filter = [{ Field: "PersonId", Value: @Model.PersonId, Operand: "==" }];
             dataTable.getData();
         });
 
         var dataTable = {
             table: null,
+            filter: null,
             init: function() {
                 dataTable.table = $("#data-table").DataTable({
                     processing: true,
@@ -95,39 +124,29 @@
                     dom: '<"row"<"col-sm-6"Bl><"col-sm-6"f>><"row"<"col-sm-12"<tr>>><"row"<"col-sm-5"i><"col-sm-7"p>>',
                     buttons: dataTable.button,
                     ajax: {
-                        url: "/PersonalLoan/GetLoanDataTable",
-                        type: "POST"
+                        url: "/PersonalLoan/LoanDetailsDataTable",
+                        type: "POST",
+                        data: function (d) {
+                            d.filters = dataTable.filter;
+                        }
                     },
                     columns:
                     [
-                        {
-                            data: "PersonName", "render": function(data, type, row, meta) {
-                                return `<a class="blue-text" href="/PersonalLoan/Details/${row.PersonId}">${data}</a>`
-                            }
-                        },
                         { data: "LoanName" },
                         { data: "LoanAmount" },
-                        {
-                            data: "ReturnAmount", "render": function(data, type, row, meta) {
-                                return `<a class="blue-text" href="/PersonalLoan/LoanReturn/${row.PersonalLoanId}">${data}</a>`
-                            }
-                        },
-                        {
-                            data: "RemainingAmount", "render": function(data, type, row, meta) {
-                                return `<a class="blue-text" href="/PersonalLoan/LoanReturn/${row.PersonalLoanId}">${data}</a>`
-                            }
-                        },
-                        { data: "LoanDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } },
+                        { data: "ReturnAmount" },
+                        { data: "RemainingAmount" },
+                        { data: "LoanDate", "render": function (data) { return moment(data).format('DD MMM YYYY') } },
                         {
                             data: "PersonalLoanId", "render": function(data, type, row, meta) {
-                                return `<a class="delete far fa-trash-alt" data-url="/PersonalLoan/DeleteLoan/${data}"></a>`
+                                return `<a class="blue-text" href="/PersonalLoan/LoanReturn/${row.PersonalLoanId}">Return</a>`
                             }
                         }
                     ],
                     columnDefs: [
-                        { 'searchable': false, 'targets': [6] },
-                        { 'sortable': false, 'targets': [6] },
-                        { 'className': "text-left", "targets": [0, 1] }
+                        { 'searchable': false, 'targets': [5] },
+                        { 'sortable': false, 'targets': [5] },
+                        { 'className': "text-left", "targets": [0] }
                     ]
                 });
             },
@@ -142,7 +161,7 @@
                     title: '',
                     exportOptions: {
                         //columns: [0,1] //Column value those print
-                                                                                                                                            },
+                                                                                                                                                                                                                                                                                                                                                    },
                     customize: function(win) {
                         $(win.document.body).prepend(`<nav class="mb-3 navbar blue-bg">${$('#printBrand').html()}</nav><h3 class="h3-responsive">${$('h4').text()}</h3>`);
                     },
@@ -158,50 +177,18 @@
 
         //selectors
         const formAdd = document.getElementById("formAdd");
-        const hiddenPersonId = document.getElementById("hiddenPersonId");
-        const phoneError = formAdd.querySelector("#phoneError");
-        const table = document.getElementById("data-table");
-
-        hiddenPersonId.value = "";
-        $('#inputPerson').typeahead({
-            minLength: 1,
-            displayText: function(item) {
-                return `${item.Name} ${item.Phone}`;
-            },
-            afterSelect: function(item) {
-                this.$element[0].value = item.Name;
-            },
-            source: function(request, result) {
-                $.ajax({
-                    url: "/PersonalLoan/GetPerson",
-                    data: { name: request },
-                    success: function(response) { result(response); },
-                    error: function(err) { console.log(err) }
-                });
-            },
-            updater: function(item) {
-                hiddenPersonId.value = item.PersonId;
-                return item;
-            }
-        });
-
 
         //event
-        formAdd.addEventListener('submit', function(evt) {
+        formAdd.addEventListener('submit', function (evt) {
             evt.preventDefault();
             responseError.textContent = "";
-
-            if (!hiddenPersonId.value) {
-                responseError.textContent = "Select person";
-                return;
-            }
 
             const inputLoanName = this.inputLoanName;
             const inputLoanAmount = this.inputLoanAmount;
             const inputLoanDate = this.inputLoanDate;
 
             const data = {
-                PersonId: +hiddenPersonId.value,
+                PersonId: @Model.PersonId,
                 LoanName: inputLoanName.value,
                 LoanAmount: +inputLoanAmount.value,
                 LoanDate: inputLoanDate.value
@@ -212,12 +199,11 @@
                 type: "POST",
                 url,
                 data,
-                success: function(response) {
+                success: function (response) {
                     console.log(response);
                     if (response.IsSuccess) {
                         dataTable.getData();
 
-                        inputPerson.value = "";
                         inputLoanName.value = "";
                         inputLoanAmount.value = "";
 
@@ -226,27 +212,10 @@
                         responseError.textContent = response.Message;
                     }
                 },
-                error: function(err) {
+                error: function (err) {
                     console.log(err);
                 }
             });
-        });
-
-        //on delete
-        table.addEventListener('click', function(evt) {
-            const onDelete = evt.target.classList.contains("delete");
-            if (onDelete) {
-                const element = evt.target.parentElement.parentElement;
-                const url = evt.target.getAttribute("data-url");
-                if (!url) return;
-
-                const isConfirm = confirm("Are you sure you want to delete?");
-                if (!isConfirm) return;
-
-                axios.get(url).then(res => {
-                    if (res.data) element.remove();
-                }).catch(err => console.log(err));
-            }
         });
     </script>
 }

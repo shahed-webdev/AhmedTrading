@@ -84,14 +84,18 @@
                     },
                     columns:
                     [
-                        { data: "Name" },
+                        {
+                            data: "Name", "render": function(data, type, row, meta) {
+                                return `<a class="blue-text" href="/PersonalLoan/Details/${row.PersonId}">${data}</a>`
+                            }
+                        },
                         { data: "Phone" },
                         { data: "LoanAmount" },
                         { data: "ReturnAmount" },
                         { data: "RemainingAmount" },
                         {
                             data: "PersonId", "render": function(data, type, row, meta) {
-                                return `<a class="delete far fa-trash-alt" href="/PersonalLoan/DeletePerson/${data}"></a>`
+                                return `<a class="delete far fa-trash-alt" data-url="/PersonalLoan/DeletePerson/${data}"></a>`
                             }
                         }
                     ],
@@ -113,7 +117,7 @@
                     title: '',
                     exportOptions: {
                         //columns: [0,1] //Column value those print
-                                                                                                                                                                                                                                                                                                                                                    },
+                                                                                                                                                                                                                                                                                                                                                                                            },
                     customize: function(win) {
                         $(win.document.body).prepend(`<nav class="mb-3 navbar blue-bg">${$('#printBrand').html()}</nav><h3 class="h3-responsive">${$('h4').text()}</h3>`);
                     },
@@ -161,12 +165,10 @@
 
         //on delete
         table.addEventListener('click', function(evt) {
-            evt.preventDefault();
-
             const onDelete = evt.target.classList.contains("delete");
             if (onDelete) {
                 const element = evt.target.parentElement.parentElement;
-                const url = evt.target.getAttribute("href");
+                const url = evt.target.getAttribute("data-url");
                 if (!url) return;
 
                 const isConfirm = confirm("Are you sure you want to delete?");
