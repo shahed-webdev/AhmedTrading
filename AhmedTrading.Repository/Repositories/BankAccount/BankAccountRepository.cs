@@ -17,7 +17,7 @@ namespace AhmedTrading.Repository
         {
             try
             {
-                if (IsExistAccount(model.AccountName, model.AccountNumber)) return new DbResponse(false, "Account name already exist");
+                if (IsExistAccount(model.AccountName, model.BankName)) return new DbResponse(false, $"Account Name already exist in {model.BankName} Bank");
 
                 var bankAccount = new BankAccount
                 {
@@ -69,7 +69,7 @@ namespace AhmedTrading.Repository
 
                 if (bankAccount == null) return new DbResponse(false, "No Data Found");
 
-                if (IsExistAccount(model.AccountName, model.AccountNumber, model.BankAccountId)) return new DbResponse(false, "Account already exist");
+                if (IsExistAccount(model.AccountName, model.BankName, model.BankAccountId)) return new DbResponse(false, $"Account Name already exist in {model.BankName} Bank");
 
 
                 bankAccount.AccountName = model.AccountName;
@@ -127,18 +127,18 @@ namespace AhmedTrading.Repository
                 .Select(b => new DDL
                 {
                     value = b.BankAccountId,
-                    label = $"{b.AccountName} ({b.AccountNumber})"
+                    label = $"{b.AccountName} ({b.BankName})"
                 }).ToList();
         }
 
-        public bool IsExistAccount(string name, string number)
+        public bool IsExistAccount(string name, string bankName)
         {
-            return Context.BankAccount.Any(b => b.AccountName == name || b.AccountNumber == number);
+            return Context.BankAccount.Any(b => b.AccountName == name && b.BankName == bankName);
         }
 
-        public bool IsExistAccount(string name, string number, int updateAccountId)
+        public bool IsExistAccount(string name, string bankName, int updateAccountId)
         {
-            return Context.BankAccount.Any(b => (b.AccountName == name && b.BankAccountId != updateAccountId) || (b.AccountNumber == number && b.BankAccountId != updateAccountId));
+            return Context.BankAccount.Any(b => (b.AccountName == name && b.BankName == bankName && b.BankAccountId != updateAccountId));
         }
 
         public DbResponse Deposit(BankDepositModel model)
