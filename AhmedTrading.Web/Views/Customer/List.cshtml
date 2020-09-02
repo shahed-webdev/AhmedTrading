@@ -60,10 +60,13 @@
                         { data: "PhonePrimary" },
                         { data: "CustomerAddress" },
                         { data: "Due", "render": function(data, type, row, meta) {
-                                return data ? `<a class="blue-text" href="/Selling/DueCollectionMultiple/${row.CustomerId}">${data}/-</a>` : data;
+                                return row.SaleDue ? `<a class="blue-text" href="/Selling/DueCollectionMultiple/${row.CustomerId}">${data}/-</a>` : data;
                             }
                         },
-                        { data: "CustomerId", "render": function(data, type, row, meta) { return `<a class="fas fa-edit" href="/Customer/Update/${row.CustomerId}"></a>` } }
+                        { data: "CustomerId", "render": function(data, type, row, meta) {
+                                return `<a class="fas fa-edit" href="/Customer/Update/${row.CustomerId}"></a>`
+                            }
+                        }
                     ],
                     columnDefs: [
                         { 'searchable': false, 'targets': [3] },

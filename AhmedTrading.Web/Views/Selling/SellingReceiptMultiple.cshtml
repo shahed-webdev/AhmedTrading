@@ -10,24 +10,15 @@
 }
 
 <section class="my-4 d-print-none">
-    <div class="card">
-        <div class="card-body d-flex justify-content-between">
-            <a class="btn btn-elegant btn-rounded" href="/Selling/Selling"><i class="fas fa-shopping-cart mr-1"></i>Sell</a>
-            <button class="btn btn-default btn-rounded" onclick="print()"><i class="fas fa-print mr-1"></i>Print</button>
-        </div>
+    <div class="d-flex justify-content-between">
+        <a class="btn btn-light-blue btn-rounded" href="/Selling/Selling"><i class="fas fa-shopping-cart mr-1"></i>Sell</a>
+        <button class="btn btn-blue-grey btn-rounded" onclick="print()"><i class="fas fa-print mr-1"></i>Print</button>
     </div>
 </section>
 
 <div id="main-page">
     <div id="institution-info" class="mb-4 text-center">
-        @{
-            var imgSrc = "";
-            var logo = Model.InstitutionInfo.InstitutionLogo;
-            imgSrc = logo != null ? $"data:image/gif;base64,{Convert.ToBase64String(logo)}" : "";
-        }
-
         <h3 class="mb-2">
-            <img src="@imgSrc" class="rounded-circle" style="height: 35px; width: 35px" alt="" />
             @Model.InstitutionInfo.InstitutionName
         </h3>
         <p><i class="fas fa-map-marker-alt mr-1"></i>@Model.InstitutionInfo.Address</p>
@@ -43,7 +34,7 @@
             <h5>INVOICE</h5>
         </div>
         <div class="col text-right col pt-3">
-            Selling Date: @Model.PaidDate.ToString("d MMM yyyy")
+            Paid Date: @Model.PaidDate.ToString("d MMM yyyy")
         </div>
     </div>
 
@@ -76,7 +67,7 @@
                     <tr>
                         <td>@index</td>
                         <td>@item.SellingDate.ToString("d MMM yyyy")</td>
-                        <td><a href="/Selling/Receipt/@item.SellingId" target="_blank">@item.SellingSn</a></td>
+                        <td><a href="/Selling/SellingReceipt/@item.SellingId" target="_blank">@item.SellingSn</a></td>
                         <td>@item.SellingAmount/-</td>
                         <td>@item.SellingPaidAmount/-</td>
                     </tr>
@@ -96,7 +87,7 @@
         </tbody>
     </table>
 
-    <div class="p-footer mt-4">
+    @*<div class="p-footer mt-4">
         <div class="row">
             <div class="col">
                 Received By
@@ -104,7 +95,6 @@
             </div>
             <div class="col text-center font-weight-bold">
                 Thank you for your business!
-                <small class="d-block text-muted">Technical support: www.loopsit.com</small>
             </div>
 
             <div class="col text-right">
@@ -112,7 +102,7 @@
                 <small class="d-block text-muted">Served By: <strong>@Model.CollectBy</strong></small>
             </div>
         </div>
-    </div>
+    </div>*@
 </div>
 
 @section scripts{

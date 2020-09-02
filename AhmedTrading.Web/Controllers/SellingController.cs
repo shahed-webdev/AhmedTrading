@@ -158,6 +158,16 @@ namespace AhmedTrading.Web.Controllers
             return BadRequest(dbResponse.Message);
         }
 
+        //multiple receipt
+        public async Task<IActionResult> SellingReceiptMultiple(int? id)
+        {
+            if (id == null) return RedirectToAction("List", "Customer");
+
+            var response = await _db.SellingPayments.ReceiptAsync(id.GetValueOrDefault(),_db);
+
+            return View(response);
+        }
+
 
         //Product Selling Summary
         public IActionResult SellingSummary()
