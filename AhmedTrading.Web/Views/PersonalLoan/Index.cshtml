@@ -1,0 +1,181 @@
+﻿
+@{
+    ViewBag.Title = "Personal Loan";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="m-3">
+    <div class="row">
+        <div class="col justify-content-center align-self-center">
+            <h4 class="page-header mb-0">Loan Person</h4>
+        </div>
+        <div class="col text-right">
+            <a data-toggle="modal" data-target="#InsertModal" class="btn-floating blue-bg-btn" title="Add New">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="card card-body">
+        <table id="data-table" class="table table-sm table-bordered">
+            <thead>
+                <tr>
+                    <th><strong>Name</strong></th>
+                    <th><strong>Phone</strong></th>
+                    <th><strong>Loan Amount</strong></th>
+                    <th><strong>Return Amount</strong></th>
+                    <th><strong>Remaining Amount</strong></th>
+                    <th style="width: 30px"><strong>Delete</strong></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<!-- Insert person Modal -->
+<div class="modal fade" id="InsertModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog cascading-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header blue-bg white-text">
+                <h4 class="m-0"><i class="fas fa-plus-circle"></i> Add Person</h4>
+                <button type="button" class="close waves-effect waves-light" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form id="formAdd">
+                    <div class="md-form">
+                        <label for="inputName">Name</label>
+                        <input id="inputName" type="text" class="form-control" required />
+                    </div>
+                    <div class="md-form">
+                        <label for="inputPhone">Phone</label>
+                        <input id="inputPhone" type="number" class="form-control" required />
+                        <span id="phoneError" class="field-validation-error"></span>
+                    </div>
+                    <div class="text-center mt-1-half">
+                        <button type="submit" class="btn blue-bg-btn mb-1 waves-effect waves-light">Add Person <i class="fas fa-check ml-1"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        $(function() {
+            dataTable.getData();
+        });
+
+        var dataTable = {
+            table: null,
+            init: function() {
+                dataTable.table = $("#data-table").DataTable({
+                    processing: true,
+                    serverSide: true,
+                    dom: '<"row"<"col-sm-6"Bl><"col-sm-6"f>><"row"<"col-sm-12"<tr>>><"row"<"col-sm-5"i><"col-sm-7"p>>',
+                    buttons: dataTable.button,
+                    ajax: {
+                        url: "/PersonalLoan/IndexDataTable",
+                        type: "POST"
+                    },
+                    columns:
+                    [
+                        { data: "Name" },
+                        { data: "Phone" },
+                        { data: "LoanAmount" },
+                        { data: "ReturnAmount" },
+                        { data: "RemainingAmount" },
+                        {
+                            data: "PersonId", "render": function(data, type, row, meta) {
+                                return `<a class="delete far fa-trash-alt" href="/PersonalLoan/DeletePerson/${data}"></a>`
+                            }
+                        }
+                    ],
+                    columnDefs: [
+                        { 'searchable': false, 'targets': [5] },
+                        { 'sortable': false, 'targets': [5] },
+                        { 'className': "text-left", "targets": [0] }
+                    ]
+                });
+            },
+            getData: function() {
+                dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
+            },
+            addSign: function(data) { return `${data}/-` },
+            button: {
+                buttons: [{
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Print',
+                    title: '',
+                    exportOptions: {
+                        //columns: [0,1] //Column value those print
+                                                                                                                                                                                                                                                                                                                                                    },
+                    customize: function(win) {
+                        $(win.document.body).prepend(`<nav class="mb-3 navbar blue-bg">${$('#printBrand').html()}</nav><h3 class="h3-responsive">${$('h4').text()}</h3>`);
+                    },
+                    autoPrint: true
+                }],
+                dom: {
+                    button: {
+                        className: 'btn btn-dark btn-rounded btn-sm my-0'
+                    }
+                }
+            }
+        }
+
+        //selectors
+        const formAdd = document.getElementById("formAdd");
+        const phoneError = formAdd.querySelector("#phoneError");
+        const table = document.getElementById("data-table");
+
+        //event
+        formAdd.addEventListener('submit', function(evt) {
+            evt.preventDefault();
+
+            phoneError.textContent = "";
+            const data = { Name: this.inputName.value, Phone: this.inputPhone.value };
+            const url = '/PersonalLoan/AddPerson';
+            const options = {
+                method: 'POST',
+                url,
+                data
+            }
+
+            axios(options).then(response => {
+                if (response.data.IsSuccess) {
+                    dataTable.getData();
+
+                    this.inputName.value = "";
+                    this.inputPhone.value = "";
+                    $("#InsertModal").modal('hide');
+                }
+            }).catch(error => {
+                if (error.response)
+                    phoneError.textContent = error.response.data;
+            });
+        });
+
+        //on delete
+        table.addEventListener('click', function(evt) {
+            evt.preventDefault();
+
+            const onDelete = evt.target.classList.contains("delete");
+            if (onDelete) {
+                const element = evt.target.parentElement.parentElement;
+                const url = evt.target.getAttribute("href");
+                if (!url) return;
+
+                const isConfirm = confirm("Are you sure you want to delete?");
+                if (!isConfirm) return;
+
+                axios.get(url).then(res => {
+                    if (res.data) element.remove();
+                }).catch(err => console.log(err));
+            }
+        });
+    </script>
+}
