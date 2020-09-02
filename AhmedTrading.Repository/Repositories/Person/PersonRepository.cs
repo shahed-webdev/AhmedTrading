@@ -37,13 +37,16 @@ namespace AhmedTrading.Repository
             }
         }
 
-        public DataResult<PersonModel> ListDataTable(DataRequest request)
+        public DataResult<PersonDetailsModel> ListDataTable(DataRequest request)
         {
-            return Context.Person.Select(p => new PersonModel
+            return Context.Person.Include(p => p.PersonalLoan).Select(p => new PersonDetailsModel
             {
                 PersonId = p.PersonId,
                 Name = p.Name,
-                Phone = p.Phone
+                Phone = p.Phone,
+                LoanAmount = p.PersonalLoan.Sum(l => l.LoanAmount),
+                ReturnAmount = p.PersonalLoan.Sum(l => l.ReturnAmount),
+                RemainingAmount = p.PersonalLoan.Sum(l => l.RemainingAmount)
             }).ToDataResult(request);
         }
 
@@ -57,24 +60,29 @@ namespace AhmedTrading.Repository
             return Context.Person.Any(c => c.Phone == phone && c.PersonId != updateId);
         }
 
-        public DbResponse<PersonModel> Details(int id)
+        public DbResponse<PersonDetailsModel> Details(int id)
         {
             try
             {
-                var p = Context.Person.Find(id);
-                if (p == null) return new DbResponse<PersonModel>(false, "No Data Found");
+                var person = Context.Person
+                    .Include(p => p.PersonalLoan)
+                    .FirstOrDefault(p => p.PersonId == id);
+                if (person == null) return new DbResponse<PersonDetailsModel>(false, "No Data Found");
 
-                var person = new PersonModel
+                var personModel = new PersonDetailsModel
                 {
-                    PersonId = p.PersonId,
-                    Name = p.Name,
-                    Phone = p.Phone
+                    PersonId = person.PersonId,
+                    Name = person.Name,
+                    Phone = person.Phone,
+                    LoanAmount = person.PersonalLoan.Sum(p => p.LoanAmount),
+                    ReturnAmount = person.PersonalLoan.Sum(p => p.ReturnAmount),
+                    RemainingAmount = person.PersonalLoan.Sum(p => p.RemainingAmount)
                 };
-                return new DbResponse<PersonModel>(true, "Success") { Data = person };
+                return new DbResponse<PersonDetailsModel>(true, "Success") { Data = personModel };
             }
             catch (Exception e)
             {
-                return new DbResponse<PersonModel>(false, e.Message);
+                return new DbResponse<PersonDetailsModel>(false, e.Message);
             }
         }
 

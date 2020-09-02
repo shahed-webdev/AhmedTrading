@@ -18,6 +18,7 @@ namespace AhmedTrading.Repository
             PageLinkCategories = new PageLinkCategoryRepository(_context);
             PageLinkAssigns = new PageLinkAssignRepository(_context);
             Person = new PersonRepository(_context);
+            PersonalLoan = new PersonalLoanRepository(_context);
             Products = new ProductRepository(_context);
             ProductBrands = new ProductBrandRepository(_context);
             Purchases = new PurchaseRepository(_context);
@@ -42,6 +43,7 @@ namespace AhmedTrading.Repository
         public IPageLinkCategoryRepository PageLinkCategories { get; private set; }
         public IPageLinkAssignRepository PageLinkAssigns { get; private set; }
         public IPersonRepository Person { get; }
+        public IPersonalLoanRepository PersonalLoan { get; }
         public IProductRepository Products { get; }
         public IProductBrandRepository ProductBrands { get; }
         public IPurchaseRepository Purchases { get; }
