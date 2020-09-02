@@ -13,6 +13,5 @@ namespace AhmedTrading.Repository
         DbResponse Delete(int personLoanId);
         DbResponse DeleteReturn(int personalLoanReturnId);
         DbResponse ReturnAdd(PersonalLoanReturnModel model);
-
     }
 }

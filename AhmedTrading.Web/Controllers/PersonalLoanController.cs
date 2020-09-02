@@ -31,7 +31,7 @@ namespace AhmedTrading.Web.Controllers
         }
  
 
-        //Add person
+        //**Add person***
         public IActionResult AddPerson([FromBody] PersonModel model)
         {
             if (!ModelState.IsValid) return UnprocessableEntity("Model state invalid");
@@ -58,8 +58,24 @@ namespace AhmedTrading.Web.Controllers
             return Json(response.IsSuccess);
         }
 
+        //Details parson
+        public IActionResult Details(int? id)
+        {
+            if (id == null) return RedirectToAction("Index");
 
-        //Add loan
+            var response = _db.Person.Details(id.GetValueOrDefault());
+            return View(response.Data);
+        }
+
+        //loan details
+        public IActionResult LoanDetailsDataTable(DataRequest request)
+        {
+            var data = _db.PersonalLoan.ListDataTable(request);
+            return Json(data);
+        }
+
+
+        //***Add loan***
         public IActionResult AddLoan()
         {
             return View();
@@ -87,5 +103,28 @@ namespace AhmedTrading.Web.Controllers
             return Json(response.IsSuccess);
         }
 
+
+        //****Loan Return***
+        public IActionResult LoanReturn(int? id)
+        {
+            if (id == null) return RedirectToAction("Index");
+
+            var response = _db.PersonalLoan.Details(id.GetValueOrDefault());
+            return View(response.Data);
+        } 
+        
+        [HttpPost]
+        public IActionResult ReturnLoan(PersonalLoanReturnModel model)
+        {
+            var response = _db.PersonalLoan.ReturnAdd(model);
+            return Json(response);
+        }
+
+        //Delete Return
+        public IActionResult DeleteReturn(int id)
+        {
+            var response = _db.PersonalLoan.DeleteReturn(id);
+            return Json(response.IsSuccess);
+        }
     }
 }

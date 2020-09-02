@@ -1,0 +1,139 @@
+﻿@using AhmedTrading.Repository
+@model PersonLoanDetailsModel
+@{
+    ViewBag.Title = "Loan Return";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="m-3">
+    <h4 class="page-header mb-3">Loan Return for: <small class="font-weight-bold">@Model.LoanInfo.PersonName</small></h4>
+    <section class="mb-4">
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="media white z-depth-1 rounded">
+                    <i class="far fa-money-bill-alt fa-lg blue z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                    <div class="media-body p-1">
+                        <p class="text-uppercase text-muted mb-1"><small>Loan Amount</small></p>
+                        <h5 id="setSold" class="font-weight-bold mb-0">@Model.LoanInfo.LoanAmount</h5>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="media white z-depth-1 rounded">
+                    <i class="fas fa-chart-pie-alt fa-lg deep-purple z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                    <div class="media-body p-1">
+                        <p class="text-uppercase text-muted mb-1"><small>Return Amount</small></p>
+                        <h5 id="setDiscount" class="font-weight-bold mb-0">@Model.LoanInfo.ReturnAmount</h5>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="media white z-depth-1 rounded">
+                    <i class="fas fa-chart-line fa-lg teal z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                    <div class="media-body p-1">
+                        <p class="text-uppercase text-muted mb-1"><small>Remaining Amount</small></p>
+                        <h5 id="setPaid" class="font-weight-bold mb-0">@Model.LoanInfo.RemainingAmount</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="card card-body">
+        <form id="formReturn">
+            <div class="d-flex align-items-center">
+                <div class="md-form">
+                    <label for="inputReturnAmount">Return Amount</label>
+                    <input id="inputReturnAmount" min="0" step="0.01" max="@Model.LoanInfo.RemainingAmount" type="number" required class="form-control" />
+                </div>
+                <div class="md-form mx-3">
+                    <input id="inputReturnDate" type="text" required class="form-control datepicker" />
+                </div>
+                <div class="md-form">
+                    <input type="submit" value="Return" class="btn btn-blue btn-sm"/>
+                </div>
+            </div>
+        </form>
+
+        <table id="data-table" class="table table-sm table-bordered">
+            <thead>
+            <tr>
+                <th><strong>Return Amount</strong></th>
+                <th><strong>Return Date</strong></th>
+                <th style="width: 30px"><strong>Delete</strong></th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Returns)
+            {
+                <tr>
+                    <td>@item.ReturnAmount</td>
+                    <td>@item.ReturnDate.ToString("d MMM yyyy")</td>
+                    <td><a class="delete far fa-trash-alt" data-url="/PersonalLoan/DeleteReturn/@item.PersonalLoanReturnId"></a></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function() {
+            $('.datepicker').pickadate().val(moment(new Date()).format('DD MMMM, YYYY'));
+        });
+
+        const formReturn = document.getElementById("formReturn");
+        const table = document.getElementById("data-table");
+
+        //event
+        formReturn.addEventListener('submit', function(evt) {
+            evt.preventDefault();
+
+            const inputReturnAmount = this.inputReturnAmount;
+            const inputReturnDate = this.inputReturnDate;
+
+            const data = {
+                PersonalLoanId: @Model.LoanInfo.PersonalLoanId,
+                ReturnAmount: +inputReturnAmount.value,
+                ReturnDate: inputReturnDate.value
+            };
+
+            const url = '/PersonalLoan/ReturnLoan';
+            $.ajax({
+                type: "POST",
+                url,
+                data,
+                success: function(response) {
+                    console.log(response);
+                    if (response.IsSuccess)
+                        location.reload();
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
+        });
+
+        //on delete
+        table.addEventListener('click', function(evt) {
+            evt.preventDefault();
+
+            const onDelete = evt.target.classList.contains("delete");
+            if (onDelete) {
+                const url = evt.target.getAttribute("data-url");
+                if (!url) return;
+
+                const isConfirm = confirm("Are you sure you want to delete?");
+                if (!isConfirm) return;
+
+                axios.get(url).then(res => {
+                    if (res.data)
+                        location.reload();
+                }).catch(err => console.log(err));
+            }
+        });
+    </script>
+}
