@@ -182,13 +182,25 @@ namespace AhmedTrading.Web.Controllers
             return Json(model);
         }
 
-        protected override void Dispose(bool disposing)
+
+        //***** Selling Payment Summary *****
+        public IActionResult PaymentSummary()
         {
-            if (disposing)
-            {
-                _db.Dispose();
-            }
-            base.Dispose(disposing);
+            return View();
+        }
+
+        //GET:// Get product Selling Report(ajax)
+        public IActionResult GetPaymentSummaryAmount(DateTime? fromDate, DateTime? toDate)
+        {
+            var model = _db.SellingPayments.DateWiseSalePayment(fromDate, toDate);
+            return Json(model);
+        }
+
+        //Request from data-table(ajax)
+        public IActionResult GetPaymentSummaryDataTable(DataRequest request)
+        {
+            var data = _db.SellingPayments.ReceiptDataTable(request);
+            return Json(data);
         }
     }
 }

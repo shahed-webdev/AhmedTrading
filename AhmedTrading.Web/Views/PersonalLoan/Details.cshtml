@@ -1,14 +1,15 @@
 ﻿@using AhmedTrading.Repository
 @model PersonDetailsModel
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Loan Details";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <div class="m-3">
-    <div class="row">
-        <div class="col justify-content-center align-self-center">
-            <h4 class="page-header mb-0">@Model.Name</h4>
+    <div class="row align-items-center mb-3">
+        <div class="col">
+            <h4 class="page-header mb-1"><i class="far fa-user"></i> @Model.Name</h4>
+            <p class="mb-0"><i class="far fa-phone"></i> @Model.Phone</p>
         </div>
         <div class="col text-right">
             <a data-toggle="modal" data-target="#InsertModal" class="btn-floating blue-bg-btn" title="Add New">
@@ -21,7 +22,7 @@
         <div class="row">
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="media white z-depth-1 rounded">
-                    <i class="far fa-money-bill-alt fa-lg blue z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                    <i class="far fa-money-bill-alt fa-lg warning-color-dark z-depth-1 p-4 rounded-left text-white mr-3"></i>
                     <div class="media-body p-1">
                         <p class="text-uppercase text-muted mb-1"><small>Loan Amount</small></p>
                         <h5 id="setSold" class="font-weight-bold mb-0">@Model.LoanAmount</h5>
@@ -31,7 +32,7 @@
 
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="media white z-depth-1 rounded">
-                    <i class="fas fa-chart-pie-alt fa-lg deep-purple z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                    <i class="fas fa-chart-pie-alt fa-lg  light-green darken-1 z-depth-1 p-4 rounded-left text-white mr-3"></i>
                     <div class="media-body p-1">
                         <p class="text-uppercase text-muted mb-1"><small>Return Amount</small></p>
                         <h5 id="setDiscount" class="font-weight-bold mb-0">@Model.ReturnAmount</h5>
@@ -41,7 +42,7 @@
 
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="media white z-depth-1 rounded">
-                    <i class="fas fa-chart-line fa-lg teal z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                    <i class="fas fa-chart-line fa-lg pink darken-1 z-depth-1 p-4 rounded-left text-white mr-3"></i>
                     <div class="media-body p-1">
                         <p class="text-uppercase text-muted mb-1"><small>Remaining Amount</small></p>
                         <h5 id="setPaid" class="font-weight-bold mb-0">@Model.RemainingAmount</h5>
@@ -52,7 +53,7 @@
     </section>
 
     <div class="card card-body">
-        <table id="data-table" class="table table-sm table-bordered">
+        <table id="d-table" class="table table-sm table-bordered">
             <thead>
                 <tr>
                     <th><strong>Loan Name</strong></th>
@@ -60,7 +61,7 @@
                     <th><strong>Return Amount</strong></th>
                     <th><strong>Remaining Amount</strong></th>
                     <th><strong>Loan Date</strong></th>
-                    <th style="width: 30px"><strong>Return</strong></th>
+                    <th style="width: 80px"><strong>Return</strong></th>
                 </tr>
             </thead>
         </table>
@@ -118,7 +119,7 @@
             table: null,
             filter: null,
             init: function() {
-                dataTable.table = $("#data-table").DataTable({
+                dataTable.table = $("#d-table").DataTable({
                     processing: true,
                     serverSide: true,
                     dom: '<"row"<"col-sm-6"Bl><"col-sm-6"f>><"row"<"col-sm-12"<tr>>><"row"<"col-sm-5"i><"col-sm-7"p>>',
@@ -139,7 +140,7 @@
                         { data: "LoanDate", "render": function (data) { return moment(data).format('DD MMM YYYY') } },
                         {
                             data: "PersonalLoanId", "render": function(data, type, row, meta) {
-                                return `<a class="blue-text" href="/PersonalLoan/LoanReturn/${row.PersonalLoanId}">Return</a>`
+                                return `<a class="blue-text" href="/PersonalLoan/LoanReturn/${row.PersonalLoanId}">Return <i class="fas fa-exchange"></i></a>`
                             }
                         }
                     ],
@@ -202,12 +203,7 @@
                 success: function (response) {
                     console.log(response);
                     if (response.IsSuccess) {
-                        dataTable.getData();
-
-                        inputLoanName.value = "";
-                        inputLoanAmount.value = "";
-
-                        $("#InsertModal").modal('hide');
+                        location.reload();
                     } else {
                         responseError.textContent = response.Message;
                     }

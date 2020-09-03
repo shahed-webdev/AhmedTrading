@@ -6,7 +6,11 @@
 }
 
 <div class="m-3">
-    <h4 class="page-header mb-3">Loan Return for: <small class="font-weight-bold">@Model.LoanInfo.PersonName</small></h4>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="page-header mb-0">Loan Return </h4>
+    </div>
+   
+
     <section class="mb-4">
         <div class="row">
             <div class="col-lg-4 col-md-6 mb-4">
@@ -42,14 +46,15 @@
     </section>
 
     <div class="card card-body">
+        <h5 class="page-header"><i class="far fa-user"></i> @Model.LoanInfo.PersonName</h5>
         <form id="formReturn">
             <div class="d-flex align-items-center">
                 <div class="md-form">
                     <label for="inputReturnAmount">Return Amount</label>
-                    <input id="inputReturnAmount" min="0" step="0.01" max="@Model.LoanInfo.RemainingAmount" type="number" required class="form-control" />
+                    <input id="inputReturnAmount" min="0" step="0.01" max="@Model.LoanInfo.RemainingAmount" type="number" required class="form-control"/>
                 </div>
                 <div class="md-form mx-3">
-                    <input id="inputReturnDate" type="text" required class="form-control datepicker" />
+                    <input id="inputReturnDate" type="text" required class="form-control datepicker"/>
                 </div>
                 <div class="md-form">
                     <input type="submit" value="Return" class="btn btn-blue btn-sm"/>
@@ -57,7 +62,7 @@
             </div>
         </form>
 
-        <table id="data-table" class="table table-sm table-bordered">
+        <table id="d-table" class="table table-sm table-bordered text-center">
             <thead>
             <tr>
                 <th><strong>Return Amount</strong></th>
@@ -86,7 +91,7 @@
         });
 
         const formReturn = document.getElementById("formReturn");
-        const table = document.getElementById("data-table");
+        const table = document.getElementById("d-table");
 
         //event
         formReturn.addEventListener('submit', function(evt) {
