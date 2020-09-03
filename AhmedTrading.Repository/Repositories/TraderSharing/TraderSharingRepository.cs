@@ -16,8 +16,11 @@ namespace AhmedTrading.Repository
         {
             try
             {
-                if (!Context.Product.Any(p => p.ProductId == model.ProductId)) return new DbResponse(false, "Product not found");
-                if (!Context.Trader.Any(t => t.TraderId == model.TraderId)) return new DbResponse(false, "Trader not found");
+                var trader = Context.Trader.Find(model.TraderId);
+                var product = Context.Product.Find(model.ProductId);
+
+                if (product is null) return new DbResponse(false, "Product not found");
+                if (trader is null) return new DbResponse(false, "Trader not found");
 
                 var traderSharing = new TraderSharing
                 {
@@ -31,18 +34,22 @@ namespace AhmedTrading.Repository
 
                 Context.TraderSharing.Add(traderSharing);
 
-                //update Trader
-                var trader = Context.Trader.Find(model.TraderId);
 
+
+                //update Trader and product 
                 if (model.IsGiven)
                 {
                     trader.GivenProductPrice += (model.Quantity * model.UnitPrice);
+                    product.Stock -= model.Quantity;
                 }
                 else
                 {
                     trader.TakenProductPrice += (model.Quantity * model.UnitPrice);
+                    product.Stock += model.Quantity;
                 }
 
+
+                Context.Product.Update(product);
                 Context.Trader.Update(trader);
 
                 Context.SaveChanges();
@@ -55,33 +62,11 @@ namespace AhmedTrading.Repository
             }
         }
 
-        public DataResult<TraderSharingDetailsModel> GivenDataTable(DataRequest request)
+        public DataResult<TraderSharingDetailsModel> ListDataTable(DataRequest request)
         {
             return Context.TraderSharing
                 .Include(t => t.Trader)
                 .Include(t => t.Product)
-                .Where(t => t.IsGiven)
-                .Select(t => new TraderSharingDetailsModel
-                {
-                    TraderSharingId = t.TraderSharingId,
-                    TraderId = t.TraderId,
-                    TraderName = t.Trader.TraderName,
-                    ProductId = t.ProductId,
-                    ProductName = t.Product.ProductName,
-                    Quantity = t.Quantity,
-                    UnitPrice = t.UnitPrice,
-                    SharePrice = t.SharePrice,
-                    IsGiven = t.IsGiven,
-                    ShareDate = t.ShareDate
-                }).ToDataResult(request);
-        }
-
-        public DataResult<TraderSharingDetailsModel> TakenDataTable(DataRequest request)
-        {
-            return Context.TraderSharing
-                .Include(t => t.Trader)
-                .Include(t => t.Product)
-                .Where(t => !t.IsGiven)
                 .Select(t => new TraderSharingDetailsModel
                 {
                     TraderSharingId = t.TraderSharingId,
@@ -109,18 +94,24 @@ namespace AhmedTrading.Repository
 
                 //update Trader
                 var trader = Context.Trader.Find(traderSharing.TraderId);
+                var product = Context.Product.Find(traderSharing.ProductId);
+
+                if (product is null) return new DbResponse(false, "Product not found");
+                if (trader is null) return new DbResponse(false, "Trader not found");
 
                 if (traderSharing.IsGiven)
                 {
                     trader.GivenProductPrice -= (traderSharing.Quantity * traderSharing.UnitPrice);
+                    product.Stock += traderSharing.Quantity;
                 }
                 else
                 {
                     trader.TakenProductPrice -= (traderSharing.Quantity * traderSharing.UnitPrice);
+                    product.Stock -= traderSharing.Quantity;
                 }
 
                 Context.Trader.Update(trader);
-
+                Context.Product.Update(product);
                 Context.SaveChanges();
 
                 return new DbResponse(true, "Success");
