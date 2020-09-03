@@ -6,8 +6,7 @@ namespace AhmedTrading.Repository
     public interface ITraderSharingPaymentRepository : IRepository<TraderSharingPayment>
     {
         DbResponse Add(TraderSharingPaymentAddModel model);
-        DataResult<TraderSharingPaymentDetailsModel> GivenDataTable(DataRequest request);
-        DataResult<TraderSharingPaymentDetailsModel> TakenDataTable(DataRequest request);
+        DataResult<TraderSharingPaymentDetailsModel> ListDataTable(DataRequest request);
         DbResponse Delete(int id);
     }
 }

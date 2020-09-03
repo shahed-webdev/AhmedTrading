@@ -53,11 +53,10 @@ namespace AhmedTrading.Repository
             }
         }
 
-        public DataResult<TraderSharingPaymentDetailsModel> GivenDataTable(DataRequest request)
+        public DataResult<TraderSharingPaymentDetailsModel> ListDataTable(DataRequest request)
         {
             return Context.TraderSharingPayment
                 .Include(t => t.Trader)
-                .Where(t => t.IsGiven)
                 .Select(t => new TraderSharingPaymentDetailsModel
                 {
                     TraderId = t.TraderId,
@@ -68,23 +67,6 @@ namespace AhmedTrading.Repository
                     PaymentDate = t.PaymentDate
                 }).ToDataResult(request);
         }
-
-        public DataResult<TraderSharingPaymentDetailsModel> TakenDataTable(DataRequest request)
-        {
-            return Context.TraderSharingPayment
-                .Include(t => t.Trader)
-                .Where(t => !t.IsGiven)
-                .Select(t => new TraderSharingPaymentDetailsModel
-                {
-                    TraderId = t.TraderId,
-                    TraderName = t.Trader.TraderName,
-                    Amount = t.Amount,
-                    PaymentMethod = t.PaymentMethod,
-                    IsGiven = t.IsGiven,
-                    PaymentDate = t.PaymentDate
-                }).ToDataResult(request);
-        }
-
         public DbResponse Delete(int id)
         {
             try
