@@ -13,6 +13,7 @@ namespace AhmedTrading.Repository
 
     public class TraderSharingPaymentDetailsModel
     {
+        public int TraderSharingPaymentId { get; set; }
         public int TraderId { get; set; }
         public string TraderName { get; set; }
         public double Amount { get; set; }

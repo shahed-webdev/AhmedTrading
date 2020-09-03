@@ -34,6 +34,7 @@ namespace AhmedTrading.Repository
             VendorCommissions = new VendorCommissionRepository(_context);
             Trader = new TraderRepository(_context);
             TraderSharing = new TraderSharingRepository(_context);
+            TraderSharingPayment =new TraderSharingPaymentRepository(_context);
         }
 
 
@@ -61,6 +62,7 @@ namespace AhmedTrading.Repository
         public ISellingPaymentRepository SellingPayments { get; }
         public ITraderRepository Trader { get; }
         public ITraderSharingRepository TraderSharing { get; }
+        public ITraderSharingPaymentRepository TraderSharingPayment { get; }
 
 
         public int SaveChanges()

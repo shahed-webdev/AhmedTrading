@@ -59,6 +59,7 @@ namespace AhmedTrading.Repository
                 .Include(t => t.Trader)
                 .Select(t => new TraderSharingPaymentDetailsModel
                 {
+                    TraderSharingPaymentId = t.TraderSharingPaymentId,
                     TraderId = t.TraderId,
                     TraderName = t.Trader.TraderName,
                     Amount = t.Amount,
@@ -67,6 +68,7 @@ namespace AhmedTrading.Repository
                     PaymentDate = t.PaymentDate
                 }).ToDataResult(request);
         }
+
         public DbResponse Delete(int id)
         {
             try

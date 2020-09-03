@@ -58,8 +58,9 @@ namespace AhmedTrading.Web.Controllers
             return Json(response.IsSuccess);
         }
 
-        //Details Trader
-        public IActionResult Details(int? id)
+
+        //****Products Share****
+        public IActionResult Products(int? id)
         {
             if (id == null) return RedirectToAction("Index");
 
@@ -67,7 +68,7 @@ namespace AhmedTrading.Web.Controllers
             return View(response.Data);
         }
 
-        //Share Product
+        //POST: Share Product
         public IActionResult ShareProduct(TraderSharingAddModel model)
         {
             if (!ModelState.IsValid) return UnprocessableEntity("Model state invalid");
@@ -79,8 +80,48 @@ namespace AhmedTrading.Web.Controllers
         //Give Data Table
         public IActionResult GiveDataTable(DataRequest request)
         {
-            var data = _db.TraderSharing.GivenDataTable(request);
+            var data = _db.TraderSharing.ListDataTable(request);
             return Json(data);
+        }
+
+        //DeleteSharedProduct
+        public IActionResult DeleteSharedProduct(int id)
+        {
+            var response = _db.TraderSharing.Delete(id);
+            return Json(response.IsSuccess);
+        }
+
+
+        //****Payment Share****
+        public IActionResult Payments(int? id)
+        {
+            if (id == null) return RedirectToAction("Index");
+
+            var response = _db.Trader.Details(id.GetValueOrDefault());
+            return View(response.Data);
+        }
+
+        //POST: Share Product
+        public IActionResult SharePayment(TraderSharingPaymentAddModel model)
+        {
+            if (!ModelState.IsValid) return UnprocessableEntity("Model state invalid");
+            var response = _db.TraderSharingPayment.Add(model);
+
+            return Ok(response);
+        }
+
+        //Payment Data Table
+        public IActionResult PaymentDataTable(DataRequest request)
+        {
+            var data = _db.TraderSharingPayment.ListDataTable(request);
+            return Json(data);
+        }
+
+        //DeleteSharedProduct
+        public IActionResult DeleteSharedPayment(int id)
+        {
+            var response = _db.TraderSharingPayment.Delete(id);
+            return Json(response.IsSuccess);
         }
     }
 }

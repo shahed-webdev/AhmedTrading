@@ -1,19 +1,25 @@
 ﻿@using AhmedTrading.Repository
 @model TraderDetailsModel
 @{
-    ViewBag.Title = "Trader Details";
+    ViewBag.Title = "Payment Share";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <div class="m-3">
-    <div class="mb-3">
-        <h4 class="page-header mb-1"><i class="far fa-store"></i> @Model.TraderName</h4>
-        <p class="mb-0"><i class="far fa-phone"></i> @Model.Phone</p>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h4 class="page-header">Share Payment</h4>
+            <a class="blue-text" href="/TradeSharing/Products/@Model.TraderId">Go To Share Product <i class="far fa-long-arrow-right"></i></a>
+        </div>
+        <div>
+            <h4 class="page-header on-print mb-1"><i class="far fa-store"></i> @Model.TraderName</h4>
+            <p class="mb-0"><i class="far fa-phone"></i> @Model.Phone</p>
+        </div>
     </div>  
 
     <section class="mb-4">
         <div class="row">
-            <div class="col-lg-4 col-md-6 mb-4">
+            <div class="col-xl-3 col-lg-6 mb-4">
                 <div class="media white z-depth-1 rounded">
                     <i class="far fa-money-bill-alt fa-lg light-green z-depth-1 p-4 rounded-left text-white mr-3"></i>
                     <div class="media-body p-1">
@@ -23,7 +29,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-4 col-md-6 mb-4">
+            <div class="col-xl-3 col-lg-6 mb-4">
                 <div class="media white z-depth-1 rounded">
                     <i class="fas fa-money-bill-alt fa-lg pink darken-1 z-depth-1 p-4 rounded-left text-white mr-3"></i>
                     <div class="media-body p-1">
@@ -33,12 +39,22 @@
                 </div>
             </div>
 
-            <div class="col-lg-4 col-md-6 mb-4">
+            <div class="col-xl-3 col-lg-6 mb-4">
                 <div class="media white z-depth-1 rounded">
-                    <i class="fas fa-chart-line fa-lg primary-color darken-1 z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                    <i class="fas fa-shopping-bag fa-lg  indigo z-depth-1 p-4 rounded-left text-white mr-3"></i>
                     <div class="media-body p-1">
-                        <p class="text-uppercase text-muted mb-1"><small>Net Amount</small></p>
-                        <h5 id="setPaid" class="font-weight-bold mb-0">@Model.NetAmount.ToString("F")</h5>
+                        <p class="text-uppercase text-muted mb-1"><small>Given Product</small></p>
+                        <h5 class="font-weight-bold mb-0">@Model.GivenProductPrice.ToString("F")</h5>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-6 mb-4">
+                <div class="media white z-depth-1 rounded">
+                    <i class="fas fa-shopping-bag fa-lg red lighten-1 darken-1 z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                    <div class="media-body p-1">
+                        <p class="text-uppercase text-muted mb-1"><small>Taken Product</small></p>
+                        <h5 class="font-weight-bold mb-0">@Model.TakenProductPrice.ToString("F")</h5>
                     </div>
                 </div>
             </div>
@@ -46,45 +62,45 @@
     </section>
 
     <div class="card card-body">
+        <h4 class="page-header mb-3">NET Amount: ৳@Model.NetAmount.ToString("F")</h4>
+
         <div class="btn-group btn-group-toggle mb-3" data-toggle="buttons">
             <label class="btn btn-indigo form-check-label active">
-                <input class="form-check-input" type="radio" value="false" name="IsGiven" autocomplete="off" checked> Take Product
+                <input class="form-check-input" type="radio" value="false" name="IsGiven" autocomplete="off" checked> Take Payment
             </label>
             <label class="btn btn-indigo form-check-label">
-                <input class="form-check-input" type="radio" value="true" name="IsGiven" autocomplete="off"> Give Product
+                <input class="form-check-input" type="radio" value="true" name="IsGiven" autocomplete="off"> Give Payment
             </label>
         </div>
-       
-        <h4 class="mt-3 mb-0"><strong id="eventTitle">Take Product From</strong>: @Model.TraderName</h4>
+
+        <h5 class="mt-3 mb-0"><strong id="eventTitle">Take Payment From</strong>: @Model.TraderName</h5>
 
         <div class="mb-3">
             <form id="formAdd">
                 <span id="responseError"></span>
                 <div class="row align-items-center">
-                    <div class="col-lg-3">
+                    <div class="col-lg-4">
                         <div class="md-form">
-                            <label for="inputProductId">Product</label>
-                            <input id="inputProductId" autocomplete="off" type="text" class="form-control" required />
-                            <input id="hiddenProductId" type="hidden" />
+                            <label for="inputAmount">Amount</label>
+                            <input id="inputAmount" type="number" step="0.01" min="0" class="form-control" required />
                         </div>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-lg-4">
                         <div class="md-form">
-                            <label for="inputQuantity">Quantity</label>
-                            <input id="inputQuantity" type="number" step="0.01" min="0" class="form-control" required />
+                            <select id="selectPaymentMethod" class="mdb-select" required>
+                                <option value="" selected>[ Payment Method ]</option>
+                                <option>Cash</option>
+                                <option>Bank</option>
+                                <option>Cheque</option>
+                                <option>bkash</option>
+                            </select>
                         </div>
                     </div>
-                    <div class="col-lg-3">
-                        <div class="md-form">
-                            <label for="inputUnitPrice">Unit Price</label>
-                            <input id="inputUnitPrice" type="number" step="0.01" min="0" class="form-control" required />
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
+                    <div class="col-lg-4">
                         <div class="md-form input-group">
                             <input id="inputShareDate" type="text" class="form-control datepicker" required />
                             <div class="input-group-append">
-                                <button class="btn btn-md btn-info m-0 px-3" type="submit">Save</button>
+                                <button class="btn btn-md btn-indigo m-0 px-3" type="submit">Save</button>
                             </div>
                         </div>
                     </div>
@@ -94,14 +110,13 @@
 
         <table id="give-table" class="data-table table table-sm table-bordered">
             <thead>
-            <tr>
-                <th><strong>Product Name</strong></th>
-                <th><strong>Quantity</strong></th>
-                <th><strong>Unit Price</strong></th>
-                <th><strong>Share Price</strong></th>
-                <th><strong>Share Date</strong></th>
-                <th style="width: 80px"><strong>Delete</strong></th>
-            </tr>
+                <tr>
+                    <th><strong>Trader Name</strong></th>
+                    <th><strong>Amount</strong></th>
+                    <th><strong>Payment Method</strong></th>
+                    <th><strong>Date</strong></th>
+                    <th style="width: 80px"><strong>Delete</strong></th>
+                </tr>
             </thead>
         </table>
     </div>
@@ -110,7 +125,10 @@
 
 @section Scripts {
     <script>
-        $(function() {
+        $(function () {
+            // material select initialization
+            $('.mdb-select').materialSelect();
+
             $('.datepicker').pickadate().val(moment(new Date()).format('DD MMMM, YYYY'));
 
             dataTable.filter = [
@@ -130,7 +148,7 @@
                     dom: '<"row"<"col-sm-6"Bl><"col-sm-6"f>><"row"<"col-sm-12"<tr>>><"row"<"col-sm-5"i><"col-sm-7"p>>',
                     buttons: dataTable.button,
                     ajax: {
-                        url: "/TradeSharing/GiveDataTable",
+                        url: "/TradeSharing/PaymentDataTable",
                         type: "POST",
                         data: function(d) {
                             d.filters = dataTable.filter;
@@ -138,20 +156,19 @@
                     },
                     columns:
                     [
-                        { data: "ProductName" },
-                        { data: "Quantity" },
-                        { data: "UnitPrice" },
-                        { data: "SharePrice" },
-                        { data: "ShareDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } },
+                        { data: "TraderName" },
+                        { data: "Amount" },
+                        { data: "PaymentMethod" },
+                        { data: "PaymentDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } },
                         {
-                            data: "TraderSharingId", "render": function(data, type, row, meta) {
-                                return `<a class="delete far fa-trash-alt" data-url="/TradeSharing/Delete/${data}"></a>`
+                            data: "TraderSharingPaymentId", "render": function(data, type, row, meta) {
+                                return `<a class="delete far fa-trash-alt" data-url="/TradeSharing/DeleteSharedPayment/${data}"></a>`
                             }
                         }
                     ],
                     columnDefs: [
-                        { 'searchable': false, 'targets': [5] },
-                        { 'sortable': false, 'targets': [5] },
+                        { 'searchable': false, 'targets': [4] },
+                        { 'sortable': false, 'targets': [4] },
                         { 'className': "text-left", "targets": [0] }
                     ]
                 });
@@ -167,9 +184,9 @@
                     title: '',
                     exportOptions: {
                         //columns: [0,1] //Column value those print
-                                                                                                                                                                                                                                                                                                                                                                                                                },
+                                                                                                                                                                                                                                                                                                                                                                                                                                    },
                     customize: function(win) {
-                        $(win.document.body).prepend(`<nav class="mb-3 navbar blue-bg">${$('#printBrand').html()}</nav><h3 class="h3-responsive">${$('h4').text()}</h3>`);
+                        $(win.document.body).prepend(`<nav class="mb-3 navbar blue-bg">${$('#printBrand').html()}</nav><h3 class="h3-responsive">${$('.on-print').text()}</h3>`);
                     },
                     autoPrint: true
                 }],
@@ -184,15 +201,15 @@
         //selectors
         const formAdd = document.getElementById("formAdd");
         const responseError = document.getElementById("responseError");
-        const hiddenProductId = formAdd.hiddenProductId;
+
         const IsGiven = $('input:radio[name="IsGiven"]');
         const table = document.getElementById("give-table");
 
         IsGiven.change(function() {
-            dataTable.filter = [
-                { Field: "TraderId", Value: @Model.TraderId, Operand: "==" },
-                { Field: "IsGiven", Value: $(this).val(), Operand: "==" }];
+            dataTable.filter = [{ Field: "TraderId", Value: @Model.TraderId, Operand: "==" }, { Field: "IsGiven", Value: $(this).val(), Operand: "==" }];
             dataTable.getData();
+
+            $("#eventTitle").text($(this).val() === "true" ? "Give Payment From" : "Take Payment From");
         });
 
         //event
@@ -200,28 +217,22 @@
             evt.preventDefault();
             responseError.textContent = "";
 
-            if (!hiddenProductId.value) {
-                return;
-            }
-
             const data = {
                 TraderId: @Model.TraderId,
-                ProductId: +hiddenProductId.value,
-                Quantity: +this.inputQuantity.value,
-                UnitPrice: +this.inputUnitPrice.value,
+                Amount: +this.inputAmount.value,
+                PaymentMethod: this.selectPaymentMethod.value,
                 IsGiven: $('input:radio[name="IsGiven"]:checked').val(),
-                ShareDate: inputShareDate.value
+                PaymentDate: inputShareDate.value
             };
 
-            const url = '/TradeSharing/ShareProduct';
+            const url = '/TradeSharing/SharePayment';
             $.ajax({
                 type: "POST",
                 url,
                 data,
                 success: function(response) {
-                    console.log(response);
                     if (response.IsSuccess) {
-                        //location.reload();
+                        location.reload();
                     } else {
                         responseError.textContent = response.Message;
                     }
@@ -236,7 +247,6 @@
         table.addEventListener('click', function(evt) {
             const onDelete = evt.target.classList.contains("delete");
             if (onDelete) {
-                const element = evt.target.parentElement.parentElement;
                 const url = evt.target.getAttribute("data-url");
                 if (!url) return;
 
@@ -244,33 +254,9 @@
                 if (!isConfirm) return;
 
                 axios.get(url).then(res => {
-                    if (res.data) element.remove();
+                    if (res.data)
+                        location.reload();
                 }).catch(err => console.log(err));
-            }
-        });
-
-        //product autocomplete
-        hiddenProductId.value = "";
-
-        $('#inputProductId').typeahead({
-            minLength: 1,
-            displayText: function(item) {
-                return item.ProductName;
-            },
-            afterSelect: function(item) {
-                this.$element[0].value = item.ProductName;
-            },
-            source: function(request, result) {
-                $.ajax({
-                    url: "/Product/FindProductsByName",
-                    data: { name: request },
-                    success: function(response) { result(response); },
-                    error: function(err) { console.log(err) }
-                });
-            },
-            updater: function(item) {
-                hiddenProductId.value = item.ProductId;
-                return item;
             }
         });
     </script>
