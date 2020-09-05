@@ -127,9 +127,18 @@ namespace AhmedTrading.Repository
                     Paid = p.Sum(c => c.PurchasePaidAmount)
                 }).FirstOrDefault();
 
-            vendor.TotalAmount = obj.TotalAmount;
-            vendor.TotalDiscount = obj.TotalDiscount;
-            vendor.Paid = obj.Paid;
+            if (obj != null)
+            {
+                vendor.TotalAmount = obj.TotalAmount;
+                vendor.TotalDiscount = obj.TotalDiscount;
+                vendor.Paid = obj.Paid;
+            }
+            else
+            {
+                vendor.TotalAmount = 0;
+                vendor.TotalDiscount = 0;
+                vendor.Paid = 0;
+            }
 
             Update(vendor);
         }
