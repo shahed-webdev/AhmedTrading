@@ -193,6 +193,46 @@ namespace AhmedTrading.Repository
             }).ToDataResult(request);
         }
 
+        public DbResponse DeleteReceipt(int id, IUnitOfWork db)
+        {
+            try
+            {
+
+                var sellingPayment = Context.SellingPayment
+                    .Include(s => s.SellingPaymentList)
+                    .ThenInclude(l => l.Selling)
+                    .FirstOrDefault(s => s.SellingPaymentId == id);
+
+                if (sellingPayment == null) return new DbResponse(false, "No Data Found");
+
+                //Payment Delete
+
+                foreach (var list in sellingPayment.SellingPaymentList)
+                {
+                    var selling = list.Selling;
+
+                    selling.SellingPaidAmount -= list.SellingPaidAmount;
+                    Context.SellingPaymentList.Remove(list);
+                    Context.Selling.Update(selling);
+
+                }
+                Context.SellingPayment.Remove(sellingPayment);
+                Context.SaveChanges();
+
+                //Customer balance Update
+                if (sellingPayment.CustomerId != null)
+                {
+                    db.Customers.UpdatePaidDue(sellingPayment.CustomerId);
+                }
+
+                return new DbResponse(true, "Success");
+            }
+            catch (Exception e)
+            {
+                return new DbResponse(false, e.Message);
+            }
+        }
+
         public double DateWiseSalePayment(DateTime? fromDate, DateTime? toDate)
         {
             var fD = fromDate ?? new DateTime(1000, 1, 1);

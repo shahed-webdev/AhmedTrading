@@ -276,7 +276,7 @@ namespace AhmedTrading.Repository
                 if (selling == null) return new DbResponse(false, "No Data Found");
 
                 //Payment Delete
-                double paidAmount = 0;
+
                 foreach (var list in selling.SellingPaymentList)
                 {
                     var sellingPayment = Context.SellingPayment.Find(list.SellingPaymentId);
@@ -292,8 +292,6 @@ namespace AhmedTrading.Repository
                         Context.SellingPaymentList.Remove(list);
                         Context.SellingPayment.Update(sellingPayment);
                     }
-
-                    paidAmount += list.SellingPaidAmount;
                 }
 
                 //Product Stock Update
