@@ -124,7 +124,8 @@ namespace AhmedTrading.Repository
                 {
                     TotalAmount = p.Sum(c => c.PurchaseTotalPrice),
                     TotalDiscount = p.Sum(c => c.PurchaseDiscountAmount),
-                    Paid = p.Sum(c => c.PurchasePaidAmount)
+                    Paid = p.Sum(c => c.PurchasePaidAmount),
+                    ReturnAmount = p.Sum(c => c.PurchaseReturnAmount)
                 }).FirstOrDefault();
 
             if (obj != null)
@@ -132,12 +133,14 @@ namespace AhmedTrading.Repository
                 vendor.TotalAmount = obj.TotalAmount;
                 vendor.TotalDiscount = obj.TotalDiscount;
                 vendor.Paid = obj.Paid;
+                vendor.ReturnAmount = obj.ReturnAmount;
             }
             else
             {
                 vendor.TotalAmount = 0;
                 vendor.TotalDiscount = 0;
                 vendor.Paid = 0;
+                vendor.ReturnAmount = 0;
             }
 
             Update(vendor);

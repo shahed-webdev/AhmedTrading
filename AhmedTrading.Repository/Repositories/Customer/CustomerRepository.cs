@@ -178,8 +178,9 @@ namespace AhmedTrading.Repository
             var obj = Context.Selling.Where(s => s.CustomerId == customer.CustomerId).GroupBy(s => s.CustomerId).Select(s =>
                 new
                 {
-                    TotalAmount = s.Sum(c => c.SellingTotalPrice),
+                    TotalAmount = s.Sum(c => c.SellingTotalPrice + c.TransportationCost),
                     TotalDiscount = s.Sum(c => c.SellingDiscountAmount),
+                    ReturnAmount = s.Sum(c => c.SellingReturnAmount),
                     Paid = s.Sum(c => c.SellingPaidAmount)
                 }).FirstOrDefault();
             if (obj != null)
@@ -187,12 +188,14 @@ namespace AhmedTrading.Repository
                 customer.TotalAmount = obj.TotalAmount;
                 customer.TotalDiscount = obj.TotalDiscount;
                 customer.Paid = obj.Paid;
+                customer.ReturnAmount = obj.ReturnAmount;
             }
             else
             {
                 customer.TotalAmount = 0;
                 customer.TotalDiscount = 0;
                 customer.Paid = 0;
+                customer.ReturnAmount = 0;
             }
 
             Update(customer);
