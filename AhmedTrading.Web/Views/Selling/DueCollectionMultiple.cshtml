@@ -97,7 +97,7 @@
                 const due = row.cells[5].textContent;
 
                 if (totalPaid < due && totalPaid > 0) {
-                    row.cells[6].textContent = totalPaid;
+                    row.cells[6].textContent = totalPaid.toFixed();
                 } else if (totalPaid >= due) {
                     row.cells[6].textContent = due;
                 } else {
@@ -118,7 +118,6 @@
 
             //disable button on submit
             const btnPaid = formPaid.submitPaid;
-            btnPaid.innerText = 'submitting..';
             btnPaid.disabled = true;
 
             const data = {
@@ -134,7 +133,7 @@
 
                 if (paid > 0) {
                     const invoice = { SellingId: +row.cells[6].getAttribute("data-id"), SellingPaidAmount: paid };
-                    body.Bills.push(invoice);
+                    data.Bills.push(invoice);
                 }
             }
 
@@ -149,7 +148,6 @@
                 error: function(err) {console.log(err)},
                 finally: function() {
                     //enable button on submit
-                    btnPaid.innerText = 'Paid';
                     btnPaid.disabled = false;
                 }
             });

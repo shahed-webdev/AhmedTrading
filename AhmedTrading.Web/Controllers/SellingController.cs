@@ -206,7 +206,7 @@ namespace AhmedTrading.Web.Controllers
         //Delete Payment Summary
         public IActionResult DeletePaymentSummary(int id)
         {
-            var response = _db.SellingPayments(id);
+            var response = _db.SellingPayments.DeleteReceipt(id,_db);
             return Json(response.IsSuccess);
         }
     }

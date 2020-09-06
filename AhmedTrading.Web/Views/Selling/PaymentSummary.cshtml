@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Selling Invoice";
+    ViewData["Title"] = "Payment Summary";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
@@ -78,13 +78,14 @@
                         { data: "PaymentMethod" },
                         { data: "PaidDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } },
                         {
-                            data: "PersonalLoanId", "render": function(data, type, row, meta) {
-                                return `<a class="delete far fa-trash-alt" data-url="/PersonalLoan/DeleteLoan/${data}"></a>`
+                            data: "SellingPaymentId", "render": function(data, type, row, meta) {
+                                return `<a class="delete far fa-trash-alt" data-url="/Selling/DeletePaymentSummary/${data}"></a>`
                             }
                         }
                     ],
                     columnDefs: [
-                        //{ 'searchable': false, 'targets': [2, 3, 4, 5] },
+                        { 'searchable': false, 'targets': [5] },
+                        { 'sortable': false, 'targets': [5] },
                         { 'className': "text-right", "targets": [2] },
                         { 'className': "text-left", "targets": [1] }
                     ]
