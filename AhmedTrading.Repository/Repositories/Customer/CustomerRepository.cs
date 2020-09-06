@@ -80,7 +80,8 @@ namespace AhmedTrading.Repository
                         SellingPaidAmount = s.SellingPaidAmount,
                         SellingDiscountAmount = s.SellingDiscountAmount,
                         SellingDueAmount = s.SellingDueAmount,
-                        SellingDate = s.SellingDate
+                        SellingDate = s.SellingDate,
+                        TransportationCost = s.TransportationCost
                     }).ToList(),
                     SaleDue = c.Due - c.OpeningDue
                 });
