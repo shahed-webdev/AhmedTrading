@@ -90,7 +90,11 @@
                     {
                         <h5>Discount:<strong>৳@Model.SellingDiscountAmount</strong> </h5>
                     }
-                    <h5>Total Amount:<strong>৳@Model.SellingTotalPrice</strong> </h5>
+                    <h5>Sales Amount:<strong>৳@Model.SellingTotalPrice</strong> </h5>
+                    @if (Model.TransportationCost > 0)
+                    {
+                        <h5>Transportation Cost:<strong>৳@Model.TransportationCost</strong></h5>
+                    }
                     <h5>Paid:<strong>৳@Model.SellingPaidAmount</strong> </h5>
                     <h5>Due:<strong>৳@Model.SellingDueAmount</strong> </h5>
                 </td>

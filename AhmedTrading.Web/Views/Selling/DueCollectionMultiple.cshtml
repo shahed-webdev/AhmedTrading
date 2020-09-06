@@ -68,6 +68,7 @@
                 </div>
                 <div class="md-form">
                     <input id="submitPaid" type="submit" class="btn btn-blue" value="Paid" />
+                    <span id="responseError" class="field-validation-error"></span>
                 </div>
             </div>
         </form>
@@ -145,9 +146,9 @@
                 success: function(response) {
                     location.href = `/Selling/SellingReceiptMultiple/${response}`;
                 },
-                error: function(err) {console.log(err)},
-                finally: function() {
-                    //enable button on submit
+                error: function(err) {
+                    console.log(err)
+                    $("#responseError").text(err.responseText);
                     btnPaid.disabled = false;
                 }
             });
