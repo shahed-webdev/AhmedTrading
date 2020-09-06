@@ -182,10 +182,18 @@ namespace AhmedTrading.Repository
                     TotalDiscount = s.Sum(c => c.SellingDiscountAmount),
                     Paid = s.Sum(c => c.SellingPaidAmount)
                 }).FirstOrDefault();
-
-            customer.TotalAmount = obj.TotalAmount;
-            customer.TotalDiscount = obj.TotalDiscount;
-            customer.Paid = obj.Paid;
+            if (obj != null)
+            {
+                customer.TotalAmount = obj.TotalAmount;
+                customer.TotalDiscount = obj.TotalDiscount;
+                customer.Paid = obj.Paid;
+            }
+            else
+            {
+                customer.TotalAmount = 0;
+                customer.TotalDiscount = 0;
+                customer.Paid = 0;
+            }
 
             Update(customer);
             Context.SaveChanges();
