@@ -202,5 +202,12 @@ namespace AhmedTrading.Web.Controllers
             var data = _db.SellingPayments.ReceiptDataTable(request);
             return Json(data);
         }
+
+        //Delete Payment Summary
+        public IActionResult DeletePaymentSummary(int id)
+        {
+            var response = _db.SellingPayments.DeleteReceipt(id,_db);
+            return Json(response.IsSuccess);
+        }
     }
 }

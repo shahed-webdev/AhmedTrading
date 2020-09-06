@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Selling Invoice";
+    ViewData["Title"] = "Payment Summary";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
@@ -32,6 +32,7 @@
                     <th>Paid</th>
                     <th>Payment Method</th>
                     <th>Paid Date</th>
+                    <th style="width: 50px">Delete</th>
                 </tr>
             </thead>
         </table>
@@ -75,10 +76,16 @@
                         { data: "CustomerName" },
                         { data: "PaidAmount", "render": dataTable.addSign },
                         { data: "PaymentMethod" },
-                        { data: "PaidDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } }
+                        { data: "PaidDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } },
+                        {
+                            data: "SellingPaymentId", "render": function(data, type, row, meta) {
+                                return `<a class="delete far fa-trash-alt" data-url="/Selling/DeletePaymentSummary/${data}"></a>`
+                            }
+                        }
                     ],
                     columnDefs: [
-                        //{ 'searchable': false, 'targets': [2, 3, 4, 5] },
+                        { 'searchable': false, 'targets': [5] },
+                        { 'sortable': false, 'targets': [5] },
                         { 'className': "text-right", "targets": [2] },
                         { 'className': "text-left", "targets": [1] }
                     ]
@@ -106,7 +113,7 @@
                     title: '',
                     exportOptions: {
                         //columns: [0,1] //Column value those print
-                                                                                 },
+                                                                                                     },
                     customize: function(win) {
                         $(win.document.body).prepend(`<nav class="mb-3 navbar blue-bg">${$('#printBrand').html()}</nav><h3 class="h3-responsive">${$('h4').text()}</h3>`);
                     },
@@ -122,6 +129,7 @@
 
         //selectors
         const formPost = document.getElementById("formPost");
+        const table = document.getElementById("data-table");
 
         formPost.addEventListener('submit', function(evt) {
             evt.preventDefault();
@@ -163,6 +171,23 @@
                 }
             });
         }
+
+        //on delete
+        table.addEventListener('click', function (evt) {
+            const onDelete = evt.target.classList.contains("delete");
+            if (onDelete) {
+                const element = evt.target.parentElement.parentElement;
+                const url = evt.target.getAttribute("data-url");
+                if (!url) return;
+
+                const isConfirm = confirm("Are you sure you want to delete?");
+                if (!isConfirm) return;
+
+                axios.get(url).then(res => {
+                    if (res.data) element.remove();
+                }).catch(err => console.log(err));
+            }
+        });
     </script>
 }
 

@@ -359,9 +359,9 @@ const onSellSubmitClicked = function(evt) {
     if (!valid) return;
 
     //disable button on submit
-    const btnSubmit = formPayment.btnSelling
-    btnSubmit.innerText = 'submitting..'
-    btnSubmit.disabled = true
+    const btnSubmit = formPayment.btnSelling;
+    btnSubmit.innerText = 'submitting..';
+    btnSubmit.disabled = true;
 
     const body = {
         CustomerId: +hiddenCustomerId.value,

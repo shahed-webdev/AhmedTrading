@@ -5,10 +5,6 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-@section Styles{
-
-}
-
 <div class="container">
     <div class="card card-body">
         <section class="my-4 d-print-none">
@@ -101,7 +97,7 @@
                 const due = row.cells[5].textContent;
 
                 if (totalPaid < due && totalPaid > 0) {
-                    row.cells[6].textContent = totalPaid;
+                    row.cells[6].textContent = totalPaid.toFixed();
                 } else if (totalPaid >= due) {
                     row.cells[6].textContent = due;
                 } else {
@@ -120,12 +116,16 @@
         formPaid.addEventListener('submit', function(evt) {
             evt.preventDefault();
 
-            const body = {
-                CustomerId:@Model.CustomerId,
+            //disable button on submit
+            const btnPaid = formPaid.submitPaid;
+            btnPaid.disabled = true;
+
+            const data = {
+                CustomerId: @Model.CustomerId,
                 PaidAmount: +inputTotalPaid.value,
                 PaymentMethod: selectPaymentMethod.value,
                 PaidDate: inputDate.value,
-                Bills:[]
+                Bills: []
             }
 
             for (var i = 1, row; (row = table.rows[i]); i++) {
@@ -133,14 +133,24 @@
 
                 if (paid > 0) {
                     const invoice = { SellingId: +row.cells[6].getAttribute("data-id"), SellingPaidAmount: paid };
-                    body.Bills.push(invoice);
+                    data.Bills.push(invoice);
                 }
             }
 
             const url = "/Selling/DueCollectionMultiple";
-            $.post(url, { model: body }, function(response) {
-                location.href = `/Selling/SellingReceiptMultiple/${response}`;
-            })
+            $.ajax({
+                type: 'POST',
+                url,
+                data,
+                success: function(response) {
+                    location.href = `/Selling/SellingReceiptMultiple/${response}`;
+                },
+                error: function(err) {console.log(err)},
+                finally: function() {
+                    //enable button on submit
+                    btnPaid.disabled = false;
+                }
+            });
         });
-    </script>  
+    </script>
 }

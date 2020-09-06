@@ -72,7 +72,7 @@ namespace AhmedTrading.Repository
                     CustomerId = c.CustomerId,
                     CustomerName = c.CustomerName,
                     CustomerAddress = c.CustomerAddress,
-                    SellingRecords = c.Selling.Select(s => new CustomerSellingViewModel
+                    SellingRecords = c.Selling.Where(s=> s.SellingDueAmount > 0).Select(s => new CustomerSellingViewModel
                     {
                         SellingId = s.SellingId,
                         SellingSn = s.SellingSn,
