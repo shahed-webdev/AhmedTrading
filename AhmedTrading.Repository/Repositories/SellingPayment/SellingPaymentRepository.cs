@@ -98,7 +98,7 @@ namespace AhmedTrading.Repository
                 foreach (var invoice in model.Bills)
                 {
                     var sell = sells.FirstOrDefault(s => s.SellingId == invoice.SellingId);
-                    var due = (sell.SellingTotalPrice + sell.SellingReturnAmount) - sell.SellingPaidAmount;
+                    var due = (sell.SellingTotalPrice + sell.SellingReturnAmount + sell.TransportationCost) - sell.SellingPaidAmount;
                     if (due < invoice.SellingPaidAmount)
                     {
                         response.IsSuccess = false;
