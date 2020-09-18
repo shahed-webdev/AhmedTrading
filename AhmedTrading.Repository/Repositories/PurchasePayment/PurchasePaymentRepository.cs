@@ -73,6 +73,7 @@ namespace AhmedTrading.Repository
                 await db.SaveChangesAsync().ConfigureAwait(false);
 
                 db.Vendors.UpdatePaidDue(model.VendorId);
+                db.SaveChanges();
 
                 response.IsSuccess = true;
                 response.Message = "Success";

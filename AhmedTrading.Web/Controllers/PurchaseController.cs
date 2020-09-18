@@ -1,9 +1,9 @@
-﻿using System;
-using AhmedTrading.Repository;
+﻿using AhmedTrading.Repository;
 using JqueryDataTables.LoopsIT;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace AhmedTrading.Web.Controllers
 {
