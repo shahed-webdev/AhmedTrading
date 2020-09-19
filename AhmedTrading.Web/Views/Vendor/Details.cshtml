@@ -11,7 +11,7 @@
     <style>
         .comm-advance h4 {
             font-size: 18px;
-            font-weight: bold; 
+            font-weight: bold;
         }
     </style>
 }
@@ -26,8 +26,12 @@
         <div class="comm-advance">
             <h4 class="text-success">Total Commission: <strong>@Model.Commission/-</strong></h4>
             <h4 class="text-info">Total Advance: <strong>@Model.Advance/-</strong></h4>
+            @if (Model.OpeningDue > 0)
+            {
+                <h4 class="text-info">Opening Due: <strong>@Model.OpeningDue/-</strong></h4>
+            }
         </div>
-    </div>   
+    </div>
 
     <section class="row">
         <div class="col-lg-3 col-md-6 mb-4">
@@ -74,23 +78,23 @@
     <section class="card card-body">
         <table class="table table-sm">
             <thead>
-            <tr>
-                <th><strong>Brand</strong></th>
-                <th><strong>Product Name</strong></th>
-                <th><strong>Selling U.Price</strong></th>
-                <th><strong>Stock</strong></th>
-            </tr>
+                <tr>
+                    <th><strong>Brand</strong></th>
+                    <th><strong>Product Name</strong></th>
+                    <th><strong>Selling U.Price</strong></th>
+                    <th><strong>Stock</strong></th>
+                </tr>
             </thead>
             <tbody>
-            @foreach (var item in Model.Products)
-            {
-                <tr>
-                    <td>@item.BrandName</td>
-                    <td>@item.ProductName</td>
-                    <td>@item.SellingUnitPrice/-</td>
-                    <td>@item.Stock @item.UnitType</td>
-                </tr>
-            }
+                @foreach (var item in Model.Products)
+                {
+                    <tr>
+                        <td>@item.BrandName</td>
+                        <td>@item.ProductName</td>
+                        <td>@item.SellingUnitPrice/-</td>
+                        <td>@item.Stock @item.UnitType</td>
+                    </tr>
+                }
             </tbody>
         </table>
     </section>

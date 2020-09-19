@@ -48,6 +48,7 @@ namespace AhmedTrading.Repository
         public double TotalDiscount { get; set; }
         public double ReturnAmount { get; set; }
         public double Paid { get; set; }
+        public double OpeningDue { get; set; }
         public double Advance { get; set; }
         public double Commission { get; set; }
         public double Balance { get; set; }

@@ -175,6 +175,7 @@ namespace AhmedTrading.Repository
                 Advance = vendor.Advance,
                 Commission = vendor.Commission,
                 Paid = vendor.Paid,
+                OpeningDue = vendor.OpeningDue,
                 ReturnAmount = vendor.ReturnAmount,
                 TotalAmount = vendor.TotalAmount,
                 TotalDiscount = vendor.TotalDiscount,
